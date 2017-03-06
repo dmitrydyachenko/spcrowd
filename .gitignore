@@ -1,0 +1,17 @@
+# OS
+.DS_Store
+Thumbs.db
+
+# Composer
+composer.phar
+composer.lock
+/vendor
+
+# Sass
+.sass-cache
+node_modules
+scss-lint-report.xml
+
+# Node
+/node_modules
+/npm-debug.log

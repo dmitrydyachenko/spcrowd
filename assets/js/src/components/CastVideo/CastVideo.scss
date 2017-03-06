@@ -1,0 +1,24 @@
+.container {
+    .header {
+        text-align: center;
+        padding-bottom: 20px;
+        padding-top: 20px;
+
+        @include breakpoint(large) {
+            padding-top: 0;
+        }
+
+        h1 {
+            color: $doveblue1;
+            margin: 0;
+        }
+    }
+
+    .video {
+        margin-top: 2px;
+
+        video {
+            width: 100%;
+        }
+    }
+}

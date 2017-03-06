@@ -1,0 +1,26 @@
+.container {
+    .header {
+        text-align: center;
+        padding-bottom: 20px;
+
+        h1 {
+            color: $doveblue1;
+            margin: 0;
+        }
+    }
+
+    .empty {
+        text-align: center;
+
+        h1 {
+            color: $doveblue1;
+            font-size: 18px;
+        }
+    }
+
+    .showmore {
+        text-align: center;
+        padding-top: 40px;
+        padding-bottom: 10px;
+    }
+}

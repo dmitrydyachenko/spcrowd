@@ -1,0 +1,52 @@
+.archive_results {
+    .header {
+        font-size: 32px;
+        font-weight: 200;
+        color: $doveblue1;
+        text-align: center;
+        padding-bottom: 20px;
+    }
+
+    .empty {
+        text-align: center;
+        font-size: 18px;
+        color: $doveblue1;
+    }
+
+    .projects {
+        .button {
+            text-align: center;
+            width: 100%;
+            padding: 10px 5px;
+
+            @include breakpoint(small) {
+                padding: 10px;
+                width: 20%;
+            }
+
+
+            :global .ms-Button {
+                width: 100%;
+
+                span {
+                    @include breakpoint(small) {
+                        font-size: 14px;
+                        line-height: 1.8;
+                    }
+
+
+                    @include breakpoint(medium) {
+                        font-size: 16px;
+                        line-height: 1.7;
+                    }
+                }
+            }
+        }
+    }
+
+    .showmore {
+        text-align: center;
+        padding-top: 30px;
+        padding-bottom: 10px;
+    }
+}

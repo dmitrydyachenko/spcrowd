@@ -1,0 +1,66 @@
+.container {
+    .header_container {
+        @include bottom-curve(0.4);
+
+        background-color: $grey1;
+        padding-bottom: 140px;
+
+        .header {
+            font-weight: 200;
+            text-align: center;
+            padding-bottom: 20px;
+
+            .header_title {
+                font-size: 32px;
+                color: $doveblue1;
+            }
+
+            .header_description {
+                color: $grey;
+                font-size: 22px;
+                padding-top: 20px;
+            }
+        }
+    }
+
+    .empty {
+        text-align: center;
+
+        h1 {
+            color: $doveblue1;
+        }
+    }
+
+    .search_container {
+        :global .SearchCasts_header_container {
+            .SearchCasts_header {
+                font-size: 26px;
+                color: $doveblue1;
+                text-align: center;
+            }
+        }
+    }
+
+    .topcurve {
+        @include top-curve;
+
+        background-color: $white;
+        min-height: 50px;
+        padding-top: 0;
+        padding-bottom: 0;
+
+        &:before {
+            opacity: 1;
+            transform: translateY(15px) rotate(180deg);
+            background-color: $doveblue1;
+            top: 0;
+        }
+
+        &:after {
+            background-color: $doveblue1;
+            top: 25px;
+        }
+    }
+
+    .projects_container {}
+}

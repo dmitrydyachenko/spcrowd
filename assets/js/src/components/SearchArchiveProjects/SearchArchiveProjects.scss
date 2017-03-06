@@ -1,0 +1,69 @@
+.container {
+    .label {
+        text-align: center;
+        padding-top: 10px;
+        padding-bottom: 10px;
+
+        :global .ms-Button {
+            background-color: transparent !important;
+
+            span {
+                color: $white;
+            }
+
+            &:hover,
+            &:focus {
+                border: 0 !important;
+                color: $white;
+
+                span {
+                    color: $white !important;
+                }
+            }
+
+            &:hover {
+                text-decoration: underline !important;
+            }
+        }
+
+        .label_area {
+            color: $white;
+            font-size: 18px;
+            font-weight: 400;
+            -webkit-font-smoothing: antialiased;
+            padding-bottom: 30px;
+            padding-top: 10px;
+        }
+    }
+
+    .block {
+        text-align: center;
+        padding-bottom: 20px;
+
+        .input {
+            display: inline-block;
+            padding-right: 15px;
+
+            .text_area {
+                :global .ms-TextField {
+                    margin-bottom: 0 !important;
+                }
+
+                input {
+                    height: 32px;
+                    border-radius: 5px;
+                    padding: 10px;
+                    background: $white;
+                }
+            }
+        }
+
+        .button {
+            display: inline-block;
+
+            .button_area {
+                text-align: left;
+            }
+        }
+    }
+}

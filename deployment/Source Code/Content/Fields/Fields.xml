@@ -1,0 +1,171 @@
+<Fields Group="Dove Hair Casting">
+    <!-- Text Fields -->
+    <Field Name="Strapline" DisplayName="Strapline" Type="Text"></Field>
+    <Field Name="CastName" DisplayName="Name" Type="Text"></Field>
+    <Field Name="CastOccupation" DisplayName="Occupation" Type="Text"></Field>
+    <Field Name="LocationOfResidence" DisplayName="Location of residence" Type="Text"></Field>
+    <Field Name="CastingAgencyContact" DisplayName="Casting Agency Contact" Type="Text"></Field>
+    <Field Name="YearOfBirth" DisplayName="Year of birth" Type="Text"></Field>
+    <Field Name="HeightCm" DisplayName="Height (cm)" Type="Text"></Field>
+    <Field Name="SuitabilityVideoPhoto" DisplayName="Suitability for video and photo" Type="Text"></Field>
+    <Field Name="CastPassport" DisplayName="Passport" Type="Text"></Field>
+    <Field Name="YearOfLaunching" DisplayName="Year of launching" Type="Text"></Field>
+    <Field Name="CastGuid" DisplayName="Cast Guid" Type="Text"></Field>
+    <Field Name="ProjectGuid" DisplayName="Project Guid" Type="Text"></Field>
+    <Field Name="ProfilePhoto" DisplayName="Profile Photo" Type="Text"></Field>
+
+    <!-- Multiple lines of text Fields -->
+    <Field Name="BeautyStories" DisplayName="Beauty Stories" Type="Note" NumLines="6" RichText="TRUE" RichTextMode="FullHtml"></Field>
+    <Field Name="AgencyNotes" DisplayName="Agency Notes" Type="Note" NumLines="6" RichText="TRUE" RichTextMode="FullHtml"></Field>
+
+    <!-- Boolean Fields -->
+    <Field Name="Children" DisplayName="Children" Type="Boolean"><Default>0</Default></Field>
+    <Field Name="ExternalCast" DisplayName="External" Type="Boolean"><Default>0</Default></Field>
+
+    <!-- Hyperlink Fields -->
+    <Field Name="PhotoOne" DisplayName="Photo One" Type="URL" Format="Image"></Field>
+    <Field Name="PhotoTwo" DisplayName="Photo Two" Type="URL" Format="Image"></Field>
+    <Field Name="PhotoThree" DisplayName="Photo Three" Type="URL" Format="Image"></Field>
+    <Field Name="PhotoFour" DisplayName="Photo Four" Type="URL" Format="Image"></Field>
+    <Field Name="PhotoFive" DisplayName="Photo Five" Type="URL" Format="Image"></Field>
+    <Field Name="PortfolioItemOne" DisplayName="Portfolio Item One" Type="URL"></Field>
+    <Field Name="PortfolioItemTwo" DisplayName="Portfolio Item Two" Type="URL"></Field>
+    <Field Name="PortfolioItemThree" DisplayName="Portfolio Item Three" Type="URL"></Field>
+    <Field Name="PortfolioItemFour" DisplayName="Portfolio Item Four" Type="URL"></Field>
+    <Field Name="PortfolioItemFive" DisplayName="Portfolio Item Five" Type="URL"></Field>
+    <Field Name="AdditionalInfo" DisplayName="Additional Info" Type="URL"></Field>
+    <Field Name="EmbedVideo" DisplayName="Video" Type="URL"></Field>
+
+    <!-- Number Fields -->
+    <Field Name="ItemOrder" DisplayName="Order" Type="Number" Min="0" Decimals="0"><Default>0</Default></Field>
+
+    <!-- DateTime Fields -->
+    <Field Name="DateOfCast" DisplayName="Date of cast" Type="DateTime" Format="DateOnly"></Field>
+    <Field Name="ProjectStartDate" DisplayName="Project Start Date" Type="DateTime" Format="DateOnly"></Field>
+
+    <!-- Lookup Fields -->
+    <Field Name="HairColour" DisplayName="Hair Colour" Type="Lookup" List="Hair Colour" ShowField="Title"></Field>
+    <Field Name="SkinTone" DisplayName="Skin Tone" Type="Lookup" List="Skin Tone" ShowField="Title"></Field>
+    <Field Name="ProjectId" DisplayName="Project ID" Type="Lookup" List="Projects" ShowField="Title"></Field>
+    <Field Name="CastId" DisplayName="Cast ID" Type="Lookup" List="Cast" ShowField="CastName"></Field>
+
+    <!-- User Fields -->
+    <Field Name="ProjectLeaders" DisplayName="Project Leaders" Type="UserMulti" Mult="TRUE" UserSelectionMode="PeopleOnly"></Field>
+    <Field Name="ProjectMembers" DisplayName="Project Members" Type="UserMulti" Mult="TRUE" UserSelectionMode="PeopleOnly"></Field>
+    <Field Name="ProjectVisitors" DisplayName="Project Visitors" Type="UserMulti" Mult="TRUE" UserSelectionMode="PeopleOnly"></Field>
+
+    <!-- Choice Fields -->
+    <Field Name="CastCitizenship" DisplayName="Citizenship" Type="Choice">
+        <CHOICES>
+            <ExternalValues Path=".\Content\Fields\ExternalValues\Nationalities.xml"/>
+        </CHOICES>
+    </Field>
+    <Field Name="ProjectCategory" DisplayName="Project Category" Type="Choice">
+        <CHOICES>
+            <CHOICE>The best project</CHOICE>
+            <CHOICE>Good project</CHOICE>
+            <CHOICE>The worst project</CHOICE>
+        </CHOICES>
+    </Field>
+    <Field Name="ProjectStatus" DisplayName="Project Status" Type="Choice">
+        <CHOICES>
+            <CHOICE>Current</CHOICE>
+            <CHOICE>Archived</CHOICE>
+        </CHOICES>
+        <Default>Current</Default>
+    </Field>
+    <Field Name="CastTypes" DisplayName="Cast Types" Type="Choice">
+        <CHOICES>
+            <CHOICE>Screenings</CHOICE>
+            <CHOICE>Call-backs</CHOICE>
+        </CHOICES>
+    </Field>
+    <Field Name="AgeGroup" DisplayName="Age Group" Type="Choice">
+        <CHOICES>
+            <CHOICE>Under 18</CHOICE>
+            <CHOICE>18 - 24</CHOICE>
+            <CHOICE>25 - 34</CHOICE>
+            <CHOICE>35 - 44</CHOICE>
+            <CHOICE>45+</CHOICE> 
+        </CHOICES>
+    </Field>
+    <Field Name="HairType" DisplayName="Hair Type" Type="Choice">
+        <CHOICES>
+            <CHOICE>Straight</CHOICE>
+            <CHOICE>Wavy</CHOICE> 
+            <CHOICE>Curly</CHOICE>
+            <CHOICE>Afro curls</CHOICE>
+        </CHOICES>
+    </Field>
+    <Field Name="HairLength" DisplayName="Hair Length" Type="Choice">
+        <CHOICES>
+            <CHOICE>Short</CHOICE>
+            <CHOICE>Medium</CHOICE>
+            <CHOICE>Long</CHOICE>
+        </CHOICES>
+    </Field>
+    <!--<Field Name="HairWeight" DisplayName="Hair Weight" Type="Choice">
+        <CHOICES>
+            <CHOICE>Thick</CHOICE>
+            <CHOICE>Medium</CHOICE>
+            <CHOICE>Fine</CHOICE>
+        </CHOICES>
+    </Field>-->
+    <Field Name="SkinCondition" DisplayName="Skin Condition" Type="Choice">
+        <CHOICES>
+            <CHOICE>Normal</CHOICE>
+            <CHOICE>Dry</CHOICE>
+            <CHOICE>Combination</CHOICE>
+            <CHOICE>Oily</CHOICE>
+        </CHOICES>
+    </Field>
+    <Field Name="CastLocation" DisplayName="Location" Type="Choice">
+        <CHOICES>
+            <CHOICE>NA (North America)</CHOICE> 
+            <CHOICE>EU (European)</CHOICE>
+            <CHOICE>Latam (Latin America)</CHOICE> 
+            <CHOICE>SEA (Southeast Asia)</CHOICE>
+            <CHOICE>SA (South Asia)</CHOICE> 
+            <CHOICE>NAMET (North Africa, Middle East, Turkey)</CHOICE>
+            <CHOICE>China</CHOICE>
+            <CHOICE>Others</CHOICE>
+        </CHOICES>
+    </Field>
+    <Field Name="DeoUnderarmCondition" DisplayName="Deo Underarm Condition" Type="Choice">
+        <CHOICES>
+            <CHOICE>Normal</CHOICE> 
+            <CHOICE>Dark Mark</CHOICE> 
+            <CHOICE>Looking for maximum protection</CHOICE> 
+            <CHOICE>Shaving Rash</CHOICE>
+            <CHOICE>Adorments (e.g. Tatoo)</CHOICE>
+        </CHOICES>
+    </Field>
+    <Field Name="FirstLanguage" DisplayName="First Language" Type="MultiChoice">
+        <CHOICES>
+            <CHOICE>American English</CHOICE>
+            <CHOICE>British English</CHOICE>
+            <CHOICE>Portugese</CHOICE>
+            <CHOICE>Spanish</CHOICE>
+            <CHOICE>French</CHOICE>
+            <CHOICE>Russian</CHOICE>
+            <CHOICE>Hindu Indian</CHOICE> 
+            <CHOICE>Japanese</CHOICE>
+            <CHOICE>Chinese</CHOICE>
+            <CHOICE>Thai</CHOICE>
+            <CHOICE>Philipines</CHOICE>
+            <CHOICE>Indonesian Bahasa</CHOICE>
+            <CHOICE>Vietnamese</CHOICE>
+            <CHOICE>Others</CHOICE>
+        </CHOICES>
+    </Field>
+
+    <!-- Taxonomy Fields -->
+    <Field Name="ProjectClusters" DisplayName="Project Clusters" Type="Taxonomy" Mult="TRUE" TermSet="Clusters">
+        <GroupsToTest>
+            <Group Name="Site Collection - unileverdev.sharepoint.com-sites-DevInt_DoveHairCasting"></Group>
+            <Group Name="Site Collection - unilever.sharepoint.com-sites-QA_DoveHairCasting"></Group>
+            <Group Name="Site Collection - unilever.sharepoint.com-sites-dovecasting"></Group>
+            <Group Name="Site Collection - unileverdev.sharepoint.com-sites-Dev_DoveHairCasting"></Group>
+        </GroupsToTest>
+    </Field>
+</Fields>

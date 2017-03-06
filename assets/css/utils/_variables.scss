@@ -1,0 +1,45 @@
+/**
+ * Breakpoints
+ */
+
+$breakpoints: (
+	x-small: 479px, 
+    small: 639px,
+    medium: 780px,
+	large: 1023px,
+    x-large: 1365px,
+    xx-large: 1919px
+);
+
+/**
+ * Tweakpoints
+ */
+
+$tweakpoints: ();
+
+/**
+ * Other variables
+ */
+$baseline: 24px;
+
+/**
+ * Colours
+ */
+$white: #FFF;
+$black: #000;
+$grey: #666;
+$grey1: #F0F0F0;
+$grey2: #CCC;
+$grey3: #999;
+$doveblue1: #002663;
+$doveblue2: #004976;
+$dovebluealpha1: rgba(0, 38, 99, 0.5);
+$dovebluealpha2: rgba(0, 38, 99, 0.7);
+$dovebluealpha3: rgb(7, 56, 136);
+$linkblue: #0072C6;
+
+/**
+ * Paths to Sharepoint assets 
+ */
+ $fontspath: "../fonts";
+ $imgpath: "../img";

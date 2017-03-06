@@ -1,0 +1,71 @@
+<Lists>
+    <!-- Generic Lists -->
+    <List Name="Header Links" Template="GenericList">
+        <ContentTypes>
+            <ContentType Name="Header Links"></ContentType>
+        </ContentTypes>
+    </List>
+    <List Name="Footer Links" Template="GenericList">
+        <ContentTypes>
+            <ContentType Name="Footer Links"></ContentType>
+        </ContentTypes>
+    </List>
+    <List Name="Cast" Template="GenericList">
+        <ContentTypes>
+            <ContentType Name="Cast"></ContentType>
+        </ContentTypes>
+    </List>
+    <List Name="Projects" Template="GenericList">
+        <ContentTypes>
+            <ContentType Name="Projects"></ContentType>
+        </ContentTypes>
+    </List>
+    <List Name="Project Shortlist" Template="GenericList">
+        <ContentTypes>
+            <ContentType Name="Project Shortlist"></ContentType>
+        </ContentTypes>
+    </List>
+    <List Name="Project Selections" Template="GenericList">
+        <ContentTypes>
+            <ContentType Name="Project Selections"></ContentType>
+        </ContentTypes>
+    </List>
+    <List Name="Hair Colour" Template="GenericList">
+        <ContentTypes>
+            <ContentType Name="Hair Colour"></ContentType>
+        </ContentTypes>
+        <Rows>
+            <Row Title="Blonde" ItemOrder="0" PublishingPageImage="/PublishingImages/Hair Colour/blonde.jpg">
+            <Row Title="Brunette" ItemOrder="1" PublishingPageImage="/PublishingImages/Hair Colour/brunette.jpg">
+            <Row Title="Dark Brown" ItemOrder="2" PublishingPageImage="/PublishingImages/Hair Colour/darkbrown.jpg">
+            <Row Title="Black" ItemOrder="3" PublishingPageImage="/PublishingImages/Hair Colour/black.jpg">
+            <Row Title="Red" ItemOrder="4" PublishingPageImage="/PublishingImages/Hair Colour/red.jpg">
+            <Row Title="Grey" ItemOrder="5" PublishingPageImage="/PublishingImages/Hair Colour/grey.jpg">
+            <Row Title="Others" ItemOrder="6" PublishingPageImage="/PublishingImages/Hair Colour/others.jpg">
+        </Rows>
+    </List>
+    <List Name="Skin Tone" Template="GenericList">
+        <ContentTypes>
+            <ContentType Name="Skin Tone"></ContentType>
+        </ContentTypes>
+        <Rows>
+            <Row Title="Fair" ItemOrder="0" PublishingPageImage="/PublishingImages/Skin Tone/fair.jpg">
+            <Row Title="Light" ItemOrder="1" PublishingPageImage="/PublishingImages/Skin Tone/light.jpg">
+            <Row Title="Medium" ItemOrder="2" PublishingPageImage="/PublishingImages/Skin Tone/medium.jpg">
+            <Row Title="Deep" ItemOrder="3" PublishingPageImage="/PublishingImages/Skin Tone/deep.jpg">
+            <Row Title="Dark" ItemOrder="4" PublishingPageImage="/PublishingImages/Skin Tone/dark.jpg">
+            <Row Title="Others" ItemOrder="5" PublishingPageImage="/PublishingImages/Skin Tone/others.jpg">
+        </Rows>
+    </List>
+
+    <!-- Document Libraries -->
+    <List Name="Cast Additional Info" Template="DocumentLibrary"></List>
+    <List Name="Project Additional Info" Template="DocumentLibrary"></List>
+    <List Name="Cast Portfolios" Template="DocumentLibrary"></List>
+    <List Name="Cast Videos" Template="DocumentLibrary"></List>
+    <List Name="Cast Images" Template="DocumentLibrary">
+        <ContentTypes>
+            <ContentType Name="Picture"></ContentType>
+        </ContentTypes>
+    </List>
+</Lists>

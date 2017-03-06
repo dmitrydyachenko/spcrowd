@@ -1,0 +1,28 @@
+.container {
+    .header {
+        text-align: center;
+        padding-bottom: 20px;
+
+        h1 {
+            color: $white;
+            margin: 0;
+        }
+    }
+
+    .items {
+        .button {
+            padding-bottom: 10px;
+            display: inline-block;
+            float: none;
+
+            :global .ms-Button {
+                width: 100%;
+                line-height: 1.9;
+
+                span {
+                    font-size: 14px;
+                }
+            }
+        }
+    }
+}

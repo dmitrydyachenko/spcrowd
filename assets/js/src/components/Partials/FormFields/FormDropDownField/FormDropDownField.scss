@@ -1,0 +1,36 @@
+.container {
+    .info_label {
+        display: inline-block;
+        color: $dovebluealpha2;
+        font-weight: 400;
+        font-size: 16px;
+        padding: 5px 8px 5px 8px;
+        text-align: left;
+
+        @include breakpoint(medium) {
+            font-size: 15px;
+            padding: 5px 0 0 0;
+            text-align: right;
+        }
+    }
+
+    .info_value {
+        :global .ms-Dropdown {
+            margin-bottom: 8px;
+
+            .ms-Dropdown-title {
+                border-radius: 5px;
+                border: 1px solid $grey !important;
+                padding-top: 2px;
+            }
+
+            .ms-Dropdown-caretDown {
+                border-left: 1px solid $grey;
+                padding-left: 10px;
+                height: 20px;
+                line-height: 20px;
+                top: 6px;
+            }
+        }
+    }
+}

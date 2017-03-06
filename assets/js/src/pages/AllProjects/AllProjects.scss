@@ -1,0 +1,59 @@
+.container {
+    .header_container {
+        @include bottom-curve(0.9);
+
+        padding-top: 40px;
+        padding-bottom: 0;
+        background-color: $grey1;
+        min-height: 155px;
+
+        &:before {
+            transform: translateY(0) rotate(180deg);
+            bottom: -15%;
+        }
+
+        &:after {
+            background-color: $grey1;
+            bottom: -15%;
+        }
+
+        .header {
+            font-size: 32px;
+            font-weight: 200;
+            color: $doveblue1;
+            text-align: center;
+            padding-bottom: 40px;
+        }
+    }
+
+    .empty {
+        text-align: center;
+
+        h1 {
+            color: $doveblue1;
+        }
+    }
+
+    .topcurve {
+        @include top-curve;
+
+        background-color: $grey1;
+        min-height: 50px;
+        padding-top: 0;
+        padding-bottom: 0;
+
+        &:before {
+            opacity: 1;
+            transform: translateY(15px) rotate(180deg);
+            background-color: $doveblue1;
+            top: 0;
+        }
+
+        &:after {
+            background-color: $doveblue1;
+            top: 25px;
+        }
+    }
+
+    .projects_container {}
+}

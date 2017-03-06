@@ -1,0 +1,207 @@
+.container {
+    .header_container {
+        @include bottom-curve(0.4);
+
+        background-color: $grey1;
+        font-weight: 200;
+        color: $doveblue1;
+        text-align: center;
+        padding-bottom: 100px;
+
+        .header {
+            font-size: 32px;
+            font-weight: 200;
+            color: $doveblue1;
+            text-align: center;
+            padding-bottom: 10px;
+        }
+
+        .category {
+            color: $doveblue1;
+            font-size: 26px;
+            padding-bottom: 10px;
+        }
+
+        .editlink {
+            font-size: 18px;
+            padding-bottom: 40px;
+
+            a {
+                color: $grey;
+            }
+        }
+
+        .strapline {
+            color: $doveblue1;
+            font-size: 20px;
+            padding-bottom: 40px;
+        }
+    }
+
+    .info_container {
+        padding-bottom: 40px;
+
+        .info {
+            .label {
+                text-align: right;
+                display: inline-block;
+                padding-right: 30px;
+                padding-left: 0;
+                color: $dovebluealpha2;
+                font-size: 18px;
+                font-weight: 200;
+            }
+
+            .value {
+                display: inline-block;
+                color: $dovebluealpha3;
+                font-size: 16px;
+                font-weight: 600;
+                padding-left: 0;
+                padding-right: 0;
+                line-height: 1.5;
+
+                a {
+                    color: $dovebluealpha2;
+                    font-weight: 200;
+                    text-decoration: underline;
+                    font-size: 16px;
+                }
+
+                div {
+                    color: $dovebluealpha3;
+                }
+
+                .email {
+                    a {
+                        font-weight: 600;
+                        color: $dovebluealpha3;
+                        text-decoration: none;
+
+                        &:hover {
+                            text-decoration: underline;
+                        }
+                    }
+                }
+            }
+
+            :global .ms-Grid-row {
+                padding-bottom: 5px;
+            }
+        }
+    }
+
+    .added_casts {
+        .topcurve {
+            @include top-curve;
+
+            background-color: $white;
+            min-height: 50px;
+            padding-top: 0;
+            padding-bottom: 0;
+
+            &:before {
+                opacity: 1;
+                transform: translateY(15px) rotate(180deg);
+                background-color: $doveblue1;
+                top: 0;
+            }
+
+            &:after {
+                background-color: $doveblue1;
+                top: 25px;
+            }
+
+            &.grey {
+                background-color: $grey1;
+                min-height: 0;
+
+                &:before {
+                    background-color: $grey1;
+                }
+
+                &:after {
+                    background-color: $grey1;
+                }
+            }
+        }
+
+        .cluster_filter {
+            background-color: $doveblue1;
+
+            :global .FormDropDownField_info_label {
+                color: $white;
+                font-weight: 200;
+                font-size: 18px;
+            }
+        }
+
+        .selected_casts {
+            @include bottom-curve(0.9);
+
+            padding-top: 40px;
+            padding-bottom: 100px;
+            background-color: $doveblue1;
+
+            &:before {
+                transform: translateY(0) rotate(180deg);
+                bottom: -5%;
+                background-color: $grey1;
+                opacity: 1;
+            }
+
+            &:after {
+                background-color: $grey1;
+                bottom: -15%;
+            }
+
+            :global .CastThumbnail_header {
+                padding-bottom: 50px;
+
+                h1 {
+                    color: $white;
+                }
+            }
+
+            :global .CastThumbnail_empty {
+                h1 {
+                    color: $white;
+                }
+            }
+        }
+
+        .shortlisted_casts {
+            @include bottom-curve(0.9);
+
+            padding-top: 10px;
+            padding-bottom: 125px;
+            background-color: $grey1;
+
+            &:before {
+                transform: translateY(-14px) rotate(179deg);
+                opacity: 0.4;
+            }
+
+            :global .CastThumbnail_header {
+                padding-bottom: 50px;
+            }
+        }
+    }
+
+    .search_container {
+        :global .SearchCasts_header_container {
+            .SearchCasts_header {
+                font-size: 26px;
+            }
+        }
+    }
+
+    .empty {
+        text-align: center;
+
+        h1 {
+            padding-top: 50px;
+            color: $doveblue1;
+        }
+    }
+}

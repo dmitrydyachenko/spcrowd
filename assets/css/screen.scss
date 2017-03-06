@@ -1,0 +1,41 @@
+/**
+ * Import all utilities
+ */
+@import "utils/variables";
+@import "utils/functions";
+@import "utils/mixins";
+@import "utils/placeholders";
+
+/**
+ * Import fonts
+ */
+@import "base/fonts";
+
+:global .dovehaircasting {
+    /**
+     * Import vendor CSS files
+     */
+    @import "vendors/normalize";
+    @import "vendors/fontawesome";
+    @import "vendors/fabric";
+    @import "vendors/responsive-embed";
+    @import "vendors/react-draft-wysiwyg";
+
+    /**
+     * Import all base files
+     */
+    @import "base/base";
+    @import "base/layout";
+    @import "base/typography";
+    @import "base/helpers";
+
+    /**
+     * Import page specific files
+     */
+    @import "pages/masterpage";
+}
+
+/**
+ * Import element CSS files that should be applied on the whole page
+ */
+@import "components/external";

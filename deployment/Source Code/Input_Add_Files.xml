@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Input>
+  	<Module Name="FileUpload" rootlocation="">
+	    <Folder SourcePath="\Assets\templates"
+	            TargetPath="/Style%20Library/DoveHairCasting/templates"></Folder>
+	    <Folder SourcePath="\Assets\css"
+	            TargetPath="/Style%20Library/DoveHairCasting/css"></Folder>
+	    <Folder SourcePath="\Assets\js"
+	            TargetPath="/Style%20Library/DoveHairCasting/js"></Folder>
+	    <Folder SourcePath="\Assets\img"
+	             TargetPath="/Style%20Library/DoveHairCasting/img"></Folder>
+	    <Folder SourcePath="\Assets\fonts"
+	            TargetPath="/Style%20Library/DoveHairCasting/fonts"></Folder>
+  	</Module>
+</Input>

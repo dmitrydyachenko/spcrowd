@@ -1,0 +1,101 @@
+<ContentTypes Group="Dove Hair Casting">
+    <!-- Item Content Types -->
+    <ContentType Name="Header Links" ParentContentType="Item">
+        <Fields>
+            <Field Name="ItemOrder"></Field>
+            <Field Name="URL" Required="True"></Field>
+        </Fields>
+    </ContentType>
+    <ContentType Name="Footer Links" ParentContentType="Item">
+        <Fields>
+            <Field Name="ItemOrder"></Field>
+            <Field Name="URL" Required="True"></Field>
+        </Fields>
+    </ContentType>
+    <ContentType Name="Cast" ParentContentType="Item">
+        <Fields>
+            <Field Name="CastName" Required="True"></Field>
+            <Field Name="ProfilePhoto"></Field>
+            <Field Name="ExternalCast"></Field>
+            <Field Name="CastOccupation"></Field>
+            <Field Name="LocationOfResidence"></Field>
+            <Field Name="CastingAgencyContact"></Field>
+            <Field Name="DateOfCast"></Field>
+            <Field Name="BeautyStories"></Field>
+            <Field Name="AgencyNotes"></Field>
+            <Field Name="CastTypes"></Field>
+            <Field Name="YearOfBirth"></Field>
+            <Field Name="AgeGroup"></Field>
+            <Field Name="HeightCm"></Field>
+            <Field Name="CastLocation"></Field>
+            <Field Name="HairType"></Field>
+            <Field Name="HairColour"></Field>
+            <Field Name="HairLength"></Field>
+            <Field Name="HairWeight"></Field>
+            <Field Name="SkinTone"></Field>
+            <Field Name="SkinCondition"></Field>
+            <Field Name="DeoUnderarmCondition"></Field>
+            <Field Name="FirstLanguage"></Field>
+            <Field Name="CastCitizenship"></Field>
+            <Field Name="SuitabilityVideoPhoto"></Field>
+            <Field Name="CastPassport"></Field>
+            <Field Name="Children"></Field>
+            <Field Name="AdditionalInfo"></Field>
+            <Field Name="EmbedVideo"></Field>
+            <Field Name="PhotoOne"></Field>
+            <Field Name="PhotoTwo"></Field>
+            <Field Name="PhotoThree"></Field>
+            <Field Name="PhotoFour"></Field>
+            <Field Name="PhotoFive"></Field>
+            <Field Name="PortfolioItemOne"></Field>
+            <Field Name="PortfolioItemTwo"></Field>
+            <Field Name="PortfolioItemThree"></Field>
+            <Field Name="PortfolioItemFour"></Field>
+            <Field Name="PortfolioItemFive"></Field>
+            <Field Name="CastGuid"></Field>
+        </Fields>
+    </ContentType>
+    <ContentType Name="Projects" ParentContentType="Item">
+        <Fields>
+            <Field Name="Strapline"></Field>
+            <Field Name="ProjectCategory"></Field>
+            <Field Name="ProjectClusters"></Field>
+            <Field Name="YearOfLaunching"></Field>
+            <Field Name="ProjectStartDate"></Field>
+            <Field Name="ProjectLeaders"></Field>
+            <Field Name="ProjectMembers"></Field>
+            <Field Name="ProjectVisitors"></Field>
+            <Field Name="ProjectStatus" Required="True"></Field>
+            <Field Name="AdditionalInfo"></Field>
+            <Field Name="ProjectGuid"></Field>
+        </Fields>
+    </ContentType>
+    <ContentType Name="Project Shortlist" ParentContentType="Item">
+        <Fields>
+            <Field Name="ProjectId" Required="True"></Field>
+            <Field Name="CastId" Required="True"></Field>
+            <Field Name="Cluster"></Field>
+            <Field Name="ProjectClusters"></Field>
+        </Fields>
+    </ContentType>
+    <ContentType Name="Project Selections" ParentContentType="Item">
+        <Fields>
+            <Field Name="ProjectId" Required="True"></Field>
+            <Field Name="CastId" Required="True"></Field>
+            <Field Name="Cluster"></Field>
+            <Field Name="ProjectClusters"></Field>
+        </Fields>
+    </ContentType>
+    <ContentType Name="Hair Colour" ParentContentType="Item">
+        <Fields>
+            <Field Name="ItemOrder"></Field>
+            <Field Name="PublishingPageImage" Required="True"></Field>
+        </Fields>
+    </ContentType>
+    <ContentType Name="Skin Tone" ParentContentType="Item">
+        <Fields>
+            <Field Name="ItemOrder"></Field>
+            <Field Name="PublishingPageImage" Required="True"></Field>
+        </Fields>
+    </ContentType>
+</ContentTypes>

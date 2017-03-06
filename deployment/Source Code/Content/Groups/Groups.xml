@@ -1,0 +1,7 @@
+<Groups>
+	<Group Name="Dove Hair Casting Owners" PermissionLevel="Full Control" />   
+	<Group Name="Dove Global Project Leaders" PermissionLevel="Contribute" />   
+	<Group Name="Dove Regional Project Leaders" PermissionLevel="Read" />   
+	<Group Name="Creative Agencies" PermissionLevel="Restricted Contribute" />   
+	<Group Name="Casting Agencies" PermissionLevel="Restricted Contribute" />
+</Groups>

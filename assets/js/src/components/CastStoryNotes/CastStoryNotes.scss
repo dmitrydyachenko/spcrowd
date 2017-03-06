@@ -1,0 +1,23 @@
+.container {
+    .header {
+        text-align: center;
+        padding-bottom: 20px;
+
+        h1 {
+            color: $doveblue1;
+            margin: 0;
+        }
+    }
+
+    .notes, 
+    .story {
+        text-align: center;
+        font-weight: 200;
+        padding-bottom: 20px;
+        font-size: 18px;
+
+        p {
+            background-color: $white !important;
+        }
+    }
+}

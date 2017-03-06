@@ -1,0 +1,17 @@
+// -----------------------------------------------------------------------------
+// This file contains all typography styles.
+// -----------------------------------------------------------------------------
+
+$base-font-size: 16px;
+$base-font-stack: "HelveticaNeueLTPro","Helvetica Neue",HelveticaNeue,Helvetica,Arial,sans-serif;
+
+body {
+    color: $black;
+    font-size: $base-font-size;
+    font-family: $base-font-stack;
+}
+
+span,p,a,div,h1,h2,h3,h4,h5{
+	color: $black;
+	font-family: $base-font-stack;
+}
