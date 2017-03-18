@@ -1,10 +1,10 @@
 {
-  "name": "sharepoint-starterpack",
+  "name": "SPCrowd",
   "version": "0.0.1",
-  "description": "Sharepoint starterpack",
+  "description": "SPCrowd",
   "repository": {
     "type": "git",
-    "url": "https://github.com/golincode/sharepoint-starterpack.git"
+    "url": "https://github.com/dmitrydyachenko/spcrowd.git"
   },
   "scripts": {
     "build": "webpack --mode=build",
@@ -16,7 +16,7 @@
   "author": "Dmitry Dyachenko <ddyachenko@golin.com>",
   "license": "Unlicense",
   "bugs": {
-    "url": "https://github.com/golincode/sharepoint-starterpack/issues"
+    "url": "https://github.com/dmitrydyachenko/spcrowd/issues"
   },
   "jest": {
     "moduleNameMapper": {
@@ -24,9 +24,9 @@
       "\\.(css|scss)$": "identity-obj-proxy"
     }
   },
-  "homepage": "https://github.com/golincode/sharepoint-starterpack#readme",
+  "homepage": "https://github.com/dmitrydyachenko/spcrowd#readme",
   "dependencies": {
-    "SPOCExt": "git+https://github.com/dmitrydyachenko/SPOCExt.git",
+    "SPOCExt": "git+https://github.com/golincode/SPOCExt.git",
     "autoprefixer": "^6.5.4",
     "babel": "^6.5.2",
     "babel-core": "^6.21.0",
@@ -59,9 +59,7 @@
     "spsave-webpack-plugin": "^1.0.4",
     "style-loader": "^0.13.2",
     "webpack": "^1.14.0",
-    "yargs": "^7.0.1"
-  },
-  "devDependencies": {
+    "yargs": "^7.0.1",
     "identity-obj-proxy": "^3.0.0"
   }
 }
