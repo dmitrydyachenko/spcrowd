@@ -1,4 +1,4 @@
-<ContentTypes Group="Dove Hair Casting">
+<ContentTypes Group="Starterpack">
     <!-- Item Content Types -->
     <ContentType Name="Header Links" ParentContentType="Item">
         <Fields>

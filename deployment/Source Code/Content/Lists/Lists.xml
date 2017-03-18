@@ -34,28 +34,11 @@
         <ContentTypes>
             <ContentType Name="Hair Colour"></ContentType>
         </ContentTypes>
-        <Rows>
-            <Row Title="Blonde" ItemOrder="0" PublishingPageImage="/PublishingImages/Hair Colour/blonde.jpg">
-            <Row Title="Brunette" ItemOrder="1" PublishingPageImage="/PublishingImages/Hair Colour/brunette.jpg">
-            <Row Title="Dark Brown" ItemOrder="2" PublishingPageImage="/PublishingImages/Hair Colour/darkbrown.jpg">
-            <Row Title="Black" ItemOrder="3" PublishingPageImage="/PublishingImages/Hair Colour/black.jpg">
-            <Row Title="Red" ItemOrder="4" PublishingPageImage="/PublishingImages/Hair Colour/red.jpg">
-            <Row Title="Grey" ItemOrder="5" PublishingPageImage="/PublishingImages/Hair Colour/grey.jpg">
-            <Row Title="Others" ItemOrder="6" PublishingPageImage="/PublishingImages/Hair Colour/others.jpg">
-        </Rows>
     </List>
     <List Name="Skin Tone" Template="GenericList">
         <ContentTypes>
             <ContentType Name="Skin Tone"></ContentType>
         </ContentTypes>
-        <Rows>
-            <Row Title="Fair" ItemOrder="0" PublishingPageImage="/PublishingImages/Skin Tone/fair.jpg">
-            <Row Title="Light" ItemOrder="1" PublishingPageImage="/PublishingImages/Skin Tone/light.jpg">
-            <Row Title="Medium" ItemOrder="2" PublishingPageImage="/PublishingImages/Skin Tone/medium.jpg">
-            <Row Title="Deep" ItemOrder="3" PublishingPageImage="/PublishingImages/Skin Tone/deep.jpg">
-            <Row Title="Dark" ItemOrder="4" PublishingPageImage="/PublishingImages/Skin Tone/dark.jpg">
-            <Row Title="Others" ItemOrder="5" PublishingPageImage="/PublishingImages/Skin Tone/others.jpg">
-        </Rows>
     </List>
 
     <!-- Document Libraries -->

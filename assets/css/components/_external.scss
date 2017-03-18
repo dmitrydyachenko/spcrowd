@@ -3,29 +3,6 @@
     overflow-y: scroll;
 }
 
-:global .close_1pts9jo {
-    &:hover {
-        background: none !important;
-    }
-}
-
-:global .ms-rtestate-field {
-    p:first-of-type {
-        background-color: $grey1;
-        margin-bottom: 0px;
-    }
-}
-
-:global .ms-Icon {
-    -moz-osx-font-smoothing: grayscale;
-    -webkit-font-smoothing: antialiased;
-    display: inline-block;
-    font-family: 'FabricMDL2Icons';
-    font-style: normal;
-    font-weight: normal;
-    speak: none;
-}
-
 :global .ms-Icon--ChevronLeft {
     &:before {
         content: "\E76B";
@@ -41,31 +18,5 @@
 :global .ms-Icon--ChevronDown {
     &:before {
         content: '\E70D';
-    }
-}
-
-:global .ms-Dropdown-item {
-    font-size: 12px;
-}
-
-:global .ms-Icon--ErrorBadge {
-    &:before {
-        content: '\EA39';
-    }
-}
-
-:global .ms-Button {
-    &.ms-Suggestions-item {
-        border: none !important;
-        border-radius: 0 !important;
-
-        &:hover {
-            background-color: #eaeaea !important;
-            border-color: #eaeaea !important;
-        }
-
-        .ms-Button-label {
-            font-size: 14px !important;
-        }
     }
 }

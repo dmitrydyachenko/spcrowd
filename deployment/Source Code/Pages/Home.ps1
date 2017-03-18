@@ -18,7 +18,7 @@ $ErrorActionPreference = "Stop"
 Try {
 	Connect-SPOnline -Url $SiteUrl -Credentials $Credential
 
-	Add-SPOPublishingPage -PageName 'Home' -Title 'Home' -PageTemplateName 'Dove Hair Casting'
+	Add-SPOPublishingPage -PageName 'Home' -Title 'Home' -PageTemplateName 'Blank Web Part page'
 
 	$HomePage = '<?xml version="1.0" encoding="utf-8"?>
 		                <WebPart xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://schemas.microsoft.com/WebPart/v2">
@@ -48,7 +48,7 @@ Try {
 		                  <IsIncludedFilter />
 		                  <Assembly>Microsoft.SharePoint, Version=16.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c</Assembly>
 		                  <TypeName>Microsoft.SharePoint.WebPartPages.ContentEditorWebPart</TypeName>
-		                  <ContentLink xmlns="http://schemas.microsoft.com/WebPart/v2/ContentEditor">' + $SPWebServerRelativeUrl + '/Style Library/DoveHairCasting/templates/Home.html</ContentLink>
+		                  <ContentLink xmlns="http://schemas.microsoft.com/WebPart/v2/ContentEditor">' + $SPWebServerRelativeUrl + '/Style Library/starterpack/templates/Home.html</ContentLink>
 		                  <Content xmlns="http://schemas.microsoft.com/WebPart/v2/ContentEditor" />
 		                  <PartStorage xmlns="http://schemas.microsoft.com/WebPart/v2/ContentEditor" />
 		                </WebPart>'
@@ -57,7 +57,7 @@ Try {
 
 	Set-SPOFileCheckedOut -Url $PageUrl
 
-	Add-SPOWebPartToWebPartPage -ServerRelativePageUrl $PageUrl -XML $HomePage -ZoneId "Hero" -ZoneIndex 0
+	Add-SPOWebPartToWebPartPage -ServerRelativePageUrl $PageUrl -XML $HomePage -ZoneId "Header" -ZoneIndex 0
 
 	Set-SPOFileCheckedIn -Url $PageUrl -CheckinType MajorCheckIn -Comment "Added webpart to the page"
 

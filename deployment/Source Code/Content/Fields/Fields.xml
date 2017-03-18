@@ -1,4 +1,4 @@
-<Fields Group="Dove Hair Casting">
+<Fields Group="Starterpack">
     <!-- Text Fields -->
     <Field Name="Strapline" DisplayName="Strapline" Type="Text"></Field>
     <Field Name="CastName" DisplayName="Name" Type="Text"></Field>
@@ -104,13 +104,6 @@
             <CHOICE>Long</CHOICE>
         </CHOICES>
     </Field>
-    <!--<Field Name="HairWeight" DisplayName="Hair Weight" Type="Choice">
-        <CHOICES>
-            <CHOICE>Thick</CHOICE>
-            <CHOICE>Medium</CHOICE>
-            <CHOICE>Fine</CHOICE>
-        </CHOICES>
-    </Field>-->
     <Field Name="SkinCondition" DisplayName="Skin Condition" Type="Choice">
         <CHOICES>
             <CHOICE>Normal</CHOICE>
@@ -162,10 +155,9 @@
     <!-- Taxonomy Fields -->
     <Field Name="ProjectClusters" DisplayName="Project Clusters" Type="Taxonomy" Mult="TRUE" TermSet="Clusters">
         <GroupsToTest>
-            <Group Name="Site Collection - unileverdev.sharepoint.com-sites-DevInt_DoveHairCasting"></Group>
-            <Group Name="Site Collection - unilever.sharepoint.com-sites-QA_DoveHairCasting"></Group>
-            <Group Name="Site Collection - unilever.sharepoint.com-sites-dovecasting"></Group>
-            <Group Name="Site Collection - unileverdev.sharepoint.com-sites-Dev_DoveHairCasting"></Group>
+            <Group Name="Site Collection - DEV"></Group>
+            <Group Name="Site Collection - QA"></Group>
+            <Group Name="Site Collection - PROD"></Group>
         </GroupsToTest>
     </Field>
 </Fields>

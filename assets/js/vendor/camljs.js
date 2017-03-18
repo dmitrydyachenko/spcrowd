@@ -32,11 +32,8 @@ var CamlBuilder;
 
 (function(CamlBuilder) {
     (function(ViewScope) {
-        /**  */
         ViewScope[ViewScope["Recursive"] = 0] = "Recursive";
-        /**  */
         ViewScope[ViewScope["RecursiveAll"] = 1] = "RecursiveAll";
-        /**  */
         ViewScope[ViewScope["FilesOnly"] = 2] = "FilesOnly";
     })(CamlBuilder.ViewScope || (CamlBuilder.ViewScope = {}));
     var ViewScope = CamlBuilder.ViewScope;
@@ -179,7 +176,9 @@ var CamlBuilder;
         */
         QueryInternal.prototype.OrderByDesc = function(fieldInternalName, override, useIndexForOrderBy) {
             this.builder.WriteStartOrderBy(override, useIndexForOrderBy);
-            this.builder.WriteFieldRef(fieldInternalName, { Descending: true });
+            this.builder.WriteFieldRef(fieldInternalName, {
+                Descending: true
+            });
             return new SortedQuery(this.builder);
         };
         QueryInternal.prototype.ToString = function() {
@@ -202,13 +201,22 @@ var CamlBuilder;
                 this.builder.WriteStart("Joins");
                 for (var i = 0; i < this.joins.length; i++) {
                     var join = this.joins[i];
-                    this.builder.WriteStart("Join", [
-                        { Name: "Type", Value: join.JoinType },
-                        { Name: "ListAlias", Value: join.Alias }
+                    this.builder.WriteStart("Join", [{
+                            Name: "Type",
+                            Value: join.JoinType
+                        },
+                        {
+                            Name: "ListAlias",
+                            Value: join.Alias
+                        }
                     ]);
                     this.builder.WriteStart("Eq");
-                    this.builder.WriteFieldRef(join.RefFieldName, { RefType: "ID" });
-                    this.builder.WriteFieldRef("ID", { List: join.Alias });
+                    this.builder.WriteFieldRef(join.RefFieldName, {
+                        RefType: "ID"
+                    });
+                    this.builder.WriteFieldRef("ID", {
+                        List: join.Alias
+                    });
                     this.builder.WriteEnd();
                     this.builder.WriteEnd();
                 }
@@ -216,11 +224,22 @@ var CamlBuilder;
                 this.builder.WriteStart("ProjectedFields");
                 for (var i = 0; i < this.projectedFields.length; i++) {
                     var projField = this.projectedFields[i];
-                    this.builder.WriteStart("Field", [
-                        { Name: "ShowField", Value: projField.FieldName },
-                        { Name: "Type", Value: "Lookup" },
-                        { Name: "Name", Value: projField.Alias },
-                        { Name: "List", Value: projField.JoinAlias }
+                    this.builder.WriteStart("Field", [{
+                            Name: "ShowField",
+                            Value: projField.FieldName
+                        },
+                        {
+                            Name: "Type",
+                            Value: "Lookup"
+                        },
+                        {
+                            Name: "Name",
+                            Value: projField.Alias
+                        },
+                        {
+                            Name: "List",
+                            Value: projField.JoinAlias
+                        }
                     ]);
                     this.builder.WriteEnd();
                 }
@@ -228,11 +247,19 @@ var CamlBuilder;
             }
         };
         JoinsManager.prototype.Join = function(lookupFieldInternalName, alias, joinType) {
-            this.joins.push({ RefFieldName: lookupFieldInternalName, Alias: alias, JoinType: joinType });
+            this.joins.push({
+                RefFieldName: lookupFieldInternalName,
+                Alias: alias,
+                JoinType: joinType
+            });
             return new Join(this.builder, this);
         };
         JoinsManager.prototype.ProjectedField = function(remoteFieldInternalName, remoteFieldAlias) {
-            this.projectedFields.push({ FieldName: remoteFieldInternalName, Alias: remoteFieldAlias, JoinAlias: this.joins[this.joins.length - 1].Alias });
+            this.projectedFields.push({
+                FieldName: remoteFieldInternalName,
+                Alias: remoteFieldAlias,
+                JoinAlias: this.joins[this.joins.length - 1].Alias
+            });
             return this.originalView;
         };
         return JoinsManager;
@@ -262,13 +289,19 @@ var CamlBuilder;
         }
         /** Adds And clause to the query. */
         QueryToken.prototype.And = function() {
-            this.builder.tree.splice(this.startIndex, 0, { Element: "Start", Name: "And" });
+            this.builder.tree.splice(this.startIndex, 0, {
+                Element: "Start",
+                Name: "And"
+            });
             this.builder.unclosedTags++;
             return new FieldExpression(this.builder);
         };
         /** Adds Or clause to the query. */
         QueryToken.prototype.Or = function() {
-            this.builder.tree.splice(this.startIndex, 0, { Element: "Start", Name: "Or" });
+            this.builder.tree.splice(this.startIndex, 0, {
+                Element: "Start",
+                Name: "Or"
+            });
             this.builder.unclosedTags++;
             return new FieldExpression(this.builder);
         };
@@ -295,7 +328,9 @@ var CamlBuilder;
         */
         QueryToken.prototype.OrderByDesc = function(fieldInternalName, override, useIndexForOrderBy) {
             this.builder.WriteStartOrderBy(override, useIndexForOrderBy);
-            this.builder.WriteFieldRef(fieldInternalName, { Descending: true });
+            this.builder.WriteFieldRef(fieldInternalName, {
+                Descending: true
+            });
             return new SortedQuery(this.builder);
         };
         /** Returns the XML string representing the generated CAML
@@ -374,12 +409,18 @@ var CamlBuilder;
         };
         RawQueryInternal.prototype.parseRecursive = function(builder, node, modifyType) {
             if (node.nodeName == "#text") {
-                builder.tree.push({ Element: "Raw", Xml: node.nodeValue });
+                builder.tree.push({
+                    Element: "Raw",
+                    Xml: node.nodeValue
+                });
                 return;
             }
             var attrs = [];
             for (var i = 0, len = node.attributes.length; i < len; i++) {
-                attrs.push({ Name: node.attributes[i].name, Value: node.attributes[i].value });
+                attrs.push({
+                    Name: node.attributes[i].name,
+                    Value: node.attributes[i].value
+                });
             }
             builder.WriteStart(node.nodeName, attrs);
             builder.unclosedTags++;
@@ -644,7 +685,9 @@ var CamlBuilder;
             return new FieldExpressionToken(this.builder, this.name, "Text");
         };
         UserFieldExpression.prototype.EqualToCurrentUser = function() {
-            this.builder.WriteFieldRef(this.name, { LookupId: true });
+            this.builder.WriteFieldRef(this.name, {
+                LookupId: true
+            });
             this.builder.WriteBinaryOperation(this.startIndex, "Eq", "Integer", "{UserID}");
             return new QueryToken(this.builder, this.startIndex);
         };
@@ -681,7 +724,9 @@ var CamlBuilder;
             this.name = name;
             this.startIndex = builder.tree.length;
             this.valueType = valueType;
-            this.builder.WriteFieldRef(name, { LookupId: isLookupId });
+            this.builder.WriteFieldRef(name, {
+                LookupId: isLookupId
+            });
         }
         FieldExpressionToken.prototype.IsTrue = function() {
             this.builder.WriteBinaryOperation(this.startIndex, "Eq", "Integer", "1");
@@ -748,7 +793,10 @@ var CamlBuilder;
             return new QueryToken(this.builder, this.startIndex);
         };
         FieldExpressionToken.prototype.In = function(arrayOfValues) {
-            this.builder.tree.splice(this.startIndex, 0, { Element: "Start", Name: "In" });
+            this.builder.tree.splice(this.startIndex, 0, {
+                Element: "Start",
+                Name: "In"
+            });
             this.builder.WriteStart("Values");
             for (var i = 0; i < arrayOfValues.length; i++) {
                 var value = arrayOfValues[i];
@@ -773,7 +821,9 @@ var CamlBuilder;
         };
         GroupedQuery.prototype.OrderByDesc = function(fieldInternalName, override, useIndexForOrderBy) {
             this.builder.WriteStartOrderBy(override, useIndexForOrderBy);
-            this.builder.WriteFieldRef(fieldInternalName, { Descending: true });
+            this.builder.WriteFieldRef(fieldInternalName, {
+                Descending: true
+            });
             return new SortedQuery(this.builder);
         };
         GroupedQuery.prototype.ToString = function() {
@@ -793,7 +843,9 @@ var CamlBuilder;
             return new SortedQuery(this.builder);
         };
         SortedQuery.prototype.ThenByDesc = function(fieldInternalName, override, useIndexForOrderBy) {
-            this.builder.WriteFieldRef(fieldInternalName, { Descending: true });
+            this.builder.WriteFieldRef(fieldInternalName, {
+                Descending: true
+            });
             return new SortedQuery(this.builder);
         };
         SortedQuery.prototype.ToString = function() {
@@ -813,7 +865,10 @@ var CamlBuilder;
             for (var i = this.tree.length - 1; i >= 0; i--) {
                 if (this.tree[i].Name == tagName) {
                     this.tree[i].Attributes = this.tree[i].Attributes || [];
-                    this.tree[i].Attributes.push({ Name: attributeName, Value: attributeValue });
+                    this.tree[i].Attributes.push({
+                        Name: attributeName,
+                        Value: attributeValue
+                    });
                     return;
                 }
             }
@@ -821,26 +876,56 @@ var CamlBuilder;
         };
         Builder.prototype.WriteRowLimit = function(paged, limit) {
             if (paged)
-                this.tree.push({ Element: "Start", Name: "RowLimit", Attributes: [{ Name: "Paged", Value: "TRUE" }] });
+                this.tree.push({
+                    Element: "Start",
+                    Name: "RowLimit",
+                    Attributes: [{
+                        Name: "Paged",
+                        Value: "TRUE"
+                    }]
+                });
             else
-                this.tree.push({ Element: "Start", Name: "RowLimit" });
-            this.tree.push({ Element: "Raw", Xml: limit });
-            this.tree.push({ Element: "End" });
+                this.tree.push({
+                    Element: "Start",
+                    Name: "RowLimit"
+                });
+            this.tree.push({
+                Element: "Raw",
+                Xml: limit
+            });
+            this.tree.push({
+                Element: "End"
+            });
         };
         Builder.prototype.WriteStart = function(tagName, attributes) {
             if (attributes)
-                this.tree.push({ Element: "Start", Name: tagName, Attributes: attributes });
+                this.tree.push({
+                    Element: "Start",
+                    Name: tagName,
+                    Attributes: attributes
+                });
             else
-                this.tree.push({ Element: "Start", Name: tagName });
+                this.tree.push({
+                    Element: "Start",
+                    Name: tagName
+                });
         };
         Builder.prototype.WriteEnd = function(count) {
             if (count > 0)
-                this.tree.push({ Element: "End", Count: count });
+                this.tree.push({
+                    Element: "End",
+                    Count: count
+                });
             else
-                this.tree.push({ Element: "End" });
+                this.tree.push({
+                    Element: "End"
+                });
         };
         Builder.prototype.WriteFieldRef = function(fieldInternalName, options) {
-            var fieldRef = { Element: 'FieldRef', Name: fieldInternalName };
+            var fieldRef = {
+                Element: 'FieldRef',
+                Name: fieldInternalName
+            };
             for (var name in options || {}) {
                 fieldRef[name] = options[name];
             }
@@ -848,26 +933,55 @@ var CamlBuilder;
         };
         Builder.prototype.WriteValueElement = function(valueType, value) {
             if (valueType == "Date")
-                this.tree.push({ Element: "Value", ValueType: "DateTime", Value: value });
+                this.tree.push({
+                    Element: "Value",
+                    ValueType: "DateTime",
+                    Value: value
+                });
             else if (valueType == "DateTime")
-                this.tree.push({ Element: "Value", ValueType: "DateTime", Value: value, IncludeTimeValue: true });
+                this.tree.push({
+                    Element: "Value",
+                    ValueType: "DateTime",
+                    Value: value,
+                    IncludeTimeValue: true
+                });
             else
-                this.tree.push({ Element: "Value", ValueType: valueType, Value: value });
+                this.tree.push({
+                    Element: "Value",
+                    ValueType: valueType,
+                    Value: value
+                });
         };
         Builder.prototype.WriteMembership = function(startIndex, type, groupId) {
-            var attributes = [{ Name: "Type", Value: type }];
+            var attributes = [{
+                Name: "Type",
+                Value: type
+            }];
             if (groupId) {
-                attributes.push({ Name: "ID", Value: groupId });
+                attributes.push({
+                    Name: "ID",
+                    Value: groupId
+                });
             }
-            this.tree.splice(startIndex, 0, { Element: "Start", Name: "Membership", Attributes: attributes });
+            this.tree.splice(startIndex, 0, {
+                Element: "Start",
+                Name: "Membership",
+                Attributes: attributes
+            });
             this.WriteEnd();
         };
         Builder.prototype.WriteUnaryOperation = function(startIndex, operation) {
-            this.tree.splice(startIndex, 0, { Element: "Start", Name: operation });
+            this.tree.splice(startIndex, 0, {
+                Element: "Start",
+                Name: operation
+            });
             this.WriteEnd();
         };
         Builder.prototype.WriteBinaryOperation = function(startIndex, operation, valueType, value) {
-            this.tree.splice(startIndex, 0, { Element: "Start", Name: operation });
+            this.tree.splice(startIndex, 0, {
+                Element: "Start",
+                Name: operation
+            });
             this.WriteValueElement(valueType, value);
             this.WriteEnd();
         };
@@ -878,14 +992,30 @@ var CamlBuilder;
                     tagsToClose--;
                 else if (this.tree[0].Name == "View")
                     tagsToClose -= 2;
-                this.tree.push({ Element: "End", Count: tagsToClose });
+                this.tree.push({
+                    Element: "End",
+                    Count: tagsToClose
+                });
                 this.unclosedTags -= tagsToClose;
             }
             if (collapse)
-                this.tree.push({ Element: "Start", Name: "GroupBy", Attributes: [{ Name: "Collapse", Value: "TRUE" }] });
+                this.tree.push({
+                    Element: "Start",
+                    Name: "GroupBy",
+                    Attributes: [{
+                        Name: "Collapse",
+                        Value: "TRUE"
+                    }]
+                });
             else
-                this.tree.push({ Element: "Start", Name: "GroupBy" });
-            this.tree.push({ Element: "FieldRef", Name: groupFieldName });
+                this.tree.push({
+                    Element: "Start",
+                    Name: "GroupBy"
+                });
+            this.tree.push({
+                Element: "FieldRef",
+                Name: groupFieldName
+            });
             this.WriteEnd();
         };
         Builder.prototype.WriteStartOrderBy = function(override, useIndexForOrderBy) {
@@ -895,18 +1025,34 @@ var CamlBuilder;
                     tagsToClose--;
                 else if (this.tree[0].Name == "View")
                     tagsToClose -= 2;
-                this.tree.push({ Element: "End", Count: tagsToClose });
+                this.tree.push({
+                    Element: "End",
+                    Count: tagsToClose
+                });
                 this.unclosedTags -= tagsToClose;
             }
             var attributes = new Array();
             if (override)
-                attributes.push({ Name: "Override", Value: "TRUE" });
+                attributes.push({
+                    Name: "Override",
+                    Value: "TRUE"
+                });
             if (useIndexForOrderBy)
-                attributes.push({ Name: "UseIndexForOrderBy", Value: "TRUE" });
+                attributes.push({
+                    Name: "UseIndexForOrderBy",
+                    Value: "TRUE"
+                });
             if (attributes.length > 0)
-                this.tree.push({ Element: "Start", Name: "OrderBy", Attributes: attributes });
+                this.tree.push({
+                    Element: "Start",
+                    Name: "OrderBy",
+                    Attributes: attributes
+                });
             else
-                this.tree.push({ Element: "Start", Name: "OrderBy" });
+                this.tree.push({
+                    Element: "Start",
+                    Name: "OrderBy"
+                });
             this.unclosedTags++;
         };
         Builder.prototype.WriteConditions = function(builders, elementName) {
@@ -917,7 +1063,10 @@ var CamlBuilder;
                 if (conditionBuilder.unclosedTags > 0)
                     conditionBuilder.WriteEnd(conditionBuilder.unclosedTags);
                 if (i > 0) {
-                    conditionBuilder.tree.splice(0, 0, { Element: "Start", Name: elementName });
+                    conditionBuilder.tree.splice(0, 0, {
+                        Element: "Start",
+                        Name: elementName
+                    });
                     this.WriteEnd();
                 }
                 Array.prototype.splice.apply(this.tree, [pos, 0].concat(conditionBuilder.tree));

@@ -4,11 +4,11 @@ import React from 'react';
 import SPOC from 'SPOCExt';
 
 /* Components */
-import SearchCasts from '../../components/SearchCasts/SearchCasts';
-import CastThumbnail from '../../components/CastThumbnail/CastThumbnail';
-import CurrentProjects from '../../components/Projects/CurrentProjects/CurrentProjects';
-import { CASTLIST, ALLCASTPAGE } from '../../utils/settings';
-import { RedirectToPage } from '../../utils/utils';
+import { Spinner, SpinnerType } from 'office-ui-fabric-react/lib/Spinner';
+import { Slider } from 'office-ui-fabric-react/lib/Slider';
+import { GenerateGuid } from '../../utils/utils';
+import { PAGESLIST } from '../../utils/settings';
+import PagesList from '../../components/PagesList/PagesList';
 
 /* CSS styles */
 import Styles from './Home.scss';
@@ -19,23 +19,35 @@ class Home extends React.Component {
 	};
 
 	static defaultProps = {	
-		listName: CASTLIST		
+		listName: PAGESLIST		
 	};	
 
 	constructor() {
 		super();
+
 		this.state = {
-			headerContent: null
+			data: [],
+			headerContent: null,
+			fontsize: 14,
+			loading: true
 		};
-		this.handleSearch = this.handleSearch.bind(this);
+
+		this.site = new SPOC.SP.Site();
 	}
 
 	componentDidMount() {
-		this.getHeaderContent();
+		const self = this;
+		
+		setTimeout(() => {
+			self.init();
+		}, 3000);
 	}
 
-	getHeaderContent() {
+	init() {
 		const self = this;
+		const settings = {
+			select: 'Title'
+		};
 
 		$.ajax({
 			url: `${_spPageContextInfo.siteAbsoluteUrl}/_api/web/Description`,
@@ -56,48 +68,60 @@ class Home extends React.Component {
 						</div>
 					);
 
-					self.setState({ headerContent });
+					self.setState({ headerContent, loading: false });
 				}
 			}
 		});
-	}
 
-	handleSearch(filters, searchKeyWord) {
-		const storageAvailable = SPOC.Utils.Storage.storageAvailable();
-
-		if (storageAvailable) {
-			SPOC.Utils.Storage.set(`FilterQueryKeyWord_${_spPageContextInfo.userId}`, `{"searchKeyWord":"${searchKeyWord || ''}"}`);
-			SPOC.Utils.Storage.set(`FilterQueryFilters_${_spPageContextInfo.userId}`, filters || {});
-			RedirectToPage(`${_spPageContextInfo.webServerRelativeUrl}${ALLCASTPAGE}`);	
-		} else {
-			console.log('Storage is not available');
-		}
+		self.site.ListItems(self.props.listName).query(settings).then((data) => {
+			self.setState({ data });
+		},
+		(error) => {
+			console.log(error);
+		});
 	}
 
 	render() {
-		return (
-			<div className={Styles.container}>
-				<div className="ms-Grid">
-					<div className={`${Styles.header_container} ms-Grid-row`}>
-						<div className="container">
-							<div className={`${Styles.header} ms-Grid-col ms-u-sm12`}>
-								{this.state.headerContent}
-							</div>
+		const mainContent = this.state.loading ? 
+		(
+			<Spinner type={SpinnerType.large} label="Seriously, still loading..." />
+		) 
+		:
+		(
+			<div className="ms-Grid">
+				<div className={`${Styles.top_container} ms-Grid-row`}>
+					<div className="container">
+						<div className={`${Styles.header} ms-Grid-col ms-u-sm12`}>
+							{this.state.headerContent}
 						</div>
 					</div>
-					<div className={`${Styles.search_container} ms-Grid-row`}>
-						<SearchCasts onSearch={this.handleSearch} />
-					</div>
-					<div className={`${Styles.topcurve} ms-Grid-row`}>
-						<div className="ms-Grid-col ms-u-sm12" />
-					</div>
-					<div className={`${Styles.projects_container} ms-Grid-row`}>
-						<CurrentProjects />
-					</div>
-					<div className={`${Styles.results_container} ms-Grid-row`}>
-						<CastThumbnail initialItemsCount={5} title="Recent Casts" />
+				</div>
+				<div className={`${Styles.content_container} ms-Grid-row`}>
+					<div className="container">
+						<div className="ms-Grid-col ms-u-sm12">
+							<PagesList data={this.state.data} 
+										guid={GenerateGuid()} 
+										fontsize={this.state.fontsize.toString()} />
+						</div>
 					</div>
 				</div>
+				<div className={`${Styles.bottom_container} ms-Grid-row`}>
+					<div className="container">
+						<div className="ms-Grid-col ms-u-sm12">
+							<Slider label="Font size:" 
+									min={8} max={64} step={2}
+									defaultValue={14} 
+									showValue
+									onChange={fontsize => this.setState({ fontsize })} />
+						</div>
+					</div>
+				</div>
+			</div>
+		);
+
+		return (
+			<div className={Styles.container}>
+				{mainContent}
 			</div>
 		);
 	}

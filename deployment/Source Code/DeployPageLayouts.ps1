@@ -17,7 +17,7 @@ Try {
     Connect-SPOnline -Url $SiteUrl -Credentials $Credential
 
     $ArticlePageContentType = Get-SPOContentType -Identity "Article Page"
-    Add-SPOHtmlPublishingPageLayout -SourceFilePath "$RootLocation\Pagelayouts\Dove Hair Casting.html" -Title "Dove Hair Casting" -Description "Dove Hair Casting" -DestinationFolderHierarchy "/" -AssociatedContentTypeID $ArticlePageContentType.Id
+    Add-SPOHtmlPublishingPageLayout -SourceFilePath "$RootLocation\Pagelayouts\Starterpack.html" -Title "Starterpack PageLayout" -Description "Starterpack PageLayout" -DestinationFolderHierarchy "/" -AssociatedContentTypeID $ArticlePageContentType.Id
 
     Disconnect-SPOnline
 }

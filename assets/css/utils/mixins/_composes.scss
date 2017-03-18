@@ -1,6 +1,0 @@
-@mixin composes($className, $classFile) {
-    .#{$className}{
-	    composes: $className from $classFile;
-	    @content;
-	}
-}

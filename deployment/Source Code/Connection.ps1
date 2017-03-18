@@ -1,4 +1,4 @@
-param([string]$SiteUrl="https://unileverdev.sharepoint.com/sites/Dev_DoveHairCasting", [string]$RootLocation)
+param([string]$SiteUrl, [string]$RootLocation)
 
 $LogFilePath = "$RootLocation\ConnectionLog.txt"
 $ErrorActionPreference = "Stop"

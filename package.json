@@ -1,22 +1,30 @@
 {
-  "name": "dove-hair-casting",
-  "version": "0.0.3",
-  "description": "Dove Hair Casting",
+  "name": "sharepoint-starterpack",
+  "version": "0.0.1",
+  "description": "Sharepoint starterpack",
   "repository": {
     "type": "git",
-    "url": "https://github.com/golincode/dove-hair-casting.git"
+    "url": "https://github.com/golincode/sharepoint-starterpack.git"
   },
   "scripts": {
     "build": "webpack --mode=build",
+    "buildup": "webpack --mode=build --env.upload",
     "dev": "webpack --progress --colors --mode=dev",
-    "devup": "webpack --progress --colors --mode=dev --env.upload"
+    "devup": "webpack --progress --colors --mode=dev --env.upload",
+    "test": "jest"
   },
   "author": "Dmitry Dyachenko <ddyachenko@golin.com>",
   "license": "Unlicense",
   "bugs": {
-    "url": "https://github.com/golincode/dove-hair-casting/issues"
+    "url": "https://github.com/golincode/sharepoint-starterpack/issues"
   },
-  "homepage": "https://github.com/golincode/dove-hair-casting#readme",
+  "jest": {
+    "moduleNameMapper": {
+      "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/__mocks__/fileMock.js",
+      "\\.(css|scss)$": "identity-obj-proxy"
+    }
+  },
+  "homepage": "https://github.com/golincode/sharepoint-starterpack#readme",
   "dependencies": {
     "SPOCExt": "git+https://github.com/dmitrydyachenko/SPOCExt.git",
     "autoprefixer": "^6.5.4",
@@ -28,10 +36,7 @@
     "babel-preset-es2015": "^6.18.0",
     "babel-preset-react": "^6.16.0",
     "babel-preset-stage-0": "^6.16.0",
-    "chai": "^3.5.0",
     "css-loader": "^0.26.1",
-    "draft-js": "^0.10.0",
-    "draftjs-to-html": "^0.5.1",
     "eslint": "^3.12.2",
     "eslint-config-airbnb": "^13.0.0",
     "eslint-loader": "^1.6.1",
@@ -39,25 +44,24 @@
     "eslint-plugin-jsx-a11y": "^2.2.3",
     "eslint-plugin-react": "^6.9.0",
     "extract-text-webpack-plugin": "^1.0.1",
-    "html-to-draftjs": "0.1.0-beta5",
     "immutability-helper": "^2.1.0",
+    "jest": "^17.0.3",
     "jquery": "^3.1.1",
-    "mocha": "^2.5.3",
     "moment": "^2.17.1",
     "node-sass": "^4.1.1",
     "office-ui-fabric-react": "^0.86.2",
     "postcss-loader": "^1.2.1",
     "react": "^15.4.2",
     "react-dom": "^15.4.2",
-    "react-draft-wysiwyg": "^1.7.0",
-    "react-modal": "^1.6.5",
-    "react-photo-gallery": "^4.2.16",
+    "react-test-renderer": "^15.4.2",
     "sass-loader": "^4.1.1",
     "sass-resources-loader": "^1.2.0-beta.1",
     "spsave-webpack-plugin": "^1.0.4",
-    "style-loader": "^0.13.1",
+    "style-loader": "^0.13.2",
     "webpack": "^1.14.0",
-    "yargs": "^3.32.0"
+    "yargs": "^7.0.1"
   },
-  "main": "lib/dovehaircasting.js"
+  "devDependencies": {
+    "identity-obj-proxy": "^3.0.0"
+  }
 }

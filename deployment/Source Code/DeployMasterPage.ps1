@@ -16,8 +16,8 @@ $ErrorActionPreference = "Stop"
 Try {
     Connect-SPOnline -Url $SiteUrl -Credentials $Credential
 
-    Add-SPOMasterPage -SourceFilePath "$RootLocation\Masterpage\dove-hair-casting.master" -Title "Dove Hair Casting" -Description "Dove Hair Casting" -DestinationFolderHierarchy "/"
-    Set-SPOMasterPage -CustomMasterPageSiteRelativeUrl "_catalogs/masterpage/dove-hair-casting.master"
+    Add-SPOMasterPage -SourceFilePath "$RootLocation\Masterpage\seattle.master" -Title "Starterpack MasterPage" -Description "Starterpack MasterPage" -DestinationFolderHierarchy "/"
+    Set-SPOMasterPage -CustomMasterPageSiteRelativeUrl "_catalogs/masterpage/seattle"
 
     Disconnect-SPOnline
 }

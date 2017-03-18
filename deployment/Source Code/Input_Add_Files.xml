@@ -2,14 +2,14 @@
 <Input>
   	<Module Name="FileUpload" rootlocation="">
 	    <Folder SourcePath="\Assets\templates"
-	            TargetPath="/Style%20Library/DoveHairCasting/templates"></Folder>
+	            TargetPath="/Style%20Library/starterpack/templates"></Folder>
 	    <Folder SourcePath="\Assets\css"
-	            TargetPath="/Style%20Library/DoveHairCasting/css"></Folder>
+	            TargetPath="/Style%20Library/starterpack/css"></Folder>
 	    <Folder SourcePath="\Assets\js"
-	            TargetPath="/Style%20Library/DoveHairCasting/js"></Folder>
+	            TargetPath="/Style%20Library/starterpack/js"></Folder>
 	    <Folder SourcePath="\Assets\img"
-	             TargetPath="/Style%20Library/DoveHairCasting/img"></Folder>
+	             TargetPath="/Style%20Library/starterpack/img"></Folder>
 	    <Folder SourcePath="\Assets\fonts"
-	            TargetPath="/Style%20Library/DoveHairCasting/fonts"></Folder>
+	            TargetPath="/Style%20Library/starterpack/fonts"></Folder>
   	</Module>
 </Input>

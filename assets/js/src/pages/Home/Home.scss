@@ -1,66 +1,36 @@
 .container {
-    .header_container {
-        @include bottom-curve(0.4);
-
-        background-color: $grey1;
-        padding-bottom: 140px;
+    .top_container {
+        display: block;
 
         .header {
-            font-weight: 200;
-            text-align: center;
-            padding-bottom: 20px;
+            display: block;
+
+            .header_title,
+            .header_description {
+                display: block;
+                font-weight: 400;
+                -webkit-font-smoothing: antialiased;
+                color: #333333;
+            }
 
             .header_title {
-                font-size: 32px;
-                color: $doveblue1;
+                font-size: 20px;
             }
 
-            .header_description {
-                color: $grey;
-                font-size: 22px;
-                padding-top: 20px;
+             .header_description {
+                font-size: 18px;
             }
         }
     }
 
-    .empty {
-        text-align: center;
+    .content_container {}
 
-        h1 {
-            color: $doveblue1;
+    .bottom_container {
+        padding-top: 20px;
+
+        :global .ms-Label {
+            font-size: 16px;
+            color: #0078d7;
         }
     }
-
-    .search_container {
-        :global .SearchCasts_header_container {
-            .SearchCasts_header {
-                font-size: 26px;
-                color: $doveblue1;
-                text-align: center;
-            }
-        }
-    }
-
-    .topcurve {
-        @include top-curve;
-
-        background-color: $white;
-        min-height: 50px;
-        padding-top: 0;
-        padding-bottom: 0;
-
-        &:before {
-            opacity: 1;
-            transform: translateY(15px) rotate(180deg);
-            background-color: $doveblue1;
-            top: 0;
-        }
-
-        &:after {
-            background-color: $doveblue1;
-            top: 25px;
-        }
-    }
-
-    .projects_container {}
 }

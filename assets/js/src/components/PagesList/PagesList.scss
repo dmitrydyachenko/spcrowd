@@ -1,0 +1,23 @@
+.container {
+    display: block;
+
+    .header {
+        display: block;
+        font-size: 14px;
+        font-weight: 400;
+        -webkit-font-smoothing: antialiased;
+        color: #333333;
+    }
+
+    .content {
+        display: block;
+
+        .item {
+            display: block;
+            font-size: 14px;
+            font-weight: 400;
+            -webkit-font-smoothing: antialiased;
+            color: #333333;
+        }
+    }
+}

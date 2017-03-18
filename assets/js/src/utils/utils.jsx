@@ -1,8 +1,7 @@
-import $ from 'jquery';
 import Moment from 'moment';
 
-export function GetAssetsPath() {
-	return `${_spPageContextInfo.siteAbsoluteUrl}/Style%20Library/DoveHairCasting/`;
+export function GetAssetsPath(projectName) {
+	return `${_spPageContextInfo.siteAbsoluteUrl}/Style%20Library/${projectName}/`;
 }
 
 export function GetEqNeqOrAndFilter(fields, values, comp, cond) {
@@ -58,7 +57,6 @@ export function CompareByCreated(a, b) {
 	const newA = Moment(a.Created);
 	const newB = Moment(b.Created);
 	const diff = newA.diff(newB);
-
 	return diff < 0 ? 1 : diff > 0 ? -1 : 0;
 }
 
@@ -80,7 +78,6 @@ export function ListUserProfileProperties(results) {
 
 export function DetectIE() {
 	const ua = window.navigator.userAgent;
-
 	const msie = ua.indexOf('MSIE ');
 
 	if (msie > 0) {
@@ -106,7 +103,6 @@ export function DetectIE() {
 export function GetFileNameFromUrl(url) {
 	const splittedUrl = url.split('/');
 	const splittedUrlLength = splittedUrl.length;
-
 	return splittedUrlLength > 0 ? splittedUrl[splittedUrlLength - 1] : '';
 }
 
@@ -153,17 +149,4 @@ export function SelectSrcValue(imageString) {
 
 export function ArrayAdiff(a1, a2) {
 	return a1.filter(x => a2.indexOf(x) < 0);
-}
-
-export function GetPermissions(listName, itemId) {
-	return $.ajax({  
-		url: `${_spPageContextInfo.siteAbsoluteUrl}/_api/web/lists/getByTitle('${listName}')/getItemById(${itemId})/roleassignments(principalid=${_spPageContextInfo.userId})/RoleDefinitionBindings?$select=Name`,  
-		type: 'POST',  
-		headers: {  
-			Accept: 'application/json;odata=verbose',  
-			'content-Type': 'application/json;odata=verbose',  
-			'X-RequestDigest': $('#__REQUESTDIGEST').val()  
-		},  
-		dataType: 'json'
-	}); 
 }

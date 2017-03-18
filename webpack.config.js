@@ -1,54 +1,61 @@
-var libraryName = 'dovehaircasting';
-var webpack = require('webpack');
-var UglifyJsPlugin = webpack.optimize.UglifyJsPlugin;
-var path = require('path');
-var argv = require('yargs').argv;
-var mode = argv.mode;
-var env = argv.env;
-var plugins = [], outputFile;
-var ExtractTextPlugin = require('extract-text-webpack-plugin');
-var autoprefixer = require('autoprefixer');
-var SPSaveWebpackPlugin = require('spsave-webpack-plugin');
+var libraryName = 'starterpack';
 
-plugins.push(new ExtractTextPlugin('../css/screen.css', {
+var siteUrl = "",
+    username = "",
+    password = "";
+
+var path = require('path'),
+    argv = require('yargs').argv,
+    mode = argv.mode,
+    env = argv.env,
+    plugins = [], 
+    outputFile;
+
+var webpack = require('webpack'),
+    uglifyJsPlugin = webpack.optimize.UglifyJsPlugin,
+    extractTextPlugin = require('extract-text-webpack-plugin'),
+    autoprefixer = require('autoprefixer'),
+    spSaveWebpackPlugin = require('spsave-webpack-plugin');
+
+plugins.push(new extractTextPlugin('../css/screen.css', {
     allChunks: true
 }));
 
 if (mode === 'build') {
     plugins.push(new webpack.DefinePlugin({
-      "process.env": { 
-         NODE_ENV: JSON.stringify("production") 
-       }
+        "process.env": { 
+            NODE_ENV: JSON.stringify("production") 
+        }
     }));
 
-    plugins.push(new UglifyJsPlugin({
+    plugins.push(new uglifyJsPlugin({
         compress: {
             warnings: false
         }
     }));
 
     outputFile = libraryName + '.min.js';
-} else if(env && env.upload) {
-    plugins.push(new SPSaveWebpackPlugin({
+} 
+else {
+    outputFile = libraryName + '.js';
+}
+
+if(env && env.upload) {
+    plugins.push(new spSaveWebpackPlugin({
         "coreOptions": {
             "checkin": true,
             "checkinType": 1,
             "notification": true,
-            "siteUrl": "https://unileverdev.sharepoint.com/sites/Dev_DoveHairCasting"
+            "siteUrl": siteUrl
         },
         "credentialOptions": {
-            username: "dmitry.dyachenko@unileverpp.com",
-            password: "Password@16"
+            username: username,
+            password: password
         },
         "fileOptions": {
-            "folder": "Style Library/DoveHairCasting/js"
+            "folder": "Style Library/" + libraryName + "/js"
         }
     }));
-    
-    outputFile = libraryName + '.js';
-}
-else {
-    outputFile = libraryName + '.js';
 }
 
 var config = {
@@ -70,7 +77,7 @@ var config = {
                 test: /(\.jsx|\.js)$/,
                 exclude: /node_modules/,
                 loader: 'eslint-loader'
-            },
+            }
         ],
         loaders: [
             {
@@ -80,15 +87,13 @@ var config = {
             },
             {
                 test: /\.scss$/,
-                loader: ExtractTextPlugin.extract('css?url=false&modules&importLoaders=1&localIdentName=[name]_[local]!sass!sass-resources!postcss')
+                loader: extractTextPlugin.extract('css?url=false&modules&importLoaders=1&localIdentName=[name]_[local]!sass!sass-resources!postcss')
             }
         ]
     },
     sassResources: [
         __dirname + '/assets/css/utils/_variables.scss', 
-        __dirname + '/assets/css/utils/mixins/_breakpoints.scss',
-        __dirname + '/assets/css/utils/mixins/_curves.scss',
-        __dirname + '/assets/css/utils/mixins/_center.scss'
+        __dirname + '/assets/css/utils/mixins/_breakpoints.scss'
     ],
     postcss: [
         autoprefixer({ browsers: ['last 3 versions'] })

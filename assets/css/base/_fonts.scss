@@ -62,15 +62,3 @@
     font-weight: normal;
     font-style: normal;
 }
-
-@font-face {
-    font-family: 'HelveticaNeueLTPro';
-    src: url('#{$fontspath}/HelveticaNeueLTPro-Lt.eot');
-    src: url('#{$fontspath}/HelveticaNeueLTPro-Lt.woff2') format('woff2'),
-         url('#{$fontspath}/HelveticaNeueLTPro-Lt.woff') format('woff'),
-         url('#{$fontspath}/HelveticaNeueLTPro-Lt.ttf') format('truetype'),
-         url('#{$fontspath}/HelveticaNeueLTPro-Lt.svg#HelveticaNeueLTPro-Lt') format('svg'),
-         url('#{$fontspath}/HelveticaNeueLTPro-Lt.eot?#iefix') format('embedded-opentype');
-    font-weight: normal;
-    font-style: normal;
-}
