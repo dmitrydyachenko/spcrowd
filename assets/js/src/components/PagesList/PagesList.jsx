@@ -1,5 +1,4 @@
 /* External libraries */
-import $ from 'jquery';
 import React from 'react';
 
 /* CSS styles */

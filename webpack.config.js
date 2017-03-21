@@ -1,4 +1,4 @@
-var libraryName = 'starterpack';
+var libraryName = 'spcrowd';
 
 var siteUrl = "https://architect365.sharepoint.com/sites/spcrowd",
     username = "ddyachenko@architect365.co.uk",
