@@ -21643,11 +21643,7 @@ return /******/ (function(modules) { // webpackBootstrap
 		_createClass(Home, [{
 			key: 'componentDidMount',
 			value: function componentDidMount() {
-				var self = this;
-	
-				setTimeout(function () {
-					self.init();
-				}, 3000);
+				this.init();
 			}
 		}, {
 			key: 'init',
@@ -53936,12 +53932,12 @@ return /******/ (function(modules) { // webpackBootstrap
 						{ key: i, className: _ExcelTableView2.default.item_row + ' ms-Grid-row' },
 						_react2.default.createElement(
 							'div',
-							{ className: _ExcelTableView2.default.item_column + ' ms-Grid-col ms-u-sm6' },
+							{ className: _ExcelTableView2.default.item_column + ' ' + _ExcelTableView2.default.column + ' ms-Grid-col ms-u-sm6' },
 							item.Name
 						),
 						_react2.default.createElement(
 							'div',
-							{ className: _ExcelTableView2.default.item_column + ' ms-Grid-col ms-u-sm6' },
+							{ className: _ExcelTableView2.default.item_column + ' ' + _ExcelTableView2.default.column + ' ms-Grid-col ms-u-sm6' },
 							item.Type
 						)
 					);
@@ -53966,12 +53962,12 @@ return /******/ (function(modules) { // webpackBootstrap
 								{ className: _ExcelTableView2.default.header_row + ' ms-Grid-row' },
 								_react2.default.createElement(
 									'div',
-									{ className: _ExcelTableView2.default.header_column + ' ms-Grid-col ms-u-sm6' },
+									{ className: _ExcelTableView2.default.header_column + ' ' + _ExcelTableView2.default.column + ' ms-Grid-col ms-u-sm6' },
 									'Name'
 								),
 								_react2.default.createElement(
 									'div',
-									{ className: _ExcelTableView2.default.header_column + ' ms-Grid-col ms-u-sm6' },
+									{ className: _ExcelTableView2.default.header_column + ' ' + _ExcelTableView2.default.column + ' ms-Grid-col ms-u-sm6' },
 									'Type'
 								)
 							),
@@ -78432,7 +78428,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ function(module, exports) {
 
 	// removed by extract-text-webpack-plugin
-	module.exports = {"container":"ExcelTableView_container","header":"ExcelTableView_header","content":"ExcelTableView_content","header_row":"ExcelTableView_header_row","header_column":"ExcelTableView_header_column","item_row":"ExcelTableView_item_row","item_column":"ExcelTableView_item_column"};
+	module.exports = {"container":"ExcelTableView_container","header":"ExcelTableView_header","content":"ExcelTableView_content","column":"ExcelTableView_column","header_row":"ExcelTableView_header_row","header_column":"ExcelTableView_header_column","item_row":"ExcelTableView_item_row","item_column":"ExcelTableView_item_column"};
 
 /***/ },
 /* 332 */

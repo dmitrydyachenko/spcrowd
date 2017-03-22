@@ -1,6 +1,4 @@
 .container {
-    display: block;
-
     .header {
         display: block;
         font-size: 20px;
@@ -10,34 +8,46 @@
     }
 
     .content {
-        display: block;
-
         :global .ms-Grid {
-            border-left: 1px solid #ccc;
-            border-right: 1px solid #ccc;
-            border-bottom: 1px solid #ccc;
             padding: 0 10px 0 10px;
         }
 
+        .column {
+            border: 0;
+            border-right: 1px solid #E5E5E5;
+            border-top: 1px solid #E5E5E5;
+            line-height: 24px;
+            padding: 12px 12px 12px 24px;
+            vertical-align: middle;
+            font-size: 13px;
+            -webkit-font-smoothing: antialiased;
+
+            &:first-child {
+                border-left: 1px solid #E5E5E5;
+            }
+        }
+
         .header_row {
-            margin: 0 -12px 0 -12px;
+            background-color: #FAFAFA;
 
             .header_column {
-                text-align: center;
-                font-size: 18px;
-                font-weight: 400;
-                -webkit-font-smoothing: antialiased;
-                color: white;
-                background-color: #073888;
-                border: 1px solid white;
+                color: #757575;
+                font-weight: 500;
             }
         }
 
         .item_row {
+            background-color: white;
+
             .item_column {
-                padding-top: 5px;
-                padding-bottom: 5px;
-                border-bottom: 1px solid #ccc;
+                color: #212121;
+                font-weight: normal;
+            }
+
+            &:last-child {
+                .item_column {
+                    border-bottom: 1px solid #E5E5E5;
+                }
             }
         }
     }

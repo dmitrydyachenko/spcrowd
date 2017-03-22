@@ -57,10 +57,10 @@ class ExcelTableView extends React.Component {
 		const data = self.state.data;
 		const mainContent = data && data.length > 0 ? data.map((item, i) => 
 			<div key={i} className={`${Styles.item_row} ms-Grid-row`}>
-				<div className={`${Styles.item_column} ms-Grid-col ms-u-sm6`}>	
+				<div className={`${Styles.item_column} ${Styles.column} ms-Grid-col ms-u-sm6`}>	
 					{item.Name}
 				</div>
-				<div className={`${Styles.item_column} ms-Grid-col ms-u-sm6`}>	
+				<div className={`${Styles.item_column} ${Styles.column} ms-Grid-col ms-u-sm6`}>	
 					{item.Type}
 				</div>
 			</div>
@@ -74,10 +74,10 @@ class ExcelTableView extends React.Component {
 				<div className={Styles.content}>
 					<div className="ms-Grid">
 						<div className={`${Styles.header_row} ms-Grid-row`}>
-							<div className={`${Styles.header_column} ms-Grid-col ms-u-sm6`}>	
+							<div className={`${Styles.header_column} ${Styles.column} ms-Grid-col ms-u-sm6`}>	
 								Name
 							</div>
-							<div className={`${Styles.header_column} ms-Grid-col ms-u-sm6`}>	
+							<div className={`${Styles.header_column} ${Styles.column} ms-Grid-col ms-u-sm6`}>	
 								Type
 							</div>
 						</div>

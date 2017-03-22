@@ -42,6 +42,12 @@
 
 @font-face {
   font-family: 'Segoe UI WestEuropean';
+  src: local("Segoe UI Semilight"), url("https://static2.sharepointonline.com/files/fabric/assets/fonts//segoeui-westeuropean/segoeui-semilight.woff2") format("woff2"), url("https://static2.sharepointonline.com/files/fabric/assets/fonts//segoeui-westeuropean/segoeui-semilight.woff") format("woff"), url("https://static2.sharepointonline.com/files/fabric/assets/fonts//segoeui-westeuropean/segoeui-semilight.ttf") format("truetype");
+  font-weight: 200;
+  font-style: normal; }
+
+@font-face {
+  font-family: 'Segoe UI WestEuropean';
   src: local("Segoe UI"), url("https://static2.sharepointonline.com/files/fabric/assets/fonts//segoeui-westeuropean/segoeui-regular.woff2") format("woff2"), url("https://static2.sharepointonline.com/files/fabric/assets/fonts//segoeui-westeuropean/segoeui-regular.woff") format("woff"), url("https://static2.sharepointonline.com/files/fabric/assets/fonts//segoeui-westeuropean/segoeui-regular.ttf") format("truetype");
   font-weight: 400;
   font-style: normal; }
@@ -50,12 +56,6 @@
   font-family: 'Segoe UI WestEuropean';
   src: local("Segoe UI Semibold"), url("https://static2.sharepointonline.com/files/fabric/assets/fonts//segoeui-westeuropean/segoeui-semibold.woff2") format("woff2"), url("https://static2.sharepointonline.com/files/fabric/assets/fonts//segoeui-westeuropean/segoeui-semibold.woff") format("woff"), url("https://static2.sharepointonline.com/files/fabric/assets/fonts//segoeui-westeuropean/segoeui-semibold.ttf") format("truetype");
   font-weight: 600;
-  font-style: normal; }
-
-@font-face {
-  font-family: 'Segoe UI WestEuropean';
-  src: local("Segoe UI Semilight"), url("https://static2.sharepointonline.com/files/fabric/assets/fonts//segoeui-westeuropean/segoeui-semilight.woff2") format("woff2"), url("https://static2.sharepointonline.com/files/fabric/assets/fonts//segoeui-westeuropean/segoeui-semilight.woff") format("woff"), url("https://static2.sharepointonline.com/files/fabric/assets/fonts//segoeui-westeuropean/segoeui-semilight.ttf") format("truetype");
-  font-weight: 200;
   font-style: normal; }
 
 @font-face {
@@ -69,6 +69,18 @@
   src: url("../fonts/fontawesome-webfont.eot?v=4.7.0");
   src: url("../fonts/fontawesome-webfont.eot?#iefix&v=4.7.0") format("embedded-opentype"), url("../fonts/fontawesome-webfont.woff2?v=4.7.0") format("woff2"), url("../fonts/fontawesome-webfont.woff?v=4.7.0") format("woff"), url("../fonts/fontawesome-webfont.ttf?v=4.7.0") format("truetype"), url("../fonts/fontawesome-webfont.svg?v=4.7.0#fontawesomeregular") format("svg");
   font-weight: normal;
+  font-style: normal; }
+
+@font-face {
+  font-family: 'RobotoRegular';
+  src: url("../fonts/Roboto-Regular.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal; }
+
+@font-face {
+  font-family: 'RobotoRegular';
+  src: url("../fonts/Roboto-Medium.ttf") format("truetype");
+  font-weight: 500;
   font-style: normal; }
 
 .spcrowd {
@@ -6328,10 +6340,10 @@
   .spcrowd body {
     color: #000;
     font-size: 16px;
-    font-family: "Segoe UI WestEuropean", "Segoe UI", -apple-system, BlinkMacSystemFont, Roboto, "Helvetica Neue", sans-serif; }
+    font-family: "RobotoRegular", "Segoe UI WestEuropean", "Segoe UI", "Helvetica Neue", HelveticaNeue, Helvetica, Arial, sans-serif; }
   .spcrowd span, .spcrowd p, .spcrowd a, .spcrowd div, .spcrowd h1, .spcrowd h2, .spcrowd h3, .spcrowd h4, .spcrowd h5 {
     color: #000;
-    font-family: "Segoe UI WestEuropean", "Segoe UI", -apple-system, BlinkMacSystemFont, Roboto, "Helvetica Neue", sans-serif; }
+    font-family: "RobotoRegular", "Segoe UI WestEuropean", "Segoe UI", "Helvetica Neue", HelveticaNeue, Helvetica, Arial, sans-serif; }
   .spcrowd .clearfix::after {
     clear: both;
     content: '';
@@ -6342,7 +6354,8 @@
  */
 #s4-workspace {
   -webkit-overflow-scrolling: touch;
-  overflow-y: scroll; }
+  overflow-y: scroll;
+  background-color: #FAFAFA; }
 
 .ms-Icon--ChevronLeft:before {
   content: "\E76B"; }
@@ -6398,35 +6411,41 @@
 /**
  * Paths to Sharepoint assets 
  */
-.ExcelTableView_container {
-  display: block; }
-  .ExcelTableView_container .ExcelTableView_header {
-    display: block;
-    font-size: 20px;
-    font-weight: 400;
-    -webkit-font-smoothing: antialiased;
-    color: #333333; }
-  .ExcelTableView_container .ExcelTableView_content {
-    display: block; }
-    .ExcelTableView_container .ExcelTableView_content .ms-Grid {
-      border-left: 1px solid #ccc;
-      border-right: 1px solid #ccc;
-      border-bottom: 1px solid #ccc;
-      padding: 0 10px 0 10px; }
-    .ExcelTableView_container .ExcelTableView_content .ExcelTableView_header_row {
-      margin: 0 -12px 0 -12px; }
-      .ExcelTableView_container .ExcelTableView_content .ExcelTableView_header_row .ExcelTableView_header_column {
-        text-align: center;
-        font-size: 18px;
-        font-weight: 400;
-        -webkit-font-smoothing: antialiased;
-        color: white;
-        background-color: #073888;
-        border: 1px solid white; }
-    .ExcelTableView_container .ExcelTableView_content .ExcelTableView_item_row .ExcelTableView_item_column {
-      padding-top: 5px;
-      padding-bottom: 5px;
-      border-bottom: 1px solid #ccc; }
+.ExcelTableView_container .ExcelTableView_header {
+  display: block;
+  font-size: 20px;
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+  color: #333333; }
+
+.ExcelTableView_container .ExcelTableView_content .ms-Grid {
+  padding: 0 10px 0 10px; }
+
+.ExcelTableView_container .ExcelTableView_content .ExcelTableView_column {
+  border: 0;
+  border-right: 1px solid #E5E5E5;
+  border-top: 1px solid #E5E5E5;
+  line-height: 24px;
+  padding: 12px 12px 12px 24px;
+  vertical-align: middle;
+  font-size: 13px;
+  -webkit-font-smoothing: antialiased; }
+  .ExcelTableView_container .ExcelTableView_content .ExcelTableView_column:first-child {
+    border-left: 1px solid #E5E5E5; }
+
+.ExcelTableView_container .ExcelTableView_content .ExcelTableView_header_row {
+  background-color: #FAFAFA; }
+  .ExcelTableView_container .ExcelTableView_content .ExcelTableView_header_row .ExcelTableView_header_column {
+    color: #757575;
+    font-weight: 500; }
+
+.ExcelTableView_container .ExcelTableView_content .ExcelTableView_item_row {
+  background-color: white; }
+  .ExcelTableView_container .ExcelTableView_content .ExcelTableView_item_row .ExcelTableView_item_column {
+    color: #212121;
+    font-weight: normal; }
+  .ExcelTableView_container .ExcelTableView_content .ExcelTableView_item_row:last-child .ExcelTableView_item_column {
+    border-bottom: 1px solid #E5E5E5; }
 /**
  * Breakpoints
  */

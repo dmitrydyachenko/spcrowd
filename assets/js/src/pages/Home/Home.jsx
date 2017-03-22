@@ -37,11 +37,7 @@ class Home extends React.Component {
 	}
 
 	componentDidMount() {
-		const self = this;
-		
-		setTimeout(() => {
-			self.init();
-		}, 3000);
+		this.init();
 	}
 
 	init() {
