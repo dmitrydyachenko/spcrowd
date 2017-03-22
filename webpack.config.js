@@ -89,7 +89,12 @@ var config = {
                 test: /\.scss$/,
                 loader: extractTextPlugin.extract('css?url=false&modules&importLoaders=1&localIdentName=[name]_[local]!sass!sass-resources!postcss')
             }
-        ]
+        ],
+        noParse: [/jszip.js$/]
+    },
+    node: {
+        fs: false,
+        Buffer: false
     },
     sassResources: [
         __dirname + '/assets/css/utils/_variables.scss', 

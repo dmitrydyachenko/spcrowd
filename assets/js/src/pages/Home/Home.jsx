@@ -9,6 +9,7 @@ import { Slider } from 'office-ui-fabric-react/lib/Slider';
 import { GenerateGuid } from '../../utils/utils';
 import { PAGESLIST } from '../../utils/settings';
 import PagesList from '../../components/PagesList/PagesList';
+import ExcelTableView from '../../components/ExcelTableView/ExcelTableView';
 
 /* CSS styles */
 import Styles from './Home.scss';
@@ -28,7 +29,7 @@ class Home extends React.Component {
 		this.state = {
 			data: [],
 			headerContent: null,
-			fontsize: 14,
+			fontsize: '14px',
 			loading: true
 		};
 
@@ -101,7 +102,7 @@ class Home extends React.Component {
 						<div className="ms-Grid-col ms-u-sm12">
 							<PagesList data={this.state.data} 
 										guid={GenerateGuid()} 
-										fontsize={this.state.fontsize.toString()} />
+										fontsize={this.state.fontsize} />
 						</div>
 					</div>
 				</div>
@@ -112,7 +113,14 @@ class Home extends React.Component {
 									min={8} max={64} step={2}
 									defaultValue={14} 
 									showValue
-									onChange={fontsize => this.setState({ fontsize })} />
+									onChange={fontsize => this.setState({ fontsize: `${fontsize}px` })} />
+						</div>
+					</div>
+				</div>
+				<div className={`${Styles.exceltableview_container} ms-Grid-row`}>
+					<div className="container">
+						<div className="ms-Grid-col ms-u-sm12">
+							<ExcelTableView docUrl={`${_spPageContextInfo.siteAbsoluteUrl}/Documents/DoveColumnsDev.xlsx`} />
 						</div>
 					</div>
 				</div>

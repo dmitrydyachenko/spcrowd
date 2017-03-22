@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import Moment from 'moment';
 
 export function GetAssetsPath(projectName) {
@@ -149,4 +150,45 @@ export function SelectSrcValue(imageString) {
 
 export function ArrayAdiff(a1, a2) {
 	return a1.filter(x => a2.indexOf(x) < 0);
+}
+
+export function AjaxTransport() {
+	$.ajaxTransport('+binary', (options, originalOptions, jqXHR) => {		    
+		if (window.FormData && ((options.dataType && (options.dataType === 'binary')) || 
+		(options.data && ((window.ArrayBuffer && options.data instanceof ArrayBuffer) || 
+		(window.Blob && options.data instanceof Blob))))) {
+			return {
+				send: (headers, callback) => {
+					const xhr = new XMLHttpRequest();
+					const _url = options.url;
+					const type = options.type;
+					const async = options.async || true;
+					const dataType = options.responseType || 'blob';
+					const _data = options.data || null;
+					const username = options.username || null;
+					const password = options.password || null;
+
+					xhr.addEventListener('load', () => {
+						const __data = {};
+						__data[options.dataType] = xhr.response;
+						callback(xhr.status, xhr.statusText, __data, xhr.getAllResponseHeaders());
+					});
+
+					xhr.open(type, _url, async, username, password);
+
+					for (let i = 0; i < headers.length; i++) {
+						xhr.setRequestHeader(i, headers[i]);
+					}
+
+					xhr.responseType = dataType;
+					xhr.send(_data);
+				},
+				abort: () => {
+					jqXHR.abort();
+				}
+			};
+		}
+
+		return null;
+	});
 }

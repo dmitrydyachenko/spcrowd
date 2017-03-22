@@ -1,7 +1,7 @@
 {
-  "name": "SPCrowd",
+  "name": "spcrowd",
   "version": "0.0.1",
-  "description": "SPCrowd",
+  "description": "Creating Sharepoint fields, content types and lists based on XML definitions",
   "repository": {
     "type": "git",
     "url": "https://github.com/dmitrydyachenko/spcrowd.git"
@@ -44,6 +44,7 @@
     "eslint-plugin-jsx-a11y": "^2.2.3",
     "eslint-plugin-react": "^6.9.0",
     "extract-text-webpack-plugin": "^1.0.1",
+    "identity-obj-proxy": "^3.0.0",
     "immutability-helper": "^2.1.0",
     "jest": "^17.0.3",
     "jquery": "^3.1.1",
@@ -59,7 +60,7 @@
     "spsave-webpack-plugin": "^1.0.4",
     "style-loader": "^0.13.2",
     "webpack": "^1.14.0",
-    "yargs": "^7.0.1",
-    "identity-obj-proxy": "^3.0.0"
+    "xlsx": "^0.9.4",
+    "yargs": "^7.0.1"
   }
 }
