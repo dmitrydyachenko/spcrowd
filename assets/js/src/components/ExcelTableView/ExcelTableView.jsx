@@ -20,8 +20,8 @@ class ExcelTableView extends React.Component {
 		};
 	}
 
-	componentDidMount() {
-		this.init(this.props.docUrl);
+	componentDidMount() { 
+		/* this.init(this.props.docUrl); */
 	}
 
 	init(docUrl) {
@@ -55,35 +55,58 @@ class ExcelTableView extends React.Component {
 	render() {
 		const self = this;
 		const data = self.state.data;
-		const mainContent = data && data.length > 0 ? data.map((item, i) => 
+		const show = data && data.length > 0;
+		const content = show ? data.map((item, i) => 
 			<div key={i} className={`${Styles.item_row} ms-Grid-row`}>
-				<div className={`${Styles.item_column} ${Styles.column} ms-Grid-col ms-u-sm6`}>	
+				<div className={`${Styles.item_column} ${Styles.column} ms-Grid-col ms-u-sm3`}>	
 					{item.Name}
 				</div>
-				<div className={`${Styles.item_column} ${Styles.column} ms-Grid-col ms-u-sm6`}>	
+				<div className={`${Styles.item_column} ${Styles.column} ms-Grid-col ms-u-sm3`}>	
 					{item.Type}
+				</div>
+				<div className={`${Styles.item_column} ${Styles.column} ms-Grid-col ms-u-sm3`}>	
+					{item.Constraints}
+				</div>
+				<div className={`${Styles.item_column} ${Styles.column} ms-Grid-col ms-u-sm3`}>	
+					{item.Comments}
 				</div>
 			</div>
 		) : null;
 
-		return (
-			<div className={Styles.container}>
-				<p className={Styles.header}>
-					Excel table
-				</p>
-				<div className={Styles.content}>
-					<div className="ms-Grid">
-						<div className={`${Styles.header_row} ms-Grid-row`}>
-							<div className={`${Styles.header_column} ${Styles.column} ms-Grid-col ms-u-sm6`}>	
-								Name
+		let mainContent = null;
+
+		if (show) {
+			mainContent = (
+				<div className={Styles.container}>
+					<p className={Styles.header}>
+						Excel table
+					</p>
+					<div className={Styles.content}>
+						<div className="ms-Grid">
+							<div className={`${Styles.header_row} ms-Grid-row`}>
+								<div className={`${Styles.header_column} ${Styles.column} ms-Grid-col ms-u-sm3`}>	
+									Name
+								</div>
+								<div className={`${Styles.header_column} ${Styles.column} ms-Grid-col ms-u-sm3`}>	
+									Type
+								</div>
+								<div className={`${Styles.header_column} ${Styles.column} ms-Grid-col ms-u-sm3`}>	
+									Constraints
+								</div>
+								<div className={`${Styles.header_column} ${Styles.column} ms-Grid-col ms-u-sm3`}>	
+									Comments
+								</div>
 							</div>
-							<div className={`${Styles.header_column} ${Styles.column} ms-Grid-col ms-u-sm6`}>	
-								Type
-							</div>
+							{content}
 						</div>
-						{mainContent}
 					</div>
 				</div>
+			);
+		}
+
+		return (
+			<div>
+				{mainContent}
 			</div>
 		);
 	}

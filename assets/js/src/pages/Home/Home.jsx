@@ -6,23 +6,16 @@ import SPOC from 'SPOCExt';
 /* Components */
 import { Spinner, SpinnerType } from 'office-ui-fabric-react/lib/Spinner';
 import { Slider } from 'office-ui-fabric-react/lib/Slider';
-import { GenerateGuid } from '../../utils/utils';
-import { PAGESLIST } from '../../utils/settings';
+import { GenerateGuid, GetRandomInt } from '../../utils/utils';
+import { PAGESLIST, STYLELIBRARY } from '../../utils/settings';
 import PagesList from '../../components/PagesList/PagesList';
 import ExcelTableView from '../../components/ExcelTableView/ExcelTableView';
+import CloudCarousel from '../../components/CloudCarousel/CloudCarousel';
 
 /* CSS styles */
 import Styles from './Home.scss';
 
 class Home extends React.Component {
-	static propTypes = {
-		listName: React.PropTypes.string
-	};
-
-	static defaultProps = {	
-		listName: PAGESLIST		
-	};	
-
 	constructor() {
 		super();
 
@@ -30,7 +23,8 @@ class Home extends React.Component {
 			data: [],
 			headerContent: null,
 			fontsize: '14px',
-			loading: true
+			loading: true,
+			subItems: []
 		};
 
 		this.site = new SPOC.SP.Site();
@@ -42,9 +36,6 @@ class Home extends React.Component {
 
 	init() {
 		const self = this;
-		const settings = {
-			select: 'Title'
-		};
 
 		$.ajax({
 			url: `${_spPageContextInfo.siteAbsoluteUrl}/_api/web/Description`,
@@ -70,8 +61,32 @@ class Home extends React.Component {
 			}
 		});
 
-		self.site.ListItems(self.props.listName).query(settings).then((data) => {
+		const pagesListSettings = {
+			select: 'Title'
+		};
+
+		self.site.ListItems(PAGESLIST).query(pagesListSettings).then((data) => {
 			self.setState({ data });
+		},
+		(error) => {
+			console.log(error);
+		});
+
+		const cloudCarouselSettings = {
+			select: 'FileLeafRef, FileRef, Modified',
+			top: 20
+		};
+
+		self.site.ListItems(STYLELIBRARY).query(cloudCarouselSettings).then((subItems) => {
+			for (let i = 0; i < subItems.length; i++) {
+				const weight = GetRandomInt(100, 500);
+
+				subItems[i].width = weight / 2;
+				subItems[i].height = weight / 2;
+				subItems[i].weight = weight;
+			}
+
+			self.setState({ subItems });
 		},
 		(error) => {
 			console.log(error);
@@ -113,7 +128,17 @@ class Home extends React.Component {
 						</div>
 					</div>
 				</div>
-				<div className={`${Styles.exceltableview_container} ms-Grid-row`}>
+				<div className={`${Styles.cloud_carousel_container} ms-Grid-row`}>
+					<div className="container">
+						<div className="ms-Grid-col ms-u-sm12">
+							{
+								this.state.subItems && this.state.subItems.length > 0 ?
+									<CloudCarousel items={[1, 2]} subItems={this.state.subItems} /> : null
+							}
+						</div>
+					</div>
+				</div>
+				<div className={`${Styles.excel_table_view_container} ms-Grid-row`}>
 					<div className="container">
 						<div className="ms-Grid-col ms-u-sm12">
 							<ExcelTableView docUrl={`${_spPageContextInfo.siteAbsoluteUrl}/Documents/DoveColumnsDev.xlsx`} />

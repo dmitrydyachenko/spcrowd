@@ -6380,22 +6380,19 @@
 /**
  * Paths to Sharepoint assets 
  */
-.PagesList_container {
-  display: block; }
-  .PagesList_container .PagesList_header {
-    display: block;
-    font-size: 14px;
-    font-weight: 400;
-    -webkit-font-smoothing: antialiased;
-    color: #333333; }
-  .PagesList_container .PagesList_content {
-    display: block; }
-    .PagesList_container .PagesList_content .PagesList_item {
-      display: block;
-      font-size: 14px;
-      font-weight: 400;
-      -webkit-font-smoothing: antialiased;
-      color: #333333; }
+.PagesList_container .PagesList_header {
+  display: block;
+  font-size: 14px;
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+  color: #333333; }
+
+.PagesList_container .PagesList_content .PagesList_item {
+  display: block;
+  font-size: 14px;
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+  color: #333333; }
 /**
  * Breakpoints
  */
@@ -6419,14 +6416,15 @@
   color: #333333; }
 
 .ExcelTableView_container .ExcelTableView_content .ms-Grid {
-  padding: 0 10px 0 10px; }
+  padding: 0 8px 0 8px;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19); }
 
 .ExcelTableView_container .ExcelTableView_content .ExcelTableView_column {
   border: 0;
   border-right: 1px solid #E5E5E5;
   border-top: 1px solid #E5E5E5;
   line-height: 24px;
-  padding: 12px 12px 12px 24px;
+  padding: 12px;
   vertical-align: middle;
   font-size: 13px;
   -webkit-font-smoothing: antialiased; }
@@ -6440,12 +6438,55 @@
     font-weight: 500; }
 
 .ExcelTableView_container .ExcelTableView_content .ExcelTableView_item_row {
-  background-color: white; }
+  background-color: white;
+  display: -ms-flexbox;
+  display: flex; }
   .ExcelTableView_container .ExcelTableView_content .ExcelTableView_item_row .ExcelTableView_item_column {
     color: #212121;
     font-weight: normal; }
   .ExcelTableView_container .ExcelTableView_content .ExcelTableView_item_row:last-child .ExcelTableView_item_column {
     border-bottom: 1px solid #E5E5E5; }
+/**
+ * Breakpoints
+ */
+/**
+ * Tweakpoints
+ */
+/**
+ * Other variables
+ */
+/**
+ * Colours
+ */
+/**
+ * Paths to Sharepoint assets 
+ */
+.CloudCarousel_container .CloudCarousel_header {
+  display: block;
+  font-size: 20px;
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+  color: #333333; }
+
+.CloudCarousel_container .CloudCarousel_content .CloudCarousel_row .CloudCarousel_column .CloudCarousel_carousel_container {
+  overflow: hidden; }
+  .CloudCarousel_container .CloudCarousel_content .CloudCarousel_row .CloudCarousel_column .CloudCarousel_carousel_container .CloudCarousel_carousel_content .CloudCarousel_carousel_item_wrapper {
+    display: inline-block;
+    position: relative; }
+    .CloudCarousel_container .CloudCarousel_content .CloudCarousel_row .CloudCarousel_column .CloudCarousel_carousel_container .CloudCarousel_carousel_content .CloudCarousel_carousel_item_wrapper .CloudCarousel_carousel_item .CloudCarousel_item_row {
+      margin: 0;
+      position: relative; }
+      .CloudCarousel_container .CloudCarousel_content .CloudCarousel_row .CloudCarousel_column .CloudCarousel_carousel_container .CloudCarousel_carousel_content .CloudCarousel_carousel_item_wrapper .CloudCarousel_carousel_item .CloudCarousel_item_row .CloudCarousel_item_column {
+        position: absolute;
+        background-color: #d2fcd9;
+        display: -ms-flexbox;
+        display: flex;
+        -ms-flex-align: center;
+        align-items: center;
+        -ms-flex-pack: center;
+        justify-content: center;
+        font-size: 37px;
+        border: 1px solid black; }
 /**
  * Breakpoints
  */
@@ -6481,5 +6522,8 @@
   .Home_container .Home_bottom_container .ms-Label {
     font-size: 16px;
     color: #0078d7; }
+
+.Home_container .Home_cloud_carousel_container {
+  padding-bottom: 30px; }
 
 /*# sourceMappingURL=screen.css.map*/

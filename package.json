@@ -54,11 +54,13 @@
     "postcss-loader": "^1.2.1",
     "react": "^15.4.2",
     "react-dom": "^15.4.2",
+    "react-responsive": "^1.2.7",
     "react-test-renderer": "^15.4.2",
     "sass-loader": "^4.1.1",
     "sass-resources-loader": "^1.2.0-beta.1",
     "spsave-webpack-plugin": "^1.0.4",
     "style-loader": "^0.13.2",
+    "styled-components": "^1.4.4",
     "webpack": "^1.14.0",
     "xlsx": "^0.9.4",
     "yargs": "^7.0.1"

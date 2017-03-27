@@ -192,3 +192,7 @@ export function AjaxTransport() {
 		return null;
 	});
 }
+
+export function GetRandomInt(min, max) {
+	return Math.floor(Math.random() * (max - min) + min);
+}
