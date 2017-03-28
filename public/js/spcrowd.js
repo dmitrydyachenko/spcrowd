@@ -21602,11 +21602,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _ExcelTableView2 = _interopRequireDefault(_ExcelTableView);
 	
-	var _CloudCarousel = __webpack_require__(332);
+	var _CloudCarousel = __webpack_require__(335);
 	
 	var _CloudCarousel2 = _interopRequireDefault(_CloudCarousel);
 	
-	var _Home = __webpack_require__(404);
+	var _Home = __webpack_require__(407);
 	
 	var _Home2 = _interopRequireDefault(_Home);
 	
@@ -21789,7 +21789,7 @@ return /******/ (function(modules) { // webpackBootstrap
 							_react2.default.createElement(
 								'div',
 								{ className: 'ms-Grid-col ms-u-sm12' },
-								_react2.default.createElement(_ExcelTableView2.default, { docUrl: _spPageContextInfo.siteAbsoluteUrl + '/Documents/DoveColumnsDev.xlsx' })
+								_react2.default.createElement(_ExcelTableView2.default, null)
 							)
 						)
 					)
@@ -38644,6 +38644,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.ArrayAdiff = ArrayAdiff;
 	exports.AjaxTransport = AjaxTransport;
 	exports.GetRandomInt = GetRandomInt;
+	exports.ToCamelCase = ToCamelCase;
 	
 	var _jquery = __webpack_require__(181);
 	
@@ -38849,6 +38850,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	function GetRandomInt(min, max) {
 		return Math.floor(Math.random() * (max - min) + min);
+	}
+	
+	function ToCamelCase(sentenceCase) {
+		var out = '';
+	
+		sentenceCase.split(' ').forEach(function (e) {
+			var add = e.toLowerCase();
+			out += add[0].toUpperCase() + add.slice(1);
+		});
+	
+		return out;
 	}
 
 /***/ },
@@ -53763,7 +53775,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	var IMGPATH = exports.IMGPATH = 'img';
 	var PAGESLIST = exports.PAGESLIST = 'Pages';
 	var STYLELIBRARY = exports.STYLELIBRARY = 'Style Library';
-	var PUBLISHINGIMAGESPATH = exports.PUBLISHINGIMAGESPATH = 'PublishingImages';
+	var DOCUMENTSLIBRARY = exports.DOCUMENTSLIBRARY = 'Documents';
+	var PUBLISHINGIMAGESLIBRARY = exports.PUBLISHINGIMAGESLIBRARY = 'PublishingImages';
 
 /***/ },
 /* 323 */
@@ -53885,17 +53898,37 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _jquery2 = _interopRequireDefault(_jquery);
 	
-	var _react = __webpack_require__(2);
-	
-	var _react2 = _interopRequireDefault(_react);
-	
 	var _xlsx = __webpack_require__(326);
 	
 	var _xlsx2 = _interopRequireDefault(_xlsx);
 	
+	var _react = __webpack_require__(2);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	var _SPOCExt = __webpack_require__(182);
+	
+	var _SPOCExt2 = _interopRequireDefault(_SPOCExt);
+	
+	var _data2xml = __webpack_require__(331);
+	
+	var _data2xml2 = _interopRequireDefault(_data2xml);
+	
+	var _reactDropzone = __webpack_require__(332);
+	
+	var _reactDropzone2 = _interopRequireDefault(_reactDropzone);
+	
+	var _Spinner = __webpack_require__(183);
+	
+	var _camljs = __webpack_require__(333);
+	
+	var _camljs2 = _interopRequireDefault(_camljs);
+	
 	var _utils = __webpack_require__(210);
 	
-	var _ExcelTableView = __webpack_require__(331);
+	var _settings = __webpack_require__(322);
+	
+	var _ExcelTableView = __webpack_require__(334);
 	
 	var _ExcelTableView2 = _interopRequireDefault(_ExcelTableView);
 	
@@ -53920,25 +53953,77 @@ return /******/ (function(modules) { // webpackBootstrap
 			var _this = _possibleConstructorReturn(this, (ExcelTableView.__proto__ || Object.getPrototypeOf(ExcelTableView)).call(this));
 	
 			_this.state = {
-				data: []
+				completed: 0,
+				submitting: false,
+				filePath: '',
+				uploadedFiles: {
+					value: '',
+					files: []
+				}
 			};
+	
+			_this.prefix = 'SPCrowd';
+			_this.site = new _SPOCExt2.default.SP.Site();
+	
+			_this.handleOnDrop = _this.handleOnDrop.bind(_this);
+			_this.handleOnClick = _this.handleOnClick.bind(_this);
 			return _this;
 		}
 	
 		_createClass(ExcelTableView, [{
 			key: 'componentDidMount',
 			value: function componentDidMount() {
-				/* this.init(this.props.docUrl); */
+				this.init();
 			}
 		}, {
-			key: 'init',
-			value: function init(docUrl) {
+			key: 'handleOnDrop',
+			value: function handleOnDrop(acceptedFiles) {
+				var self = this;
+				var uploadedFiles = self.state.uploadedFiles;
+	
+				uploadedFiles.value = acceptedFiles[0].name;
+				uploadedFiles.files = acceptedFiles;
+	
+				self.setState({ uploadedFiles: uploadedFiles }, function () {
+					var uploadInput = self.state.uploadedFiles;
+	
+					if (uploadInput && uploadInput.value) {
+						self.setState({ completed: 1, submitting: true }, function () {
+							var parts = uploadInput.value.split('\\');
+							var fileName = parts[parts.length - 1];
+							var library = self.site.Files(_settings.DOCUMENTSLIBRARY);
+	
+							library.upload(uploadInput).then(function () {
+								var filePath = encodeURI(_spPageContextInfo.webServerRelativeUrl + '/' + _settings.DOCUMENTSLIBRARY + '/' + fileName);
+	
+								self.setState({ filePath: filePath }, function () {
+									var caml = new _camljs2.default().View(['ID', 'FileRef', 'LinkFilename']).Query().Where().ComputedField('LinkFilename').EqualTo(fileName).ToString();
+	
+									self.site.ListItems(_settings.DOCUMENTSLIBRARY).queryCSOM(caml).then(function (results) {
+										if (results && results.length > 0) {
+											self.getExcel(self.state.filePath);
+										}
+									});
+								});
+							});
+						});
+					}
+				});
+			}
+		}, {
+			key: 'handleOnClick',
+			value: function handleOnClick() {
+				this.dropzone.open();
+			}
+		}, {
+			key: 'getExcel',
+			value: function getExcel(filePath) {
 				var self = this;
 	
 				(0, _utils.AjaxTransport)();
 	
 				_jquery2.default.ajax({
-					url: docUrl,
+					url: filePath,
 					type: 'GET',
 					dataType: 'binary',
 					responseType: 'arraybuffer',
@@ -53955,9 +54040,165 @@ return /******/ (function(modules) { // webpackBootstrap
 						var first_sheet_name = workbook.SheetNames[0];
 						var worksheet = workbook.Sheets[first_sheet_name];
 	
-						self.setState({ data: _xlsx2.default.utils.sheet_to_json(worksheet) });
+						self.setState({
+							submitting: false,
+							data: _xlsx2.default.utils.sheet_to_json(worksheet)
+						}, function () {
+							self.getXml(self.state.data, self.prefix);
+						});
 					}
 				});
+			}
+		}, {
+			key: 'getXml',
+			value: function getXml(data, prefix) {
+				var convert = (0, _data2xml2.default)({ xmlDecl: false });
+				var formattedData = [];
+	
+				for (var i = 0; i < data.length; i++) {
+					var type = data[i].Type;
+					var lowerCaseType = type.toLowerCase().replace(/\s+/g, '');
+	
+					var _attr = {
+						Name: '' + prefix + (0, _utils.ToCamelCase)(data[i].Name),
+						DisplayName: data[i].Name,
+						Type: type
+					};
+	
+					var constraints = data[i].Constraints;
+	
+					var field = {};
+	
+					switch (lowerCaseType) {
+						case 'text':
+							field = { _attr: _attr };
+							break;
+						case 'boolean':
+							field = { _attr: _attr, Default: constraints && constraints === 'Yes' ? 1 : 0 };
+							break;
+						case 'checkbox':
+						case 'dropdown':
+							_attr.Type = lowerCaseType === 'checkbox' ? 'MultiChoice' : 'Choice';
+	
+							field = { _attr: _attr };
+	
+							if (constraints) {
+								constraints = constraints.split(',');
+	
+								if (constraints && constraints.length > 0) {
+									var constraintsObject = [];
+	
+									for (var j = 0; j < constraints.length; j++) {
+										constraintsObject.push({ _value: constraints[j].trim() });
+									}
+	
+									field = { _attr: _attr, CHOICES: { CHOICE: constraintsObject } };
+								}
+							}
+							break;
+						case 'multiplelinesoftext':
+							_attr.NumLines = '6';
+							_attr.RichText = 'TRUE';
+							_attr.RichTextMode = 'FullHtml';
+	
+							if (constraints) {
+								constraints = constraints.split(',');
+	
+								switch (constraints.length) {
+									case 3:
+										_attr.RichTextMode = constraints[2];
+									case 2:
+										_attr.RichText = constraints[1].toLowerCase().replace(/\s+/g, '') === 'richtext' ? 'TRUE' : 'FALSE';
+									case 1:
+										_attr.NumLines = constraints[0];
+										break;
+									default:
+										break;
+								}
+							}
+	
+							_attr.Type = 'Note';
+	
+							field = { _attr: _attr };
+							break;
+						case 'hyperlinkorpicture':
+							_attr.Format = 'URL';
+	
+							if (constraints) {
+								var lowerCaseConstraints = constraints.toLowerCase().replace(/\s+/g, '');
+	
+								if (lowerCaseConstraints === 'hyperlink') {
+									_attr.Format = 'URL';
+								} else if (lowerCaseConstraints === 'picture') {
+									_attr.Format = 'Image';
+								}
+							}
+	
+							_attr.Type = 'URL';
+	
+							field = { _attr: _attr };
+							break;
+						case 'number':
+							_attr.Min = '0';
+	
+							if (constraints && !isNaN(parseInt(constraints, 10))) {
+								_attr.Min = constraints;
+							}
+	
+							_attr.Type = 'Number';
+	
+							field = { _attr: _attr };
+							break;
+						case 'dateandtime':case 'date':
+							if (lowerCaseType === 'date') {
+								_attr.Format = 'DateOnly';
+							}
+							_attr.Type = 'DateTime';
+							field = { _attr: _attr };
+							break;
+						case 'person':
+							_attr.Type = 'UserMulti';
+							_attr.Mult = 'TRUE';
+							_attr.UserSelectionMode = 'PeopleOnly';
+	
+							switch (constraints.toLowerCase().replace(/\s+/g, '')) {
+								case 'peopleandgroups':
+									_attr.Type = 'User';
+									_attr.Mult = 'FALSE';
+									_attr.UserSelectionMode = 'PeopleAndGroups';
+									break;
+								case 'peopleandgroupsmulti':
+									_attr.Type = 'UserMulti';
+									_attr.Mult = 'TRUE';
+									_attr.UserSelectionMode = 'PeopleAndGroups';
+									break;
+								case 'peopleonly':
+									_attr.Type = 'User';
+									_attr.Mult = 'FALSE';
+									_attr.UserSelectionMode = 'PeopleOnly';
+									break;
+								default:
+									break;
+							}
+	
+							field = { _attr: _attr };
+							break;
+						default:
+							break;
+					}
+	
+					formattedData.push(field);
+				}
+	
+				var xml = convert('Field', formattedData);
+				xml = '<Fields>' + xml + '</Fields>';
+	
+				console.log(xml);
+			}
+		}, {
+			key: 'init',
+			value: function init() {
+				var self = this;
 			}
 		}, {
 			key: 'render',
@@ -53997,51 +54238,99 @@ return /******/ (function(modules) { // webpackBootstrap
 				if (show) {
 					mainContent = _react2.default.createElement(
 						'div',
-						{ className: _ExcelTableView2.default.container },
-						_react2.default.createElement(
-							'p',
-							{ className: _ExcelTableView2.default.header },
-							'Excel table'
-						),
+						{ className: _ExcelTableView2.default.content },
 						_react2.default.createElement(
 							'div',
-							{ className: _ExcelTableView2.default.content },
+							{ className: 'ms-Grid' },
 							_react2.default.createElement(
 								'div',
-								{ className: 'ms-Grid' },
+								{ className: _ExcelTableView2.default.header_row + ' ms-Grid-row' },
 								_react2.default.createElement(
 									'div',
-									{ className: _ExcelTableView2.default.header_row + ' ms-Grid-row' },
-									_react2.default.createElement(
-										'div',
-										{ className: _ExcelTableView2.default.header_column + ' ' + _ExcelTableView2.default.column + ' ms-Grid-col ms-u-sm3' },
-										'Name'
-									),
-									_react2.default.createElement(
-										'div',
-										{ className: _ExcelTableView2.default.header_column + ' ' + _ExcelTableView2.default.column + ' ms-Grid-col ms-u-sm3' },
-										'Type'
-									),
-									_react2.default.createElement(
-										'div',
-										{ className: _ExcelTableView2.default.header_column + ' ' + _ExcelTableView2.default.column + ' ms-Grid-col ms-u-sm3' },
-										'Constraints'
-									),
-									_react2.default.createElement(
-										'div',
-										{ className: _ExcelTableView2.default.header_column + ' ' + _ExcelTableView2.default.column + ' ms-Grid-col ms-u-sm3' },
-										'Comments'
-									)
+									{ className: _ExcelTableView2.default.header_column + ' ' + _ExcelTableView2.default.column + ' ms-Grid-col ms-u-sm3' },
+									'Name'
 								),
-								content
-							)
+								_react2.default.createElement(
+									'div',
+									{ className: _ExcelTableView2.default.header_column + ' ' + _ExcelTableView2.default.column + ' ms-Grid-col ms-u-sm3' },
+									'Type'
+								),
+								_react2.default.createElement(
+									'div',
+									{ className: _ExcelTableView2.default.header_column + ' ' + _ExcelTableView2.default.column + ' ms-Grid-col ms-u-sm3' },
+									'Constraints'
+								),
+								_react2.default.createElement(
+									'div',
+									{ className: _ExcelTableView2.default.header_column + ' ' + _ExcelTableView2.default.column + ' ms-Grid-col ms-u-sm3' },
+									'Comments'
+								)
+							),
+							content
 						)
 					);
 				}
 	
 				return _react2.default.createElement(
 					'div',
-					null,
+					{ className: _ExcelTableView2.default.container },
+					_react2.default.createElement(
+						'p',
+						{ className: _ExcelTableView2.default.header },
+						'Excel table'
+					),
+					_react2.default.createElement(
+						'div',
+						{ className: _ExcelTableView2.default.content },
+						_react2.default.createElement(
+							'div',
+							{ className: 'ms-Grid' },
+							_react2.default.createElement(
+								'div',
+								{ className: _ExcelTableView2.default.header_row + ' ms-Grid-row' },
+								_react2.default.createElement(
+									'div',
+									{ className: _ExcelTableView2.default.header_column + ' ' + _ExcelTableView2.default.column + ' ' + _ExcelTableView2.default.dropzone_container + ' ms-Grid-col ms-u-sm12' },
+									_react2.default.createElement(
+										_reactDropzone2.default,
+										{ className: _ExcelTableView2.default.dropzone, ref: function ref(d) {
+												self.dropzone = d;
+											}, onDrop: self.handleOnDrop },
+										_react2.default.createElement(
+											'div',
+											{ className: _ExcelTableView2.default.dropzone_title },
+											'Try dropping some files here, or click to select files to upload.'
+										)
+									),
+									_react2.default.createElement(
+										'button',
+										{ className: _ExcelTableView2.default.dropzone_button, type: 'button', onClick: self.handleOnClick },
+										'Open Dropzone'
+									),
+									self.state.uploadedFiles.files.length > 0 ? _react2.default.createElement(
+										'div',
+										{ className: _ExcelTableView2.default.dropzone_files },
+										_react2.default.createElement(
+											'div',
+											{ className: _ExcelTableView2.default.dropzone_files_list },
+											self.state.uploadedFiles.files.map(function (file, i) {
+												return _react2.default.createElement(
+													'div',
+													{ className: _ExcelTableView2.default.dropzone_files_title, key: i },
+													file.name
+												);
+											})
+										),
+										self.state.submitting ? _react2.default.createElement(
+											'div',
+											{ className: _ExcelTableView2.default.dropzone_files_uploading },
+											_react2.default.createElement(_Spinner.Spinner, { label: 'is uploading...' })
+										) : null
+									) : null
+								)
+							)
+						)
+					),
 					mainContent
 				);
 			}
@@ -54050,9 +54339,6 @@ return /******/ (function(modules) { // webpackBootstrap
 		return ExcelTableView;
 	}(_react2.default.Component);
 	
-	ExcelTableView.propTypes = {
-		docUrl: _react2.default.PropTypes.string.isRequired
-	};
 	exports.default = ExcelTableView;
 	module.exports = exports['default'];
 
@@ -78496,11 +78782,2126 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 331 */
 /***/ function(module, exports) {
 
-	// removed by extract-text-webpack-plugin
-	module.exports = {"container":"ExcelTableView_container","header":"ExcelTableView_header","content":"ExcelTableView_content","column":"ExcelTableView_column","header_row":"ExcelTableView_header_row","header_column":"ExcelTableView_header_column","item_row":"ExcelTableView_item_row","item_column":"ExcelTableView_item_column"};
+	// --------------------------------------------------------------------------------------------------------------------
+	//
+	// data2xml.js - A data to XML converter with a nice interface (for NodeJS).
+	//
+	// Copyright (c) 2011 Andrew Chilton - http://chilts.org/
+	// Written by Andrew Chilton <andychilton@gmail.com>
+	//
+	// License: http://opensource.org/licenses/MIT
+	//
+	// --------------------------------------------------------------------------------------------------------------------
+	
+	var valid = {
+	    'omit'   : true, // no element is output       : ''
+	    'empty'  : true, // an empty element is output : '<element></element>'
+	    'closed' : true  // a closed element is output : '<element/>'
+	};
+	
+	var defaults = {
+	    'attrProp'  : '_attr',
+	    'valProp'   : '_value',
+	    'undefined' : 'omit',
+	    'null'      : 'omit',
+	    'xmlDecl'   : true,
+	    'cdataProp' : '_cdata'
+	};
+	
+	var xmlHeader = '<?xml version="1.0" encoding="utf-8"?>\n';
+	
+	module.exports = function(opts) {
+	    opts = opts || {};
+	
+	    opts.attrProp = opts.attrProp || defaults.attrProp;
+	    opts.valProp  = opts.valProp  || defaults.valProp;
+	    opts.cdataProp = opts.cdataProp || defaults.cdataProp;
+	    opts.xmlHeader = opts.xmlHeader || xmlHeader;
+	
+	    if (typeof opts.xmlDecl === 'undefined') {
+	        opts.xmlDecl = defaults.xmlDecl;
+	    }
+	
+	    if ( opts['undefined'] && valid[opts['undefined']] ) {
+	        // nothing, this is fine
+	    }
+	    else {
+	        opts['undefined'] = defaults['undefined'];
+	    }
+	    if ( opts['null'] && valid[opts['null']] ) {
+	        // nothing, this is fine
+	    }
+	    else {
+	        opts['null'] = defaults['null'];
+	    }
+	
+	    return function(name, data) {
+	        var xml = opts.xmlDecl ? opts.xmlHeader : '';
+	        xml += makeElement(name, data, opts);
+	        return xml;
+	    };
+	};
+	
+	function entitify(str) {
+	    str = '' + str;
+	    str = str
+	        .replace(/&/g, '&amp;')
+	        .replace(/</g,'&lt;')
+	        .replace(/>/g,'&gt;')
+	        .replace(/'/g, '&apos;')
+	        .replace(/"/g, '&quot;');
+	    return str;
+	}
+	
+	function makeElementAttrs(attr) {
+	    var attributes = '';
+	    for(var a in attr) {
+	        attributes += ' ' + a + '="' + entitify(attr[a]) + '"';
+	    }
+	    return attributes;
+	}
+	
+	function makeStartTag(name, attr) {
+	    attr = attr || {};
+	    var tag = '<' + name;
+	    tag += makeElementAttrs(attr);
+	    tag += '>';
+	    return tag;
+	}
+	
+	function makeClosedElement(name, attr) {
+	    attr = attr || {};
+	    var tag = '<' + name;
+	    tag += makeElementAttrs(attr);
+	    tag += '/>';
+	    return tag;
+	}
+	
+	function undefinedElement(name, attr, opts) {
+	    if ( opts['undefined'] === 'omit' ) {
+	        return '';
+	    }
+	    if ( opts['undefined'] === 'empty' ) {
+	        return makeStartTag(name, attr) + makeEndTag(name);
+	    }
+	    else if ( opts['undefined'] === 'closed' ) {
+	        return makeClosedElement(name, attr);
+	    }
+	
+	}
+	
+	function nullElement(name, attr, opts) {
+	    if ( opts['null'] === 'omit' ) {
+	        return '';
+	    }
+	    if ( opts['null'] === 'empty' ) {
+	        return makeStartTag(name, attr) + makeEndTag(name);
+	    }
+	    else if ( opts['null'] === 'closed' ) {
+	        return makeClosedElement(name, attr);
+	    }
+	}
+	
+	function makeEndTag(name) {
+	    return '</' + name + '>';
+	}
+	
+	function makeElement(name, data, opts) {
+	    var cdataRegExp = /]]\>/g;
+	
+	    var element = '';
+	    if ( Array.isArray(data) ) {
+	        data.forEach(function(v) {
+	            element += makeElement(name, v, opts);
+	        });
+	        return element;
+	    }
+	    else if ( typeof data === 'undefined' ) {
+	        return undefinedElement(name, null, opts);
+	    }
+	    else if ( data === null ) {
+	        return nullElement(name, null, opts);
+	    }
+	    else if ( typeof data === 'object' ) {
+	        var valElement;
+	        if (data.hasOwnProperty(opts.valProp)) {
+	            valElement = data[opts.valProp];
+	
+	            if (typeof valElement === 'undefined') {
+	                return undefinedElement(name, data[opts.attrProp], opts);
+	            }
+	
+	            if (valElement === null) {
+	                return nullElement(name, data[opts.attrProp], opts);
+	            }
+	        }
+	        element += makeStartTag(name, data[opts.attrProp]);
+	
+	        if (valElement) {
+	            element += entitify(valElement);
+	        }
+	        else if ( data[opts.cdataProp] ) {
+	            element += '<![CDATA[' + data[opts.cdataProp].replace(cdataRegExp, ']]]]><![CDATA[>') + ']]>';
+	        }
+	
+	        for (var el in data) {
+	            if ( el === opts.attrProp || el === opts.valProp || el === opts.cdataProp) {
+	                continue;
+	            }
+	            element += makeElement(el, data[el], opts);
+	        }
+	
+	        element += makeEndTag(name);
+	
+	        return element;
+	    }
+	    else {
+	        // a piece of data on it's own can't have attributes
+	        return makeStartTag(name) + entitify(data) + makeEndTag(name);
+	    }
+	    throw 'Unknown data ' + data;
+	}
+	
+	// --------------------------------------------------------------------------------------------------------------------
+	
+	module.exports.makeStartTag = makeStartTag;
+	module.exports.makeEndTag   = makeEndTag;
+	module.exports.makeElement  = makeElement;
+	module.exports.entitify     = entitify;
+	
+	// --------------------------------------------------------------------------------------------------------------------
+	
+
 
 /***/ },
 /* 332 */
+/***/ function(module, exports, __webpack_require__) {
+
+	(function webpackUniversalModuleDefinition(root, factory) {
+		if(true)
+			module.exports = factory(__webpack_require__(2));
+		else if(typeof define === 'function' && define.amd)
+			define(["react"], factory);
+		else if(typeof exports === 'object')
+			exports["Dropzone"] = factory(require("react"));
+		else
+			root["Dropzone"] = factory(root["react"]);
+	})(this, function(__WEBPACK_EXTERNAL_MODULE_1__) {
+	return /******/ (function(modules) { // webpackBootstrap
+	/******/ 	// The module cache
+	/******/ 	var installedModules = {};
+	/******/
+	/******/ 	// The require function
+	/******/ 	function __webpack_require__(moduleId) {
+	/******/
+	/******/ 		// Check if module is in cache
+	/******/ 		if(installedModules[moduleId])
+	/******/ 			return installedModules[moduleId].exports;
+	/******/
+	/******/ 		// Create a new module (and put it into the cache)
+	/******/ 		var module = installedModules[moduleId] = {
+	/******/ 			exports: {},
+	/******/ 			id: moduleId,
+	/******/ 			loaded: false
+	/******/ 		};
+	/******/
+	/******/ 		// Execute the module function
+	/******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
+	/******/
+	/******/ 		// Flag the module as loaded
+	/******/ 		module.loaded = true;
+	/******/
+	/******/ 		// Return the exports of the module
+	/******/ 		return module.exports;
+	/******/ 	}
+	/******/
+	/******/
+	/******/ 	// expose the modules object (__webpack_modules__)
+	/******/ 	__webpack_require__.m = modules;
+	/******/
+	/******/ 	// expose the module cache
+	/******/ 	__webpack_require__.c = installedModules;
+	/******/
+	/******/ 	// __webpack_public_path__
+	/******/ 	__webpack_require__.p = "";
+	/******/
+	/******/ 	// Load entry module and return exports
+	/******/ 	return __webpack_require__(0);
+	/******/ })
+	/************************************************************************/
+	/******/ ([
+	/* 0 */
+	/***/ function(module, exports, __webpack_require__) {
+	
+		'use strict';
+		
+		Object.defineProperty(exports, "__esModule", {
+		  value: true
+		});
+		
+		var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+		
+		var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+		
+		var _react = __webpack_require__(1);
+		
+		var _react2 = _interopRequireDefault(_react);
+		
+		var _attrAccept = __webpack_require__(2);
+		
+		var _attrAccept2 = _interopRequireDefault(_attrAccept);
+		
+		var _getDataTransferItems = __webpack_require__(3);
+		
+		var _getDataTransferItems2 = _interopRequireDefault(_getDataTransferItems);
+		
+		function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+		
+		function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
+		
+		function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+		
+		function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+		
+		function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } /* eslint prefer-template: 0 */
+		
+		
+		var supportMultiple = typeof document !== 'undefined' && document && document.createElement ? 'multiple' in document.createElement('input') : true;
+		
+		var Dropzone = function (_React$Component) {
+		  _inherits(Dropzone, _React$Component);
+		
+		  _createClass(Dropzone, null, [{
+		    key: 'onDocumentDragOver',
+		    value: function onDocumentDragOver(e) {
+		      // allow the entire document to be a drag target
+		      e.preventDefault();
+		    }
+		  }]);
+		
+		  function Dropzone(props, context) {
+		    _classCallCheck(this, Dropzone);
+		
+		    var _this = _possibleConstructorReturn(this, (Dropzone.__proto__ || Object.getPrototypeOf(Dropzone)).call(this, props, context));
+		
+		    _this.renderChildren = function (children) {
+		      if (typeof children === 'function') {
+		        return children(_this.state);
+		      }
+		      return children;
+		    };
+		
+		    _this.onClick = _this.onClick.bind(_this);
+		    _this.onDocumentDrop = _this.onDocumentDrop.bind(_this);
+		    _this.onDragStart = _this.onDragStart.bind(_this);
+		    _this.onDragEnter = _this.onDragEnter.bind(_this);
+		    _this.onDragLeave = _this.onDragLeave.bind(_this);
+		    _this.onDragOver = _this.onDragOver.bind(_this);
+		    _this.onDrop = _this.onDrop.bind(_this);
+		    _this.onFileDialogCancel = _this.onFileDialogCancel.bind(_this);
+		    _this.fileAccepted = _this.fileAccepted.bind(_this);
+		    _this.setRef = _this.setRef.bind(_this);
+		    _this.isFileDialogActive = false;
+		    _this.state = {
+		      isDragActive: false,
+		      acceptedFiles: [],
+		      rejectedFiles: []
+		    };
+		    return _this;
+		  }
+		
+		  _createClass(Dropzone, [{
+		    key: 'componentDidMount',
+		    value: function componentDidMount() {
+		      var preventDropOnDocument = this.props.preventDropOnDocument;
+		
+		      this.dragTargets = [];
+		
+		      if (preventDropOnDocument) {
+		        document.addEventListener('dragover', Dropzone.onDocumentDragOver, false);
+		        document.addEventListener('drop', this.onDocumentDrop, false);
+		      }
+		      // Tried implementing addEventListener, but didn't work out
+		      document.body.onfocus = this.onFileDialogCancel;
+		    }
+		  }, {
+		    key: 'componentWillUnmount',
+		    value: function componentWillUnmount() {
+		      var preventDropOnDocument = this.props.preventDropOnDocument;
+		
+		      if (preventDropOnDocument) {
+		        document.removeEventListener('dragover', Dropzone.onDocumentDragOver);
+		        document.removeEventListener('drop', this.onDocumentDrop);
+		      }
+		      // Can be replaced with removeEventListener, if addEventListener works
+		      document.body.onfocus = null;
+		    }
+		  }, {
+		    key: 'onDocumentDrop',
+		    value: function onDocumentDrop(e) {
+		      if (this.node.contains(e.target)) {
+		        // if we intercepted an event for our instance, let it propagate down to the instance's onDrop handler
+		        return;
+		      }
+		      e.preventDefault();
+		      this.dragTargets = [];
+		    }
+		  }, {
+		    key: 'onDragStart',
+		    value: function onDragStart(e) {
+		      if (this.props.onDragStart) {
+		        this.props.onDragStart.call(this, e);
+		      }
+		    }
+		  }, {
+		    key: 'onDragEnter',
+		    value: function onDragEnter(e) {
+		      e.preventDefault();
+		
+		      // Count the dropzone and any children that are entered.
+		      if (this.dragTargets.indexOf(e.target) === -1) {
+		        this.dragTargets.push(e.target);
+		      }
+		
+		      var allFilesAccepted = this.allFilesAccepted((0, _getDataTransferItems2.default)(e, this.props.multiple));
+		
+		      this.setState({
+		        isDragActive: allFilesAccepted,
+		        isDragReject: !allFilesAccepted
+		      });
+		
+		      if (this.props.onDragEnter) {
+		        this.props.onDragEnter.call(this, e);
+		      }
+		    }
+		  }, {
+		    key: 'onDragOver',
+		    value: function onDragOver(e) {
+		      // eslint-disable-line class-methods-use-this
+		      e.preventDefault();
+		      e.stopPropagation();
+		      try {
+		        e.dataTransfer.dropEffect = 'copy'; // eslint-disable-line no-param-reassign
+		      } catch (err) {
+		        // continue regardless of error
+		      }
+		
+		      if (this.props.onDragOver) {
+		        this.props.onDragOver.call(this, e);
+		      }
+		      return false;
+		    }
+		  }, {
+		    key: 'onDragLeave',
+		    value: function onDragLeave(e) {
+		      var _this2 = this;
+		
+		      e.preventDefault();
+		
+		      // Only deactivate once the dropzone and all children have been left.
+		      this.dragTargets = this.dragTargets.filter(function (el) {
+		        return el !== e.target && _this2.node.contains(el);
+		      });
+		      if (this.dragTargets.length > 0) {
+		        return;
+		      }
+		
+		      this.setState({
+		        isDragActive: false,
+		        isDragReject: false
+		      });
+		
+		      if (this.props.onDragLeave) {
+		        this.props.onDragLeave.call(this, e);
+		      }
+		    }
+		  }, {
+		    key: 'onDrop',
+		    value: function onDrop(e) {
+		      var _this3 = this;
+		
+		      var _props = this.props,
+		          onDrop = _props.onDrop,
+		          onDropAccepted = _props.onDropAccepted,
+		          onDropRejected = _props.onDropRejected,
+		          multiple = _props.multiple,
+		          disablePreview = _props.disablePreview;
+		
+		      var fileList = (0, _getDataTransferItems2.default)(e, multiple);
+		      var acceptedFiles = [];
+		      var rejectedFiles = [];
+		
+		      // Stop default browser behavior
+		      e.preventDefault();
+		
+		      // Reset the counter along with the drag on a drop.
+		      this.dragTargets = [];
+		      this.isFileDialogActive = false;
+		
+		      fileList.forEach(function (file) {
+		        if (!disablePreview) {
+		          file.preview = window.URL.createObjectURL(file); // eslint-disable-line no-param-reassign
+		        }
+		
+		        if (_this3.fileAccepted(file) && _this3.fileMatchSize(file)) {
+		          acceptedFiles.push(file);
+		        } else {
+		          rejectedFiles.push(file);
+		        }
+		      });
+		
+		      if (onDrop) {
+		        onDrop.call(this, acceptedFiles, rejectedFiles, e);
+		      }
+		
+		      if (rejectedFiles.length > 0 && onDropRejected) {
+		        onDropRejected.call(this, rejectedFiles, e);
+		      }
+		
+		      if (acceptedFiles.length > 0 && onDropAccepted) {
+		        onDropAccepted.call(this, acceptedFiles, e);
+		      }
+		
+		      // Reset drag state
+		      this.setState({
+		        isDragActive: false,
+		        isDragReject: false,
+		        acceptedFiles: acceptedFiles,
+		        rejectedFiles: rejectedFiles
+		      });
+		    }
+		  }, {
+		    key: 'onClick',
+		    value: function onClick(e) {
+		      var _props2 = this.props,
+		          onClick = _props2.onClick,
+		          disableClick = _props2.disableClick;
+		
+		      if (!disableClick) {
+		        e.stopPropagation();
+		        this.open();
+		        if (onClick) {
+		          onClick.call(this, e);
+		        }
+		      }
+		    }
+		  }, {
+		    key: 'onFileDialogCancel',
+		    value: function onFileDialogCancel() {
+		      // timeout will not recognize context of this method
+		      var onFileDialogCancel = this.props.onFileDialogCancel;
+		      var fileInputEl = this.fileInputEl;
+		      var isFileDialogActive = this.isFileDialogActive;
+		      // execute the timeout only if the onFileDialogCancel is defined and FileDialog
+		      // is opened in the browser
+		
+		      if (onFileDialogCancel && isFileDialogActive) {
+		        setTimeout(function () {
+		          // Returns an object as FileList
+		          var FileList = fileInputEl.files;
+		          if (!FileList.length) {
+		            isFileDialogActive = false;
+		            onFileDialogCancel();
+		          }
+		        }, 300);
+		      }
+		    }
+		  }, {
+		    key: 'setRef',
+		    value: function setRef(ref) {
+		      this.node = ref;
+		    }
+		  }, {
+		    key: 'fileAccepted',
+		    value: function fileAccepted(file) {
+		      // Firefox versions prior to 53 return a bogus MIME type for every file drag, so dragovers with
+		      // that MIME type will always be accepted
+		      return file.type === 'application/x-moz-file' || (0, _attrAccept2.default)(file, this.props.accept);
+		    }
+		  }, {
+		    key: 'fileMatchSize',
+		    value: function fileMatchSize(file) {
+		      return file.size <= this.props.maxSize && file.size >= this.props.minSize;
+		    }
+		  }, {
+		    key: 'allFilesAccepted',
+		    value: function allFilesAccepted(files) {
+		      return files.every(this.fileAccepted);
+		    }
+		  }, {
+		    key: 'open',
+		    value: function open() {
+		      this.isFileDialogActive = true;
+		      this.fileInputEl.value = null;
+		      this.fileInputEl.click();
+		    }
+		  }, {
+		    key: 'render',
+		    value: function render() {
+		      var _this4 = this;
+		
+		      var _props3 = this.props,
+		          accept = _props3.accept,
+		          activeClassName = _props3.activeClassName,
+		          inputProps = _props3.inputProps,
+		          multiple = _props3.multiple,
+		          name = _props3.name,
+		          rejectClassName = _props3.rejectClassName,
+		          children = _props3.children,
+		          rest = _objectWithoutProperties(_props3, ['accept', 'activeClassName', 'inputProps', 'multiple', 'name', 'rejectClassName', 'children']);
+		
+		      var activeStyle = rest.activeStyle,
+		          className = rest.className,
+		          rejectStyle = rest.rejectStyle,
+		          style = rest.style,
+		          props = _objectWithoutProperties(rest, ['activeStyle', 'className', 'rejectStyle', 'style']);
+		
+		      var _state = this.state,
+		          isDragActive = _state.isDragActive,
+		          isDragReject = _state.isDragReject;
+		
+		
+		      className = className || '';
+		
+		      if (isDragActive && activeClassName) {
+		        className += ' ' + activeClassName;
+		      }
+		      if (isDragReject && rejectClassName) {
+		        className += ' ' + rejectClassName;
+		      }
+		
+		      if (!className && !style && !activeStyle && !rejectStyle) {
+		        style = {
+		          width: 200,
+		          height: 200,
+		          borderWidth: 2,
+		          borderColor: '#666',
+		          borderStyle: 'dashed',
+		          borderRadius: 5
+		        };
+		        activeStyle = {
+		          borderStyle: 'solid',
+		          backgroundColor: '#eee'
+		        };
+		        rejectStyle = {
+		          borderStyle: 'solid',
+		          backgroundColor: '#ffdddd'
+		        };
+		      }
+		
+		      var appliedStyle = void 0;
+		      if (activeStyle && isDragActive) {
+		        appliedStyle = _extends({}, style, activeStyle);
+		      } else if (rejectStyle && isDragReject) {
+		        appliedStyle = _extends({}, style, rejectStyle);
+		      } else {
+		        appliedStyle = _extends({}, style);
+		      }
+		
+		      var inputAttributes = {
+		        accept: accept,
+		        type: 'file',
+		        style: { display: 'none' },
+		        multiple: supportMultiple && multiple,
+		        ref: function ref(el) {
+		          return _this4.fileInputEl = el;
+		        }, // eslint-disable-line
+		        onChange: this.onDrop
+		      };
+		
+		      if (name && name.length) {
+		        inputAttributes.name = name;
+		      }
+		
+		      // Remove custom properties before passing them to the wrapper div element
+		      var customProps = ['acceptedFiles', 'preventDropOnDocument', 'disablePreview', 'disableClick', 'onDropAccepted', 'onDropRejected', 'onFileDialogCancel', 'maxSize', 'minSize'];
+		      var divProps = _extends({}, props);
+		      customProps.forEach(function (prop) {
+		        return delete divProps[prop];
+		      });
+		
+		      return _react2.default.createElement(
+		        'div',
+		        _extends({
+		          className: className,
+		          style: appliedStyle
+		        }, divProps /* expand user provided props first so event handlers are never overridden */, {
+		          onClick: this.onClick,
+		          onDragStart: this.onDragStart,
+		          onDragEnter: this.onDragEnter,
+		          onDragOver: this.onDragOver,
+		          onDragLeave: this.onDragLeave,
+		          onDrop: this.onDrop,
+		          ref: this.setRef
+		        }),
+		        this.renderChildren(children),
+		        _react2.default.createElement('input', _extends({}, inputProps /* expand user provided inputProps first so inputAttributes override them */, inputAttributes))
+		      );
+		    }
+		  }]);
+		
+		  return Dropzone;
+		}(_react2.default.Component);
+		
+		Dropzone.defaultProps = {
+		  preventDropOnDocument: true,
+		  disablePreview: false,
+		  disableClick: false,
+		  multiple: true,
+		  maxSize: Infinity,
+		  minSize: 0
+		};
+		
+		Dropzone.propTypes = {
+		  onClick: _react2.default.PropTypes.func,
+		  onDrop: _react2.default.PropTypes.func,
+		  onDropAccepted: _react2.default.PropTypes.func,
+		  onDropRejected: _react2.default.PropTypes.func,
+		  onDragStart: _react2.default.PropTypes.func,
+		  onDragEnter: _react2.default.PropTypes.func,
+		  onDragOver: _react2.default.PropTypes.func,
+		  onDragLeave: _react2.default.PropTypes.func,
+		
+		  children: _react2.default.PropTypes.oneOfType([_react2.default.PropTypes.node, _react2.default.PropTypes.func]), // Contents of the dropzone
+		  style: _react2.default.PropTypes.object, // CSS styles to apply
+		  activeStyle: _react2.default.PropTypes.object, // CSS styles to apply when drop will be accepted
+		  rejectStyle: _react2.default.PropTypes.object, // CSS styles to apply when drop will be rejected
+		  className: _react2.default.PropTypes.string, // Optional className
+		  activeClassName: _react2.default.PropTypes.string, // className for accepted state
+		  rejectClassName: _react2.default.PropTypes.string, // className for rejected state
+		
+		  preventDropOnDocument: _react2.default.PropTypes.bool, // If false, allow dropped items to take over the current browser window
+		  disablePreview: _react2.default.PropTypes.bool, // Enable/disable preview generation
+		  disableClick: _react2.default.PropTypes.bool, // Disallow clicking on the dropzone container to open file dialog
+		  onFileDialogCancel: _react2.default.PropTypes.func, // Provide a callback on clicking the cancel button of the file dialog
+		
+		  inputProps: _react2.default.PropTypes.object, // Pass additional attributes to the <input type="file"/> tag
+		  multiple: _react2.default.PropTypes.bool, // Allow dropping multiple files
+		  accept: _react2.default.PropTypes.string, // Allow specific types of files. See https://github.com/okonet/attr-accept for more information
+		  name: _react2.default.PropTypes.string, // name attribute for the input tag
+		  maxSize: _react2.default.PropTypes.number,
+		  minSize: _react2.default.PropTypes.number
+		};
+		
+		exports.default = Dropzone;
+		module.exports = exports['default'];
+	
+	/***/ },
+	/* 1 */
+	/***/ function(module, exports) {
+	
+		module.exports = __WEBPACK_EXTERNAL_MODULE_1__;
+	
+	/***/ },
+	/* 2 */
+	/***/ function(module, exports) {
+	
+		module.exports=function(t){function n(e){if(r[e])return r[e].exports;var o=r[e]={exports:{},id:e,loaded:!1};return t[e].call(o.exports,o,o.exports,n),o.loaded=!0,o.exports}var r={};return n.m=t,n.c=r,n.p="",n(0)}([function(t,n,r){"use strict";n.__esModule=!0,r(8),r(9),n["default"]=function(t,n){if(t&&n){var r=function(){var r=Array.isArray(n)?n:n.split(","),e=t.name||"",o=t.type||"",i=o.replace(/\/.*$/,"");return{v:r.some(function(t){var n=t.trim();return"."===n.charAt(0)?e.toLowerCase().endsWith(n.toLowerCase()):/\/\*$/.test(n)?i===n.replace(/\/.*$/,""):o===n})}}();if("object"==typeof r)return r.v}return!0},t.exports=n["default"]},function(t,n){var r=t.exports={version:"1.2.2"};"number"==typeof __e&&(__e=r)},function(t,n){var r=t.exports="undefined"!=typeof window&&window.Math==Math?window:"undefined"!=typeof self&&self.Math==Math?self:Function("return this")();"number"==typeof __g&&(__g=r)},function(t,n,r){var e=r(2),o=r(1),i=r(4),u=r(19),c="prototype",f=function(t,n){return function(){return t.apply(n,arguments)}},s=function(t,n,r){var a,p,l,y,d=t&s.G,h=t&s.P,v=d?e:t&s.S?e[n]||(e[n]={}):(e[n]||{})[c],x=d?o:o[n]||(o[n]={});d&&(r=n);for(a in r)p=!(t&s.F)&&v&&a in v,l=(p?v:r)[a],y=t&s.B&&p?f(l,e):h&&"function"==typeof l?f(Function.call,l):l,v&&!p&&u(v,a,l),x[a]!=l&&i(x,a,y),h&&((x[c]||(x[c]={}))[a]=l)};e.core=o,s.F=1,s.G=2,s.S=4,s.P=8,s.B=16,s.W=32,t.exports=s},function(t,n,r){var e=r(5),o=r(18);t.exports=r(22)?function(t,n,r){return e.setDesc(t,n,o(1,r))}:function(t,n,r){return t[n]=r,t}},function(t,n){var r=Object;t.exports={create:r.create,getProto:r.getPrototypeOf,isEnum:{}.propertyIsEnumerable,getDesc:r.getOwnPropertyDescriptor,setDesc:r.defineProperty,setDescs:r.defineProperties,getKeys:r.keys,getNames:r.getOwnPropertyNames,getSymbols:r.getOwnPropertySymbols,each:[].forEach}},function(t,n){var r=0,e=Math.random();t.exports=function(t){return"Symbol(".concat(void 0===t?"":t,")_",(++r+e).toString(36))}},function(t,n,r){var e=r(20)("wks"),o=r(2).Symbol;t.exports=function(t){return e[t]||(e[t]=o&&o[t]||(o||r(6))("Symbol."+t))}},function(t,n,r){r(26),t.exports=r(1).Array.some},function(t,n,r){r(25),t.exports=r(1).String.endsWith},function(t,n){t.exports=function(t){if("function"!=typeof t)throw TypeError(t+" is not a function!");return t}},function(t,n){var r={}.toString;t.exports=function(t){return r.call(t).slice(8,-1)}},function(t,n,r){var e=r(10);t.exports=function(t,n,r){if(e(t),void 0===n)return t;switch(r){case 1:return function(r){return t.call(n,r)};case 2:return function(r,e){return t.call(n,r,e)};case 3:return function(r,e,o){return t.call(n,r,e,o)}}return function(){return t.apply(n,arguments)}}},function(t,n){t.exports=function(t){if(void 0==t)throw TypeError("Can't call method on  "+t);return t}},function(t,n,r){t.exports=function(t){var n=/./;try{"/./"[t](n)}catch(e){try{return n[r(7)("match")]=!1,!"/./"[t](n)}catch(o){}}return!0}},function(t,n){t.exports=function(t){try{return!!t()}catch(n){return!0}}},function(t,n){t.exports=function(t){return"object"==typeof t?null!==t:"function"==typeof t}},function(t,n,r){var e=r(16),o=r(11),i=r(7)("match");t.exports=function(t){var n;return e(t)&&(void 0!==(n=t[i])?!!n:"RegExp"==o(t))}},function(t,n){t.exports=function(t,n){return{enumerable:!(1&t),configurable:!(2&t),writable:!(4&t),value:n}}},function(t,n,r){var e=r(2),o=r(4),i=r(6)("src"),u="toString",c=Function[u],f=(""+c).split(u);r(1).inspectSource=function(t){return c.call(t)},(t.exports=function(t,n,r,u){"function"==typeof r&&(o(r,i,t[n]?""+t[n]:f.join(String(n))),"name"in r||(r.name=n)),t===e?t[n]=r:(u||delete t[n],o(t,n,r))})(Function.prototype,u,function(){return"function"==typeof this&&this[i]||c.call(this)})},function(t,n,r){var e=r(2),o="__core-js_shared__",i=e[o]||(e[o]={});t.exports=function(t){return i[t]||(i[t]={})}},function(t,n,r){var e=r(17),o=r(13);t.exports=function(t,n,r){if(e(n))throw TypeError("String#"+r+" doesn't accept regex!");return String(o(t))}},function(t,n,r){t.exports=!r(15)(function(){return 7!=Object.defineProperty({},"a",{get:function(){return 7}}).a})},function(t,n){var r=Math.ceil,e=Math.floor;t.exports=function(t){return isNaN(t=+t)?0:(t>0?e:r)(t)}},function(t,n,r){var e=r(23),o=Math.min;t.exports=function(t){return t>0?o(e(t),9007199254740991):0}},function(t,n,r){"use strict";var e=r(3),o=r(24),i=r(21),u="endsWith",c=""[u];e(e.P+e.F*r(14)(u),"String",{endsWith:function(t){var n=i(this,t,u),r=arguments,e=r.length>1?r[1]:void 0,f=o(n.length),s=void 0===e?f:Math.min(o(e),f),a=String(t);return c?c.call(n,a,s):n.slice(s-a.length,s)===a}})},function(t,n,r){var e=r(5),o=r(3),i=r(1).Array||Array,u={},c=function(t,n){e.each.call(t.split(","),function(t){void 0==n&&t in i?u[t]=i[t]:t in[]&&(u[t]=r(12)(Function.call,[][t],n))})};c("pop,reverse,shift,keys,values,entries",1),c("indexOf,every,some,forEach,map,filter,find,findIndex,includes",3),c("join,slice,concat,push,splice,unshift,sort,lastIndexOf,reduce,reduceRight,copyWithin,fill"),o(o.S,"Array",u)}]);
+	
+	/***/ },
+	/* 3 */
+	/***/ function(module, exports) {
+	
+		"use strict";
+		
+		Object.defineProperty(exports, "__esModule", {
+		  value: true
+		});
+		exports.default = getDataTransferFiles;
+		function getDataTransferFiles(event) {
+		  var isMultipleAllowed = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
+		
+		  var dataTransferItemsList = [];
+		  if (event.dataTransfer) {
+		    var dt = event.dataTransfer;
+		    if (dt.files && dt.files.length) {
+		      dataTransferItemsList = dt.files;
+		    } else if (dt.items && dt.items.length) {
+		      // During the drag even the dataTransfer.files is null
+		      // but Chrome implements some drag store, which is accesible via dataTransfer.items
+		      dataTransferItemsList = dt.items;
+		    }
+		  } else if (event.target && event.target.files) {
+		    dataTransferItemsList = event.target.files;
+		  }
+		
+		  if (dataTransferItemsList.length > 0) {
+		    dataTransferItemsList = isMultipleAllowed ? dataTransferItemsList : [dataTransferItemsList[0]];
+		  }
+		
+		  // Convert from DataTransferItemsList to the native Array
+		  return Array.prototype.slice.call(dataTransferItemsList);
+		}
+		module.exports = exports["default"];
+	
+	/***/ }
+	/******/ ])
+	});
+	;
+	//# sourceMappingURL=index.js.map
+
+/***/ },
+/* 333 */
+/***/ function(module, exports) {
+
+	"use strict";
+	
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	var CamlBuilder = function () {
+	    function CamlBuilder() {}
+	    /** Generate CAML Query, starting from <Where> tag */
+	    CamlBuilder.prototype.Where = function () {
+	        return CamlBuilder.Internal.createWhere();
+	    };
+	    /** Generate <View> tag for SP.CamlQuery
+	        @param viewFields If omitted, default view fields are requested; otherwise, only values for the fields with the specified internal names are returned.
+	                          Specifying view fields is a good practice, as it decreases traffic between server and client. */
+	    CamlBuilder.prototype.View = function (viewFields) {
+	        return CamlBuilder.Internal.createView(viewFields);
+	    };
+	    /** Generate <ViewFields> tag for SPServices */
+	    CamlBuilder.prototype.ViewFields = function (viewFields) {
+	        return CamlBuilder.Internal.createViewFields(viewFields);
+	    };
+	    /** Use for:
+	        1. SPServices CAMLQuery attribute
+	        2. Creating partial expressions
+	        3. In conjunction with Any & All clauses
+	         */
+	    CamlBuilder.Expression = function () {
+	        return CamlBuilder.Internal.createExpression();
+	    };
+	    CamlBuilder.FromXml = function (xml) {
+	        return CamlBuilder.Internal.createRawQuery(xml);
+	    };
+	    return CamlBuilder;
+	}();
+	
+	var CamlBuilder;
+	
+	(function (CamlBuilder) {
+	    (function (ViewScope) {
+	        ViewScope[ViewScope["Recursive"] = 0] = "Recursive";
+	        ViewScope[ViewScope["RecursiveAll"] = 1] = "RecursiveAll";
+	        ViewScope[ViewScope["FilesOnly"] = 2] = "FilesOnly";
+	    })(CamlBuilder.ViewScope || (CamlBuilder.ViewScope = {}));
+	    var ViewScope = CamlBuilder.ViewScope;
+	    (function (DateRangesOverlapType) {
+	        /** Returns events for today */
+	        DateRangesOverlapType[DateRangesOverlapType["Now"] = 0] = "Now";
+	        /** Returns events for one day, specified by CalendarDate in QueryOptions */
+	        DateRangesOverlapType[DateRangesOverlapType["Day"] = 1] = "Day";
+	        /** Returns events for one week, specified by CalendarDate in QueryOptions */
+	        DateRangesOverlapType[DateRangesOverlapType["Week"] = 2] = "Week";
+	        /** Returns events for one month, specified by CalendarDate in QueryOptions.
+	            Caution: usually also returns few days from previous and next months */
+	        DateRangesOverlapType[DateRangesOverlapType["Month"] = 3] = "Month";
+	        /** Returns events for one year, specified by CalendarDate in QueryOptions */
+	        DateRangesOverlapType[DateRangesOverlapType["Year"] = 4] = "Year";
+	    })(CamlBuilder.DateRangesOverlapType || (CamlBuilder.DateRangesOverlapType = {}));
+	    var DateRangesOverlapType = CamlBuilder.DateRangesOverlapType;
+	    var Internal = function () {
+	        function Internal() {}
+	        Internal.createView = function (viewFields) {
+	            return new ViewInternal().View(viewFields);
+	        };
+	        Internal.createViewFields = function (viewFields) {
+	            return new ViewInternal().CreateViewFields(viewFields);
+	        };
+	        Internal.createWhere = function () {
+	            return new QueryInternal().Where();
+	        };
+	        Internal.createExpression = function () {
+	            return new FieldExpression(new Builder());
+	        };
+	        Internal.createRawQuery = function (xml) {
+	            return new RawQueryInternal(xml);
+	        };
+	        return Internal;
+	    }();
+	    CamlBuilder.Internal = Internal;
+	    var ViewInternal = function () {
+	        function ViewInternal() {
+	            this.builder = new Builder();
+	        }
+	        /** Adds View element. */
+	        ViewInternal.prototype.View = function (viewFields) {
+	            this.builder.WriteStart("View");
+	            this.builder.unclosedTags++;
+	            if (viewFields && viewFields.length > 0) this.CreateViewFields(viewFields);
+	            this.joinsManager = new JoinsManager(this.builder, this);
+	            return this;
+	        };
+	        ViewInternal.prototype.CreateViewFields = function (viewFields) {
+	            this.builder.WriteStart("ViewFields");
+	            for (var i = 0; i < viewFields.length; i++) {
+	                this.builder.WriteFieldRef(viewFields[i]);
+	            }
+	            this.builder.WriteEnd();
+	            return this;
+	        };
+	        ViewInternal.prototype.RowLimit = function (limit, paged) {
+	            this.builder.WriteRowLimit(paged || false, limit);
+	            return this;
+	        };
+	        ViewInternal.prototype.Scope = function (scope) {
+	            switch (scope) {
+	                case ViewScope.FilesOnly:
+	                    this.builder.SetAttributeToLastElement("View", "Scope", "FilesOnly");
+	                    break;
+	                case ViewScope.Recursive:
+	                    this.builder.SetAttributeToLastElement("View", "Scope", "Recursive");
+	                    break;
+	                case ViewScope.RecursiveAll:
+	                    this.builder.SetAttributeToLastElement("View", "Scope", "RecursiveAll");
+	                    break;
+	                default:
+	                    console.log('Incorrect view scope! Please use values from CamlBuilder.ViewScope enumeration.');
+	                    break;
+	            }
+	            return this;
+	        };
+	        ViewInternal.prototype.InnerJoin = function (lookupFieldInternalName, alias) {
+	            return this.joinsManager.Join(lookupFieldInternalName, alias, "INNER");
+	        };
+	        ViewInternal.prototype.LeftJoin = function (lookupFieldInternalName, alias) {
+	            return this.joinsManager.Join(lookupFieldInternalName, alias, "LEFT");
+	        };
+	        /** Select projected field for using in the main Query body
+	            @param remoteFieldAlias By this alias, the field can be used in the main Query body. */
+	        ViewInternal.prototype.Select = function (remoteFieldInternalName, remoteFieldAlias) {
+	            return this.joinsManager.ProjectedField(remoteFieldInternalName, remoteFieldAlias);
+	        };
+	        ViewInternal.prototype.ToString = function () {
+	            if (this.joinsManager != null) this.joinsManager.Finalize();
+	            return this.builder.Finalize();
+	        };
+	        ViewInternal.prototype.ToCamlQuery = function () {
+	            this.joinsManager.Finalize();
+	            return this.builder.FinalizeToSPQuery();
+	        };
+	        /** Adds Query clause to the View XML. */
+	        ViewInternal.prototype.Query = function () {
+	            this.joinsManager.Finalize();
+	            this.builder.WriteStart("Query");
+	            this.builder.unclosedTags++;
+	            return new QueryInternal(this.builder);
+	        };
+	        return ViewInternal;
+	    }();
+	    /** Represents SharePoint CAML Query element */
+	    var QueryInternal = function () {
+	        function QueryInternal(builder) {
+	            this.builder = builder || new Builder();
+	        }
+	        /** Adds Where clause to the query, inside you can specify conditions for certain field values. */
+	        QueryInternal.prototype.Where = function () {
+	            this.builder.WriteStart("Where");
+	            this.builder.unclosedTags++;
+	            return new FieldExpression(this.builder);
+	        };
+	        /** Adds GroupBy clause to the query.
+	            @param collapse If true, only information about the groups is retrieved, otherwise items are also retrieved. */
+	        QueryInternal.prototype.GroupBy = function (groupFieldName, collapse) {
+	            this.builder.WriteStartGroupBy(groupFieldName, collapse);
+	            return new GroupedQuery(this.builder);
+	        };
+	        /** Adds OrderBy clause to the query
+	            @param fieldInternalName Internal field of the first field by that the data will be sorted (ascending)
+	            @param override This is only necessary for large lists. DON'T use it unless you know what it is for!
+	            @param useIndexForOrderBy This is only necessary for large lists. DON'T use it unless you know what it is for!
+	        */
+	        QueryInternal.prototype.OrderBy = function (fieldInternalName, override, useIndexForOrderBy) {
+	            this.builder.WriteStartOrderBy(override, useIndexForOrderBy);
+	            this.builder.WriteFieldRef(fieldInternalName);
+	            return new SortedQuery(this.builder);
+	        };
+	        /** Adds OrderBy clause to the query (using descending order for the first field).
+	            @param fieldInternalName Internal field of the first field by that the data will be sorted (descending)
+	            @param override This is only necessary for large lists. DON'T use it unless you know what it is for!
+	            @param useIndexForOrderBy This is only necessary for large lists. DON'T use it unless you know what it is for!
+	        */
+	        QueryInternal.prototype.OrderByDesc = function (fieldInternalName, override, useIndexForOrderBy) {
+	            this.builder.WriteStartOrderBy(override, useIndexForOrderBy);
+	            this.builder.WriteFieldRef(fieldInternalName, {
+	                Descending: true
+	            });
+	            return new SortedQuery(this.builder);
+	        };
+	        QueryInternal.prototype.ToString = function () {
+	            return this.builder.Finalize();
+	        };
+	        QueryInternal.prototype.ToCamlQuery = function () {
+	            return this.builder.FinalizeToSPQuery();
+	        };
+	        return QueryInternal;
+	    }();
+	    var JoinsManager = function () {
+	        function JoinsManager(builder, viewInternal) {
+	            this.projectedFields = [];
+	            this.joins = [];
+	            this.originalView = viewInternal;
+	            this.builder = builder;
+	        }
+	        JoinsManager.prototype.Finalize = function () {
+	            if (this.joins.length > 0) {
+	                this.builder.WriteStart("Joins");
+	                for (var i = 0; i < this.joins.length; i++) {
+	                    var join = this.joins[i];
+	                    this.builder.WriteStart("Join", [{
+	                        Name: "Type",
+	                        Value: join.JoinType
+	                    }, {
+	                        Name: "ListAlias",
+	                        Value: join.Alias
+	                    }]);
+	                    this.builder.WriteStart("Eq");
+	                    this.builder.WriteFieldRef(join.RefFieldName, {
+	                        RefType: "ID"
+	                    });
+	                    this.builder.WriteFieldRef("ID", {
+	                        List: join.Alias
+	                    });
+	                    this.builder.WriteEnd();
+	                    this.builder.WriteEnd();
+	                }
+	                this.builder.WriteEnd();
+	                this.builder.WriteStart("ProjectedFields");
+	                for (var i = 0; i < this.projectedFields.length; i++) {
+	                    var projField = this.projectedFields[i];
+	                    this.builder.WriteStart("Field", [{
+	                        Name: "ShowField",
+	                        Value: projField.FieldName
+	                    }, {
+	                        Name: "Type",
+	                        Value: "Lookup"
+	                    }, {
+	                        Name: "Name",
+	                        Value: projField.Alias
+	                    }, {
+	                        Name: "List",
+	                        Value: projField.JoinAlias
+	                    }]);
+	                    this.builder.WriteEnd();
+	                }
+	                this.builder.WriteEnd();
+	            }
+	        };
+	        JoinsManager.prototype.Join = function (lookupFieldInternalName, alias, joinType) {
+	            this.joins.push({
+	                RefFieldName: lookupFieldInternalName,
+	                Alias: alias,
+	                JoinType: joinType
+	            });
+	            return new Join(this.builder, this);
+	        };
+	        JoinsManager.prototype.ProjectedField = function (remoteFieldInternalName, remoteFieldAlias) {
+	            this.projectedFields.push({
+	                FieldName: remoteFieldInternalName,
+	                Alias: remoteFieldAlias,
+	                JoinAlias: this.joins[this.joins.length - 1].Alias
+	            });
+	            return this.originalView;
+	        };
+	        return JoinsManager;
+	    }();
+	    var Join = function () {
+	        function Join(builder, joinsManager) {
+	            this.builder = builder;
+	            this.joinsManager = joinsManager;
+	        }
+	        /** Select projected field for using in the main Query body
+	            @param remoteFieldAlias By this alias, the field can be used in the main Query body. */
+	        Join.prototype.Select = function (remoteFieldInternalName, remoteFieldAlias) {
+	            return this.joinsManager.ProjectedField(remoteFieldInternalName, remoteFieldAlias);
+	        };
+	        Join.prototype.InnerJoin = function (lookupFieldInternalName, alias) {
+	            return this.joinsManager.Join(lookupFieldInternalName, alias, "INNER");
+	        };
+	        Join.prototype.LeftJoin = function (lookupFieldInternalName, alias) {
+	            return this.joinsManager.Join(lookupFieldInternalName, alias, "LEFT");
+	        };
+	        return Join;
+	    }();
+	    var QueryToken = function () {
+	        function QueryToken(builder, startIndex) {
+	            this.builder = builder;
+	            this.startIndex = startIndex;
+	        }
+	        /** Adds And clause to the query. */
+	        QueryToken.prototype.And = function () {
+	            this.builder.tree.splice(this.startIndex, 0, {
+	                Element: "Start",
+	                Name: "And"
+	            });
+	            this.builder.unclosedTags++;
+	            return new FieldExpression(this.builder);
+	        };
+	        /** Adds Or clause to the query. */
+	        QueryToken.prototype.Or = function () {
+	            this.builder.tree.splice(this.startIndex, 0, {
+	                Element: "Start",
+	                Name: "Or"
+	            });
+	            this.builder.unclosedTags++;
+	            return new FieldExpression(this.builder);
+	        };
+	        /** Adds GroupBy clause to the query.
+	            @param collapse If true, only information about the groups is retrieved, otherwise items are also retrieved. */
+	        QueryToken.prototype.GroupBy = function (groupFieldName, collapse) {
+	            this.builder.WriteStartGroupBy(groupFieldName, collapse);
+	            return new GroupedQuery(this.builder);
+	        };
+	        /** Adds OrderBy clause to the query
+	            @param fieldInternalName Internal field of the first field by that the data will be sorted (ascending)
+	            @param override This is only necessary for large lists. DON'T use it unless you know what it is for!
+	            @param useIndexForOrderBy This is only necessary for large lists. DON'T use it unless you know what it is for!
+	        */
+	        QueryToken.prototype.OrderBy = function (fieldInternalName, override, useIndexForOrderBy) {
+	            this.builder.WriteStartOrderBy(override, useIndexForOrderBy);
+	            this.builder.WriteFieldRef(fieldInternalName);
+	            return new SortedQuery(this.builder);
+	        };
+	        /** Adds OrderBy clause to the query (using descending order for the first field).
+	            @param fieldInternalName Internal field of the first field by that the data will be sorted (descending)
+	            @param override This is only necessary for large lists. DON'T use it unless you know what it is for!
+	            @param useIndexForOrderBy This is only necessary for large lists. DON'T use it unless you know what it is for!
+	        */
+	        QueryToken.prototype.OrderByDesc = function (fieldInternalName, override, useIndexForOrderBy) {
+	            this.builder.WriteStartOrderBy(override, useIndexForOrderBy);
+	            this.builder.WriteFieldRef(fieldInternalName, {
+	                Descending: true
+	            });
+	            return new SortedQuery(this.builder);
+	        };
+	        /** Returns the XML string representing the generated CAML
+	         */
+	        QueryToken.prototype.ToString = function () {
+	            return this.builder.Finalize();
+	        };
+	        /** Returns SP.CamlQuery object that represents the constructed query
+	         */
+	        QueryToken.prototype.ToCamlQuery = function () {
+	            return this.builder.FinalizeToSPQuery();
+	        };
+	        return QueryToken;
+	    }();
+	    var ModifyType;
+	    (function (ModifyType) {
+	        ModifyType[ModifyType["Replace"] = 0] = "Replace";
+	        ModifyType[ModifyType["AppendOr"] = 1] = "AppendOr";
+	        ModifyType[ModifyType["AppendAnd"] = 2] = "AppendAnd";
+	    })(ModifyType || (ModifyType = {}));
+	    var RawQueryInternal = function () {
+	        function RawQueryInternal(xml) {
+	            this.xml = xml;
+	        }
+	        RawQueryInternal.prototype.ReplaceWhere = function () {
+	            return this.modifyWhere(ModifyType.Replace);
+	        };
+	        RawQueryInternal.prototype.ModifyWhere = function () {
+	            return this;
+	        };
+	        RawQueryInternal.prototype.AppendOr = function () {
+	            return this.modifyWhere(ModifyType.AppendOr);
+	        };
+	        RawQueryInternal.prototype.AppendAnd = function () {
+	            return this.modifyWhere(ModifyType.AppendAnd);
+	        };
+	        RawQueryInternal.prototype.modifyWhere = function (modifyType) {
+	            var builder = new Builder();
+	            var xmlDoc = this.getXmlDocument(this.xml);
+	            var whereBuilder = this.parseRecursive(builder, xmlDoc.documentElement, modifyType);
+	            if (whereBuilder == null) console.log("CamlJs error: cannot find Query tag in provided XML");
+	            builder.WriteStart("Where");
+	            builder.unclosedTags++;
+	            switch (modifyType) {
+	                case ModifyType.Replace:
+	                    return new FieldExpression(builder);
+	                case ModifyType.AppendAnd:
+	                    var pos = builder.tree.length;
+	                    builder.WriteStart("And");
+	                    builder.unclosedTags++;
+	                    builder.tree = builder.tree.concat(whereBuilder.tree);
+	                    return new FieldExpression(builder);
+	                case ModifyType.AppendOr:
+	                    var pos = builder.tree.length;
+	                    builder.WriteStart("Or");
+	                    builder.unclosedTags++;
+	                    builder.tree = builder.tree.concat(whereBuilder.tree);
+	                    return new FieldExpression(builder);
+	                default:
+	                    console.log("CamlJs error: unknown ModifyType " + modifyType);
+	                    return null;
+	            }
+	        };
+	        RawQueryInternal.prototype.getXmlDocument = function (xml) {
+	            var xmlDoc;
+	            if (window["DOMParser"]) {
+	                var parser = new DOMParser();
+	                xmlDoc = parser.parseFromString(this.xml, "text/xml");
+	            } else {
+	                xmlDoc = new ActiveXObject("Microsoft.XMLDOM");
+	                xmlDoc["async"] = false;
+	                xmlDoc["loadXML"](this.xml);
+	            }
+	            return xmlDoc;
+	        };
+	        RawQueryInternal.prototype.parseRecursive = function (builder, node, modifyType) {
+	            if (node.nodeName == "#text") {
+	                builder.tree.push({
+	                    Element: "Raw",
+	                    Xml: node.nodeValue
+	                });
+	                return;
+	            }
+	            var attrs = [];
+	            for (var i = 0, len = node.attributes.length; i < len; i++) {
+	                attrs.push({
+	                    Name: node.attributes[i].name,
+	                    Value: node.attributes[i].value
+	                });
+	            }
+	            builder.WriteStart(node.nodeName, attrs);
+	            builder.unclosedTags++;
+	            var found = node.nodeName == "Query" ? new Builder() : null;
+	            for (var i = 0, len = node.childNodes.length; i < len; i++) {
+	                if (node.nodeName == "Query" && node.childNodes[i].nodeName == "Where") {
+	                    var whereBuilder = new Builder();
+	                    var whereNode = node.childNodes[i];
+	                    for (var w = 0, wlen = whereNode.childNodes.length; w < wlen; w++) {
+	                        this.parseRecursive(whereBuilder, whereNode.childNodes[w], modifyType);
+	                    }
+	                    found = whereBuilder;
+	                    continue;
+	                }
+	                var result = this.parseRecursive(builder, node.childNodes[i], modifyType);
+	                if (found == null) found = result;
+	            }
+	            if (!found) {
+	                builder.unclosedTags--;
+	                builder.WriteEnd();
+	            }
+	            return found;
+	        };
+	        return RawQueryInternal;
+	    }();
+	    var FieldExpression = function () {
+	        function FieldExpression(builder) {
+	            this.builder = builder;
+	        }
+	        /** Specifies that a condition will be tested against the field with the specified internal name, and the type of this field is Text */
+	        FieldExpression.prototype.TextField = function (internalName) {
+	            return new FieldExpressionToken(this.builder, internalName, "Text");
+	        };
+	        /** Specifies that a condition will be tested against the field with the specified internal name, and the type of this field is Choice */
+	        FieldExpression.prototype.ChoiceField = function (internalName) {
+	            return new FieldExpressionToken(this.builder, internalName, "Choice");
+	        };
+	        /** Specifies that a condition will be tested against the field with the specified internal name, and the type of this field is Computed */
+	        FieldExpression.prototype.ComputedField = function (internalName) {
+	            return new FieldExpressionToken(this.builder, internalName, "Computed");
+	        };
+	        /** Specifies that a condition will be tested against the field with the specified internal name, and the type of this field is Boolean */
+	        FieldExpression.prototype.BooleanField = function (internalName) {
+	            return new FieldExpressionToken(this.builder, internalName, "Integer");
+	        };
+	        /** Specifies that a condition will be tested against the field with the specified internal name, and the type of this field is URL */
+	        FieldExpression.prototype.UrlField = function (internalName) {
+	            return new FieldExpressionToken(this.builder, internalName, "URL");
+	        };
+	        /** Specifies that a condition will be tested against the field with the specified internal name, and the type of this field is Number */
+	        FieldExpression.prototype.NumberField = function (internalName) {
+	            return new FieldExpressionToken(this.builder, internalName, "Number");
+	        };
+	        /** Specifies that a condition will be tested against the field with the specified internal name, and the type of this field is Integer */
+	        FieldExpression.prototype.IntegerField = function (internalName) {
+	            return new FieldExpressionToken(this.builder, internalName, "Integer");
+	        };
+	        /** Specifies that a condition will be tested against the field with the specified internal name, and the type of this field is Counter (usually ID field) */
+	        FieldExpression.prototype.CounterField = function (internalName) {
+	            return new FieldExpressionToken(this.builder, internalName, "Counter");
+	        };
+	        /** Specifies that a condition will be tested against the field with the specified internal name, and the type of this field is User */
+	        FieldExpression.prototype.UserField = function (internalName) {
+	            return new UserFieldExpression(this.builder, internalName);
+	        };
+	        /** Specifies that a condition will be tested against the field with the specified internal name, and the type of this field is Lookup */
+	        FieldExpression.prototype.LookupField = function (internalName) {
+	            return new LookupFieldExpression(this.builder, internalName);
+	        };
+	        /** Specifies that a condition will be tested against the field with the specified internal name, and the type of this field is LookupMulti */
+	        FieldExpression.prototype.LookupMultiField = function (internalName) {
+	            return new LookupOrUserMultiFieldExpression(this.builder, internalName, FieldMultiExpressionType.LookupMulti);
+	        };
+	        /** Specifies that a condition will be tested against the field with the specified internal name, and the type of this field is UserMulti */
+	        FieldExpression.prototype.UserMultiField = function (internalName) {
+	            return new LookupOrUserMultiFieldExpression(this.builder, internalName, FieldMultiExpressionType.UserMulti);
+	        };
+	        /** Specifies that a condition will be tested against the field with the specified internal name, and the type of this field is Date */
+	        FieldExpression.prototype.DateField = function (internalName) {
+	            return new FieldExpressionToken(this.builder, internalName, "Date");
+	        };
+	        /** Specifies that a condition will be tested against the field with the specified internal name, and the type of this field is DateTime */
+	        FieldExpression.prototype.DateTimeField = function (internalName) {
+	            return new FieldExpressionToken(this.builder, internalName, "DateTime");
+	        };
+	        /** Used in queries for retrieving recurring calendar events.
+	            @param overlapType Defines type of overlap: return all events for a day, for a week, for a month or for a year
+	            @param calendarDate Defines date that will be used for determining events for which exactly day/week/month/year will be returned.
+	                                This value is ignored for overlapType=Now, but for the other overlap types it is mandatory.
+	                                This value will cause generation of QueryOptions/CalendarDate element.
+	            @param eventDateField Internal name of "Start Time" field (default: "EventDate" - all OOTB Calendar lists use this name)
+	            @param endDateField Internal name of "End Time" field (default: "EndDate" - all OOTB Calendar lists use this name)
+	            @param recurrenceIDField Internal name of "Recurrence ID" field (default: "RecurrenceID" - all OOTB Calendar lists use this name)
+	         */
+	        FieldExpression.prototype.DateRangesOverlap = function (overlapType, calendarDate, eventDateField, endDateField, recurrenceIDField) {
+	            var pos = this.builder.tree.length;
+	            this.builder.WriteStart("DateRangesOverlap");
+	            this.builder.WriteFieldRef(eventDateField || "EventDate");
+	            this.builder.WriteFieldRef(endDateField || "EndDate");
+	            this.builder.WriteFieldRef(recurrenceIDField || "RecurrenceID");
+	            var value;
+	            switch (overlapType) {
+	                case DateRangesOverlapType.Now:
+	                    value = CamlValues.Now;
+	                    break;
+	                case DateRangesOverlapType.Day:
+	                    value = CamlValues.Today;
+	                    break;
+	                case DateRangesOverlapType.Week:
+	                    value = "{Week}";
+	                    break;
+	                case DateRangesOverlapType.Month:
+	                    value = "{Month}";
+	                    break;
+	                case DateRangesOverlapType.Year:
+	                    value = "{Year}";
+	                    break;
+	            }
+	            this.builder.WriteValueElement("Date", value);
+	            this.builder.WriteEnd();
+	            // TODO: write CalendarDate to QueryOptions
+	            return new QueryToken(this.builder, pos);
+	        };
+	        /** Adds And clauses to the query. Use for creating bracket-expressions in conjuction with CamlBuilder.Expression(). */
+	        FieldExpression.prototype.All = function () {
+	            var conditions = [];
+	            for (var _i = 0; _i < arguments.length; _i++) {
+	                conditions[_i - 0] = arguments[_i];
+	            }
+	            var pos = this.builder.tree.length;
+	            if (conditions.length == 1 && conditions[0] instanceof Array) conditions = conditions[0];
+	            var builders = [];
+	            for (var i = 0; i < conditions.length; i++) {
+	                builders.push(conditions[i]["builder"]);
+	            }this.builder.WriteConditions(builders, "And");
+	            return new QueryToken(this.builder, pos);
+	        };
+	        /** Adds Or clauses to the query. Use for creating bracket-expressions in conjuction with CamlBuilder.Expression(). */
+	        FieldExpression.prototype.Any = function () {
+	            var conditions = [];
+	            for (var _i = 0; _i < arguments.length; _i++) {
+	                conditions[_i - 0] = arguments[_i];
+	            }
+	            var pos = this.builder.tree.length;
+	            if (conditions.length == 1 && conditions[0] instanceof Array) conditions = conditions[0];
+	            var builders = [];
+	            for (var i = 0; i < conditions.length; i++) {
+	                builders.push(conditions[i]["builder"]);
+	            }this.builder.WriteConditions(builders, "Or");
+	            return new QueryToken(this.builder, pos);
+	        };
+	        return FieldExpression;
+	    }();
+	    var FieldMultiExpressionType;
+	    (function (FieldMultiExpressionType) {
+	        FieldMultiExpressionType[FieldMultiExpressionType["UserMulti"] = 0] = "UserMulti";
+	        FieldMultiExpressionType[FieldMultiExpressionType["LookupMulti"] = 1] = "LookupMulti";
+	    })(FieldMultiExpressionType || (FieldMultiExpressionType = {}));
+	    var LookupOrUserMultiFieldExpression = function () {
+	        function LookupOrUserMultiFieldExpression(builder, name, type) {
+	            this.builder = builder;
+	            this.name = name;
+	            this.type = type;
+	            if (this.type == FieldMultiExpressionType.UserMulti) this.typeAsString = "UserMulti";else this.typeAsString = "LookupMulti";
+	        }
+	        LookupOrUserMultiFieldExpression.prototype.IncludesSuchItemThat = function () {
+	            if (this.type == FieldMultiExpressionType.LookupMulti) return new LookupFieldExpression(this.builder, this.name);else return new UserFieldExpression(this.builder, this.name);
+	        };
+	        LookupOrUserMultiFieldExpression.prototype.IsNull = function () {
+	            return new FieldExpressionToken(this.builder, this.name, this.typeAsString, false).IsNull();
+	        };
+	        LookupOrUserMultiFieldExpression.prototype.IsNotNull = function () {
+	            return new FieldExpressionToken(this.builder, this.name, this.typeAsString, false).IsNotNull();
+	        };
+	        LookupOrUserMultiFieldExpression.prototype.Includes = function (value) {
+	            return new FieldExpressionToken(this.builder, this.name, this.typeAsString, false).EqualTo(value);
+	        };
+	        LookupOrUserMultiFieldExpression.prototype.NotIncludes = function (value) {
+	            return new FieldExpressionToken(this.builder, this.name, this.typeAsString, false).NotEqualTo(value);
+	        };
+	        LookupOrUserMultiFieldExpression.prototype.EqualTo = function (value) {
+	            return new FieldExpressionToken(this.builder, this.name, this.typeAsString, false).EqualTo(value);
+	        };
+	        LookupOrUserMultiFieldExpression.prototype.NotEqualTo = function (value) {
+	            return new FieldExpressionToken(this.builder, this.name, this.typeAsString, false).NotEqualTo(value);
+	        };
+	        return LookupOrUserMultiFieldExpression;
+	    }();
+	    var LookupFieldExpression = function () {
+	        function LookupFieldExpression(builder, name) {
+	            this.builder = builder;
+	            this.name = name;
+	        }
+	        LookupFieldExpression.prototype.Id = function () {
+	            return new FieldExpressionToken(this.builder, this.name, "Integer", true);
+	        };
+	        LookupFieldExpression.prototype.Value = function () {
+	            return new FieldExpressionToken(this.builder, this.name, "Lookup");
+	        };
+	        LookupFieldExpression.prototype.ValueAsText = function () {
+	            return new FieldExpressionToken(this.builder, this.name, "Text");
+	        };
+	        LookupFieldExpression.prototype.ValueAsNumber = function () {
+	            return new FieldExpressionToken(this.builder, this.name, "Number");
+	        };
+	        LookupFieldExpression.prototype.ValueAsDateTime = function () {
+	            return new FieldExpressionToken(this.builder, this.name, "DateTime");
+	        };
+	        LookupFieldExpression.prototype.ValueAsDate = function () {
+	            return new FieldExpressionToken(this.builder, this.name, "Date");
+	        };
+	        LookupFieldExpression.prototype.ValueAsBoolean = function () {
+	            return new FieldExpressionToken(this.builder, this.name, "Integer");
+	        };
+	        return LookupFieldExpression;
+	    }();
+	    var UserFieldExpression = function () {
+	        function UserFieldExpression(builder, name) {
+	            var self = this;
+	            this.builder = builder;
+	            this.name = name;
+	            this.startIndex = builder.tree.length;
+	            this.Membership = {
+	                /** DEPRECATED. Please use UserField(...).IsInCurrentUserGroups() instead */
+	                CurrentUserGroups: function CurrentUserGroups() {
+	                    return self.IsInCurrentUserGroups();
+	                },
+	                /** DEPRECATED. Please use UserField(...).IsInSPGroup() instead */
+	                SPGroup: function SPGroup(groupId) {
+	                    return self.IsInSPGroup(groupId);
+	                },
+	                /** DEPRECATED. Please use UserField(...).IsInSPWeb* methods instead */
+	                SPWeb: {
+	                    /** DEPRECATED. Please use UserField(...).IsInSPWebAllUsers() instead */
+	                    AllUsers: function AllUsers() {
+	                        return self.IsInSPWebAllUsers();
+	                    },
+	                    /** DEPRECATED. Please use UserField(...).IsInSPWebUsers() instead */
+	                    Users: function Users() {
+	                        return self.IsInSPWebUsers();
+	                    },
+	                    /** DEPRECATED. Please use UserField(...).IsInSPWebGroups() instead */
+	                    Groups: function Groups() {
+	                        return self.IsInSPWebGroups();
+	                    }
+	                }
+	            };
+	        }
+	        UserFieldExpression.prototype.Id = function () {
+	            return new FieldExpressionToken(this.builder, this.name, "Integer", true);
+	        };
+	        UserFieldExpression.prototype.ValueAsText = function () {
+	            return new FieldExpressionToken(this.builder, this.name, "Text");
+	        };
+	        UserFieldExpression.prototype.EqualToCurrentUser = function () {
+	            this.builder.WriteFieldRef(this.name, {
+	                LookupId: true
+	            });
+	            this.builder.WriteBinaryOperation(this.startIndex, "Eq", "Integer", "{UserID}");
+	            return new QueryToken(this.builder, this.startIndex);
+	        };
+	        UserFieldExpression.prototype.IsInCurrentUserGroups = function () {
+	            this.builder.WriteFieldRef(this.name);
+	            this.builder.WriteMembership(this.startIndex, "CurrentUserGroups");
+	            return new QueryToken(this.builder, this.startIndex);
+	        };
+	        UserFieldExpression.prototype.IsInSPGroup = function (groupId) {
+	            this.builder.WriteFieldRef(this.name);
+	            this.builder.WriteMembership(this.startIndex, "SPGroup", groupId);
+	            return new QueryToken(this.builder, this.startIndex);
+	        };
+	        UserFieldExpression.prototype.IsInSPWebGroups = function () {
+	            this.builder.WriteFieldRef(this.name);
+	            this.builder.WriteMembership(this.startIndex, "SPWeb.Groups");
+	            return new QueryToken(this.builder, this.startIndex);
+	        };
+	        UserFieldExpression.prototype.IsInSPWebAllUsers = function () {
+	            this.builder.WriteFieldRef(this.name);
+	            this.builder.WriteMembership(this.startIndex, "SPWeb.AllUsers");
+	            return new QueryToken(this.builder, this.startIndex);
+	        };
+	        UserFieldExpression.prototype.IsInSPWebUsers = function () {
+	            this.builder.WriteFieldRef(this.name);
+	            this.builder.WriteMembership(this.startIndex, "SPWeb.Users");
+	            return new QueryToken(this.builder, this.startIndex);
+	        };
+	        return UserFieldExpression;
+	    }();
+	    var FieldExpressionToken = function () {
+	        function FieldExpressionToken(builder, name, valueType, isLookupId) {
+	            this.builder = builder;
+	            this.name = name;
+	            this.startIndex = builder.tree.length;
+	            this.valueType = valueType;
+	            this.builder.WriteFieldRef(name, {
+	                LookupId: isLookupId
+	            });
+	        }
+	        FieldExpressionToken.prototype.IsTrue = function () {
+	            this.builder.WriteBinaryOperation(this.startIndex, "Eq", "Integer", "1");
+	            return new QueryToken(this.builder, this.startIndex);
+	        };
+	        FieldExpressionToken.prototype.IsFalse = function () {
+	            this.builder.WriteBinaryOperation(this.startIndex, "Eq", "Integer", "0");
+	            return new QueryToken(this.builder, this.startIndex);
+	        };
+	        FieldExpressionToken.prototype.IsNull = function () {
+	            this.builder.WriteUnaryOperation(this.startIndex, "IsNull");
+	            return new QueryToken(this.builder, this.startIndex);
+	        };
+	        FieldExpressionToken.prototype.IsNotNull = function () {
+	            this.builder.WriteUnaryOperation(this.startIndex, "IsNotNull");
+	            return new QueryToken(this.builder, this.startIndex);
+	        };
+	        FieldExpressionToken.prototype.EqualTo = function (value) {
+	            if (value instanceof Date) value = value.toISOString();
+	            if (value === true) value = 1;
+	            if (value === false) value = 0;
+	            this.builder.WriteBinaryOperation(this.startIndex, "Eq", this.valueType, value);
+	            return new QueryToken(this.builder, this.startIndex);
+	        };
+	        FieldExpressionToken.prototype.GreaterThan = function (value) {
+	            if (value instanceof Date) value = value.toISOString();
+	            this.builder.WriteBinaryOperation(this.startIndex, "Gt", this.valueType, value);
+	            return new QueryToken(this.builder, this.startIndex);
+	        };
+	        FieldExpressionToken.prototype.LessThan = function (value) {
+	            if (value instanceof Date) value = value.toISOString();
+	            this.builder.WriteBinaryOperation(this.startIndex, "Lt", this.valueType, value);
+	            return new QueryToken(this.builder, this.startIndex);
+	        };
+	        FieldExpressionToken.prototype.GreaterThanOrEqualTo = function (value) {
+	            if (value instanceof Date) value = value.toISOString();
+	            this.builder.WriteBinaryOperation(this.startIndex, "Geq", this.valueType, value);
+	            return new QueryToken(this.builder, this.startIndex);
+	        };
+	        FieldExpressionToken.prototype.LessThanOrEqualTo = function (value) {
+	            if (value instanceof Date) value = value.toISOString();
+	            this.builder.WriteBinaryOperation(this.startIndex, "Leq", this.valueType, value);
+	            return new QueryToken(this.builder, this.startIndex);
+	        };
+	        FieldExpressionToken.prototype.NotEqualTo = function (value) {
+	            if (value instanceof Date) value = value.toISOString();
+	            this.builder.WriteBinaryOperation(this.startIndex, "Neq", this.valueType, value);
+	            return new QueryToken(this.builder, this.startIndex);
+	        };
+	        FieldExpressionToken.prototype.Contains = function (value) {
+	            this.builder.WriteBinaryOperation(this.startIndex, "Contains", this.valueType, value);
+	            return new QueryToken(this.builder, this.startIndex);
+	        };
+	        FieldExpressionToken.prototype.BeginsWith = function (value) {
+	            this.builder.WriteBinaryOperation(this.startIndex, "BeginsWith", this.valueType, value);
+	            return new QueryToken(this.builder, this.startIndex);
+	        };
+	        FieldExpressionToken.prototype.In = function (arrayOfValues) {
+	            this.builder.tree.splice(this.startIndex, 0, {
+	                Element: "Start",
+	                Name: "In"
+	            });
+	            this.builder.WriteStart("Values");
+	            for (var i = 0; i < arrayOfValues.length; i++) {
+	                var value = arrayOfValues[i];
+	                if (value instanceof Date) value = value.toISOString();
+	                this.builder.WriteValueElement(this.valueType, value);
+	            }
+	            this.builder.WriteEnd();
+	            this.builder.WriteEnd();
+	            return new QueryToken(this.builder, this.startIndex);
+	        };
+	        return FieldExpressionToken;
+	    }();
+	    var GroupedQuery = function () {
+	        function GroupedQuery(builder) {
+	            this.builder = builder;
+	        }
+	        GroupedQuery.prototype.OrderBy = function (fieldInternalName, override, useIndexForOrderBy) {
+	            this.builder.WriteStartOrderBy(override, useIndexForOrderBy);
+	            this.builder.WriteFieldRef(fieldInternalName);
+	            return new SortedQuery(this.builder);
+	        };
+	        GroupedQuery.prototype.OrderByDesc = function (fieldInternalName, override, useIndexForOrderBy) {
+	            this.builder.WriteStartOrderBy(override, useIndexForOrderBy);
+	            this.builder.WriteFieldRef(fieldInternalName, {
+	                Descending: true
+	            });
+	            return new SortedQuery(this.builder);
+	        };
+	        GroupedQuery.prototype.ToString = function () {
+	            return this.builder.Finalize();
+	        };
+	        GroupedQuery.prototype.ToCamlQuery = function () {
+	            return this.builder.FinalizeToSPQuery();
+	        };
+	        return GroupedQuery;
+	    }();
+	    var SortedQuery = function () {
+	        function SortedQuery(builder) {
+	            this.builder = builder;
+	        }
+	        SortedQuery.prototype.ThenBy = function (fieldInternalName, override, useIndexForOrderBy) {
+	            this.builder.WriteFieldRef(fieldInternalName);
+	            return new SortedQuery(this.builder);
+	        };
+	        SortedQuery.prototype.ThenByDesc = function (fieldInternalName, override, useIndexForOrderBy) {
+	            this.builder.WriteFieldRef(fieldInternalName, {
+	                Descending: true
+	            });
+	            return new SortedQuery(this.builder);
+	        };
+	        SortedQuery.prototype.ToString = function () {
+	            return this.builder.Finalize();
+	        };
+	        SortedQuery.prototype.ToCamlQuery = function () {
+	            return this.builder.FinalizeToSPQuery();
+	        };
+	        return SortedQuery;
+	    }();
+	    var Builder = function () {
+	        function Builder() {
+	            this.tree = new Array();
+	            this.unclosedTags = 0;
+	        }
+	        Builder.prototype.SetAttributeToLastElement = function (tagName, attributeName, attributeValue) {
+	            for (var i = this.tree.length - 1; i >= 0; i--) {
+	                if (this.tree[i].Name == tagName) {
+	                    this.tree[i].Attributes = this.tree[i].Attributes || [];
+	                    this.tree[i].Attributes.push({
+	                        Name: attributeName,
+	                        Value: attributeValue
+	                    });
+	                    return;
+	                }
+	            }
+	            console.log("CamlJs ERROR: can't find element '" + tagName + "' in the tree while setting attribute " + attributeName + " to '" + attributeValue + "'!");
+	        };
+	        Builder.prototype.WriteRowLimit = function (paged, limit) {
+	            if (paged) this.tree.push({
+	                Element: "Start",
+	                Name: "RowLimit",
+	                Attributes: [{
+	                    Name: "Paged",
+	                    Value: "TRUE"
+	                }]
+	            });else this.tree.push({
+	                Element: "Start",
+	                Name: "RowLimit"
+	            });
+	            this.tree.push({
+	                Element: "Raw",
+	                Xml: limit
+	            });
+	            this.tree.push({
+	                Element: "End"
+	            });
+	        };
+	        Builder.prototype.WriteStart = function (tagName, attributes) {
+	            if (attributes) this.tree.push({
+	                Element: "Start",
+	                Name: tagName,
+	                Attributes: attributes
+	            });else this.tree.push({
+	                Element: "Start",
+	                Name: tagName
+	            });
+	        };
+	        Builder.prototype.WriteEnd = function (count) {
+	            if (count > 0) this.tree.push({
+	                Element: "End",
+	                Count: count
+	            });else this.tree.push({
+	                Element: "End"
+	            });
+	        };
+	        Builder.prototype.WriteFieldRef = function (fieldInternalName, options) {
+	            var fieldRef = {
+	                Element: 'FieldRef',
+	                Name: fieldInternalName
+	            };
+	            for (var name in options || {}) {
+	                fieldRef[name] = options[name];
+	            }
+	            this.tree.push(fieldRef);
+	        };
+	        Builder.prototype.WriteValueElement = function (valueType, value) {
+	            if (valueType == "Date") this.tree.push({
+	                Element: "Value",
+	                ValueType: "DateTime",
+	                Value: value
+	            });else if (valueType == "DateTime") this.tree.push({
+	                Element: "Value",
+	                ValueType: "DateTime",
+	                Value: value,
+	                IncludeTimeValue: true
+	            });else this.tree.push({
+	                Element: "Value",
+	                ValueType: valueType,
+	                Value: value
+	            });
+	        };
+	        Builder.prototype.WriteMembership = function (startIndex, type, groupId) {
+	            var attributes = [{
+	                Name: "Type",
+	                Value: type
+	            }];
+	            if (groupId) {
+	                attributes.push({
+	                    Name: "ID",
+	                    Value: groupId
+	                });
+	            }
+	            this.tree.splice(startIndex, 0, {
+	                Element: "Start",
+	                Name: "Membership",
+	                Attributes: attributes
+	            });
+	            this.WriteEnd();
+	        };
+	        Builder.prototype.WriteUnaryOperation = function (startIndex, operation) {
+	            this.tree.splice(startIndex, 0, {
+	                Element: "Start",
+	                Name: operation
+	            });
+	            this.WriteEnd();
+	        };
+	        Builder.prototype.WriteBinaryOperation = function (startIndex, operation, valueType, value) {
+	            this.tree.splice(startIndex, 0, {
+	                Element: "Start",
+	                Name: operation
+	            });
+	            this.WriteValueElement(valueType, value);
+	            this.WriteEnd();
+	        };
+	        Builder.prototype.WriteStartGroupBy = function (groupFieldName, collapse) {
+	            if (this.unclosedTags > 0) {
+	                var tagsToClose = this.unclosedTags;
+	                if (this.tree[0].Name == "Query") tagsToClose--;else if (this.tree[0].Name == "View") tagsToClose -= 2;
+	                this.tree.push({
+	                    Element: "End",
+	                    Count: tagsToClose
+	                });
+	                this.unclosedTags -= tagsToClose;
+	            }
+	            if (collapse) this.tree.push({
+	                Element: "Start",
+	                Name: "GroupBy",
+	                Attributes: [{
+	                    Name: "Collapse",
+	                    Value: "TRUE"
+	                }]
+	            });else this.tree.push({
+	                Element: "Start",
+	                Name: "GroupBy"
+	            });
+	            this.tree.push({
+	                Element: "FieldRef",
+	                Name: groupFieldName
+	            });
+	            this.WriteEnd();
+	        };
+	        Builder.prototype.WriteStartOrderBy = function (override, useIndexForOrderBy) {
+	            if (this.unclosedTags > 0) {
+	                var tagsToClose = this.unclosedTags;
+	                if (this.tree[0].Name == "Query") tagsToClose--;else if (this.tree[0].Name == "View") tagsToClose -= 2;
+	                this.tree.push({
+	                    Element: "End",
+	                    Count: tagsToClose
+	                });
+	                this.unclosedTags -= tagsToClose;
+	            }
+	            var attributes = new Array();
+	            if (override) attributes.push({
+	                Name: "Override",
+	                Value: "TRUE"
+	            });
+	            if (useIndexForOrderBy) attributes.push({
+	                Name: "UseIndexForOrderBy",
+	                Value: "TRUE"
+	            });
+	            if (attributes.length > 0) this.tree.push({
+	                Element: "Start",
+	                Name: "OrderBy",
+	                Attributes: attributes
+	            });else this.tree.push({
+	                Element: "Start",
+	                Name: "OrderBy"
+	            });
+	            this.unclosedTags++;
+	        };
+	        Builder.prototype.WriteConditions = function (builders, elementName) {
+	            var pos = this.tree.length;
+	            builders.reverse();
+	            for (var i = 0; i < builders.length; i++) {
+	                var conditionBuilder = builders[i];
+	                if (conditionBuilder.unclosedTags > 0) conditionBuilder.WriteEnd(conditionBuilder.unclosedTags);
+	                if (i > 0) {
+	                    conditionBuilder.tree.splice(0, 0, {
+	                        Element: "Start",
+	                        Name: elementName
+	                    });
+	                    this.WriteEnd();
+	                }
+	                Array.prototype.splice.apply(this.tree, [pos, 0].concat(conditionBuilder.tree));
+	            }
+	        };
+	        Builder.prototype.Finalize = function () {
+	            var sb = new window["Sys"].StringBuilder();
+	            var writer = window["SP"].XmlWriter.create(sb);
+	            for (var i = 0; i < this.tree.length; i++) {
+	                if (this.tree[i].Element == "FieldRef") {
+	                    writer.writeStartElement("FieldRef");
+	                    writer.writeAttributeString("Name", this.tree[i].Name);
+	                    if (this.tree[i].LookupId) writer.writeAttributeString("LookupId", "True");
+	                    if (this.tree[i].Descending) writer.writeAttributeString("Ascending", "False");
+	                    for (var attr in this.tree[i]) {
+	                        if (attr == "Element" || attr == "Name" || attr == "LookupId" || attr == "Descending") continue;
+	                        writer.writeAttributeString(attr, this.tree[i][attr]);
+	                    }
+	                    writer.writeEndElement();
+	                } else if (this.tree[i].Element == "Start") {
+	                    writer.writeStartElement(this.tree[i].Name);
+	                    if (this.tree[i].Attributes) {
+	                        for (var a = 0; a < this.tree[i].Attributes.length; a++) {
+	                            writer.writeAttributeString(this.tree[i].Attributes[a].Name, this.tree[i].Attributes[a].Value);
+	                        }
+	                    }
+	                } else if (this.tree[i].Element == "Raw") {
+	                    writer.writeRaw(this.tree[i].Xml);
+	                } else if (this.tree[i].Element == "Value") {
+	                    writer.writeStartElement("Value");
+	                    if (this.tree[i].IncludeTimeValue === true) writer.writeAttributeString("IncludeTimeValue", "True");
+	                    writer.writeAttributeString("Type", this.tree[i].ValueType);
+	                    var value = this.tree[i].Value.toString();
+	                    if (value.slice(0, 1) == "{" && value.slice(-1) == "}") writer.writeRaw("<" + value.slice(1, value.length - 1) + " />");else writer.writeString(value);
+	                    writer.writeEndElement();
+	                } else if (this.tree[i].Element == "End") {
+	                    var count = this.tree[i].Count;
+	                    if (count) {
+	                        while (count > 0) {
+	                            count--;
+	                            writer.writeEndElement();
+	                        }
+	                    } else {
+	                        writer.writeEndElement();
+	                    }
+	                }
+	            }
+	            while (this.unclosedTags > 0) {
+	                this.unclosedTags--;
+	                writer.writeEndElement();
+	            }
+	            this.tree = new Array();
+	            writer.close();
+	            return sb.toString();
+	        };
+	        Builder.prototype.FinalizeToSPQuery = function () {
+	            var camlQuery = this.Finalize();
+	            if (camlQuery.indexOf("<View") != 0) camlQuery = "<View><Query>" + camlQuery + "</Query></View>";
+	            var query = new window["SP"].CamlQuery();
+	            query.set_viewXml(camlQuery);
+	            return query;
+	        };
+	        return Builder;
+	    }();
+	    var CamlValues = function () {
+	        function CamlValues() {}
+	        /** Dynamic value that represents current date with specified offset (may be negative) */
+	        CamlValues.TodayWithOffset = function (offsetDays) {
+	            return "{Today OffsetDays=\"" + offsetDays + "\"}";
+	        };
+	        /** Dynamic value that represents Id of the current user */
+	        CamlValues.UserID = "{UserID}";
+	        /** Dynamic value that represents current date */
+	        CamlValues.Today = "{Today}";
+	        CamlValues.Now = "{Now}";
+	        /** Dynamic value that represents a property of the current list */
+	        CamlValues.ListProperty = {
+	            /** Date and time the list was created. */
+	            Created: "{ListProperty Name=\"Created\"}",
+	            /** Server-relative URL of the default list view. */
+	            DefaultViewUrl: "{ListProperty Name=\"DefaultViewUrl\"}",
+	            /** Description of the list. */
+	            Description: "{ListProperty Name=\"Description\"}",
+	            /** Determines if RSS syndication is enabled for the list */
+	            EnableSyndication: "{ListProperty Name=\"EnableSyndication\"}",
+	            /** Number of items in the list */
+	            ItemCount: "{ListProperty Name=\"ItemCount\"}",
+	            /** Title linked to the list */
+	            LinkTitle: "{ListProperty Name=\"LinkTitle\"}",
+	            /** For a document library that uses version control with major versions only, maximum number of major versions allowed for items. */
+	            MajorVersionLimit: "{ListProperty Name=\"MajorVersionLimit\"}",
+	            /** For a document library that uses version control with both major and minor versions, maximum number of major versions allowed for items. */
+	            MajorWithMinorVersionsLimit: "{ListProperty Name=\"MajorWithMinorVersionsLimit\"}",
+	            /** Site-relative URL for the list. */
+	            RelativeFolderPath: "{ListProperty Name=\"RelativeFolderPath\"}",
+	            /** Title of the list. */
+	            Title: "{ListProperty Name=\"Title\"}",
+	            /** View selector with links to views for the list. */
+	            ViewSelector: "{ListProperty Name=\"ViewSelector\"}"
+	        };
+	        /** Dynamic value that represents a property of the current SPWeb */
+	        CamlValues.ProjectProperty = {
+	            /** Category of the current post item. */
+	            BlogCategoryTitle: "{ProjectProperty Name=\"BlogCategoryTitle\"}",
+	            /** Title of the current post item. */
+	            BlogPostTitle: "{ProjectProperty Name=\"BlogPostTitle\"}",
+	            /** Represents a description for the current website. */
+	            Description: "{ProjectProperty Name=\"Description\"}",
+	            /** Represents a value that determines whether the recycle bin is enabled for the current website. */
+	            RecycleBinEnabled: "{ProjectProperty Name=\"RecycleBinEnabled\"}",
+	            /** User name of the owner for the current site collection. */
+	            SiteOwnerName: "{ProjectProperty Name=\"SiteOwnerName\"}",
+	            /** Full URL of the current site collection. */
+	            SiteUrl: "{ProjectProperty Name=\"SiteUrl\"}",
+	            /** Title of the current Web site. */
+	            Title: "{ProjectProperty Name=\"Title\"}",
+	            /** Full URL of the current Web site. */
+	            Url: "{ProjectProperty Name=\"Url\"}"
+	        };
+	        return CamlValues;
+	    }();
+	    CamlBuilder.CamlValues = CamlValues;
+	})(CamlBuilder || (CamlBuilder = {}));
+	
+	// -------------------- Dependencies ------------------
+	
+	if (typeof window["Sys"] == "undefined" || window["Sys"] == null) {
+	    var Sys$StringBuilder$append = function Sys$StringBuilder$append(text) {
+	        this._parts[this._parts.length] = text;
+	    };
+	
+	    var Sys$StringBuilder$appendLine = function Sys$StringBuilder$appendLine(text) {
+	        this._parts[this._parts.length] = typeof text === 'undefined' || text === null || text === '' ? '\r\n' : text + '\r\n';
+	    };
+	
+	    var Sys$StringBuilder$clear = function Sys$StringBuilder$clear() {
+	        this._parts = [];
+	        this._value = {};
+	        this._len = 0;
+	    };
+	
+	    var Sys$StringBuilder$isEmpty = function Sys$StringBuilder$isEmpty() {
+	        if (this._parts.length === 0) return true;
+	        return this.toString() === '';
+	    };
+	
+	    var Sys$StringBuilder$toString = function Sys$StringBuilder$toString(separator) {
+	        separator = separator || '';
+	        var parts = this._parts;
+	        if (this._len !== parts.length) {
+	            this._value = {};
+	            this._len = parts.length;
+	        }
+	        var val = this._value;
+	        if (typeof val[separator] === 'undefined') {
+	            if (separator !== '') {
+	                for (var i = 0; i < parts.length;) {
+	                    if (typeof parts[i] === 'undefined' || parts[i] === '' || parts[i] === null) {
+	                        parts.splice(i, 1);
+	                    } else {
+	                        i++;
+	                    }
+	                }
+	            }
+	            val[separator] = this._parts.join(separator);
+	        }
+	        return val[separator];
+	    };
+	
+	    window["Sys"] = {};
+	    window["Sys"].StringBuilder = function Sys$StringBuilder(initialText) {
+	        this._parts = typeof initialText !== 'undefined' && initialText !== null && initialText !== '' ? [initialText.toString()] : [];
+	        this._value = {};
+	        this._len = 0;
+	    };
+	
+	    window["Sys"].StringBuilder.prototype = {
+	        append: Sys$StringBuilder$append,
+	        appendLine: Sys$StringBuilder$appendLine,
+	        clear: Sys$StringBuilder$clear,
+	        isEmpty: Sys$StringBuilder$isEmpty,
+	        toString: Sys$StringBuilder$toString
+	    };
+	}
+	
+	if (typeof window["SP"] == 'undefined') {
+	    var SP_ScriptUtility$isNullOrEmptyString = function SP_ScriptUtility$isNullOrEmptyString(str) {
+	        var strNull = null;
+	        return str === strNull || typeof str === 'undefined' || !str.length;
+	    };
+	
+	    window["SP"] = {};
+	
+	    ;
+	    window["SP"].XmlWriter = function SP_XmlWriter($p0) {
+	        this.$f_0 = [];
+	        this.$1_0 = $p0;
+	        this.$V_0 = true;
+	    };
+	    window["SP"].XmlWriter.create = function SP_XmlWriter$create(sb) {
+	        return new window["SP"].XmlWriter(sb);
+	    };
+	    window["SP"].XmlWriter.prototype = {
+	        $1_0: null,
+	        $11_0: null,
+	        $V_0: false,
+	        $k_0: false,
+	        writeStartElement: function SP_XmlWriter$writeStartElement(tagName) {
+	            this.$1R_0();
+	            this.$1A_0();
+	            this.$f_0.push(tagName);
+	            this.$11_0 = tagName;
+	            this.$1_0.append('<');
+	            this.$1_0.append(tagName);
+	            this.$V_0 = false;
+	            this.$k_0 = false;
+	        },
+	        writeElementString: function SP_XmlWriter$writeElementString(tagName, value) {
+	            this.$1R_0();
+	            this.$1A_0();
+	            this.writeStartElement(tagName);
+	            this.writeString(value);
+	            this.writeEndElement();
+	        },
+	        writeEndElement: function SP_XmlWriter$writeEndElement() {
+	            this.$1R_0();
+	            if (SP_ScriptUtility$isNullOrEmptyString(this.$11_0)) {
+	                throw "Invalid operation";
+	            }
+	            if (!this.$V_0) {
+	                this.$1_0.append(' />');
+	                this.$V_0 = true;
+	            } else {
+	                this.$1_0.append('</');
+	                this.$1_0.append(this.$11_0);
+	                this.$1_0.append('>');
+	            }
+	            this.$f_0.pop();
+	            if (this.$f_0.length > 0) {
+	                this.$11_0 = this.$f_0[this.$f_0.length - 1];
+	            } else {
+	                this.$11_0 = null;
+	            }
+	        },
+	        $1A_0: function SP_XmlWriter$$1A_0() {
+	            if (!this.$V_0) {
+	                this.$1_0.append('>');
+	                this.$V_0 = true;
+	            }
+	        },
+	        writeAttributeString: function SP_XmlWriter$writeAttributeString(localName, value) {
+	            if (this.$V_0) {
+	                throw "Invalid operation";
+	            }
+	            this.$1_0.append(' ');
+	            this.$1_0.append(localName);
+	            this.$1_0.append('=\"');
+	            this.$1T_0(value, true);
+	            this.$1_0.append('\"');
+	        },
+	        writeStartAttribute: function SP_XmlWriter$writeStartAttribute(localName) {
+	            if (!this.$V_0) {
+	                throw "Invalid operation";
+	            }
+	            this.$k_0 = true;
+	            this.$1_0.append(' ');
+	            this.$1_0.append(localName);
+	            this.$1_0.append('=\"');
+	        },
+	        writeEndAttribute: function SP_XmlWriter$writeEndAttribute() {
+	            if (!this.$k_0) {
+	                throw "Invalid operation";
+	            }
+	            this.$1_0.append('\"');
+	            this.$k_0 = false;
+	        },
+	        writeString: function SP_XmlWriter$writeString(value) {
+	            if (this.$k_0) {
+	                this.$1T_0(value, true);
+	                this.$1_0.append(value);
+	            } else {
+	                this.$1A_0();
+	                this.$1T_0(value, false);
+	            }
+	        },
+	        writeRaw: function SP_XmlWriter$writeRaw(xml) {
+	            this.$1R_0();
+	            this.$1A_0();
+	            this.$1_0.append(xml);
+	        },
+	        $1R_0: function SP_XmlWriter$$1R_0() {
+	            if (this.$k_0) {
+	                throw "Invalid operation";
+	            }
+	        },
+	        $1T_0: function SP_XmlWriter$$1T_0($p0, $p1) {
+	            if (SP_ScriptUtility$isNullOrEmptyString($p0)) {
+	                return;
+	            }
+	            for (var $v_0 = 0; $v_0 < $p0.length; $v_0++) {
+	                var $v_1 = $p0.charCodeAt($v_0);
+	                if ($v_1 === 62) {
+	                    this.$1_0.append('&gt;');
+	                } else if ($v_1 === 60) {
+	                    this.$1_0.append('&lt;');
+	                } else if ($v_1 === 38) {
+	                    this.$1_0.append('&amp;');
+	                } else if ($v_1 === 34 && $p1) {
+	                    this.$1_0.append('&quot;');
+	                } else if ($v_1 === 39 && $p1) {
+	                    this.$1_0.append('&apos;');
+	                } else if ($v_1 === 9 && $p1) {
+	                    this.$1_0.append('&#09;');
+	                } else if ($v_1 === 10) {
+	                    this.$1_0.append('&#10;');
+	                } else if ($v_1 === 13) {
+	                    this.$1_0.append('&#13;');
+	                } else {
+	                    this.$1_0.append($p0.charAt($v_0).toString());
+	                }
+	            }
+	        },
+	        close: function SP_XmlWriter$close() {}
+	    };
+	}
+	
+	exports.default = CamlBuilder;
+	//# sourceMappingURL=camljs.js.map
+	
+	module.exports = exports['default'];
+
+/***/ },
+/* 334 */
+/***/ function(module, exports) {
+
+	// removed by extract-text-webpack-plugin
+	module.exports = {"container":"ExcelTableView_container","header":"ExcelTableView_header","content":"ExcelTableView_content","column":"ExcelTableView_column","header_row":"ExcelTableView_header_row","header_column":"ExcelTableView_header_column","dropzone_container":"ExcelTableView_dropzone_container","dropzone":"ExcelTableView_dropzone","dropzone_title":"ExcelTableView_dropzone_title","dropzone_button":"ExcelTableView_dropzone_button","dropzone_files":"ExcelTableView_dropzone_files","dropzone_files_list":"ExcelTableView_dropzone_files_list","dropzone_files_title":"ExcelTableView_dropzone_files_title","dropzone_files_uploading":"ExcelTableView_dropzone_files_uploading","item_row":"ExcelTableView_item_row","item_column":"ExcelTableView_item_column"};
+
+/***/ },
+/* 335 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -78514,25 +80915,21 @@ return /******/ (function(modules) { // webpackBootstrap
 	var _templateObject = _taggedTemplateLiteral(['\n\t\t\t\t\t\tfrom {\n\t\t\t\t\t\t\ttransform: translate(', 'px);\n\t\t\t\t\t\t}\n\n\t\t\t\t\t\tto {\n\t\t\t\t\t\t\ttransform: translate(-', 'px);\n\t\t\t\t\t\t}\n\t\t\t\t\t'], ['\n\t\t\t\t\t\tfrom {\n\t\t\t\t\t\t\ttransform: translate(', 'px);\n\t\t\t\t\t\t}\n\n\t\t\t\t\t\tto {\n\t\t\t\t\t\t\ttransform: translate(-', 'px);\n\t\t\t\t\t\t}\n\t\t\t\t\t']),
 	    _templateObject2 = _taggedTemplateLiteral(['\n\t\t\t\t\t\tdisplay: inline-block;\n\t\t\t\t\t\tposition: relative;\n\t\t\t\t\t\tanimation: ', ' ', 's linear infinite;\n\t\t\t\t\t'], ['\n\t\t\t\t\t\tdisplay: inline-block;\n\t\t\t\t\t\tposition: relative;\n\t\t\t\t\t\tanimation: ', ' ', 's linear infinite;\n\t\t\t\t\t']);
 	
-	var _jquery = __webpack_require__(181);
-	
-	var _jquery2 = _interopRequireDefault(_jquery);
-	
 	var _react = __webpack_require__(2);
 	
 	var _react2 = _interopRequireDefault(_react);
 	
-	var _reactResponsive = __webpack_require__(333);
+	var _reactResponsive = __webpack_require__(336);
 	
 	var _reactResponsive2 = _interopRequireDefault(_reactResponsive);
 	
-	var _styledComponents = __webpack_require__(334);
+	var _styledComponents = __webpack_require__(337);
 	
 	var _styledComponents2 = _interopRequireDefault(_styledComponents);
 	
 	var _utils = __webpack_require__(210);
 	
-	var _CloudCarousel = __webpack_require__(403);
+	var _CloudCarousel = __webpack_require__(406);
 	
 	var _CloudCarousel2 = _interopRequireDefault(_CloudCarousel);
 	
@@ -78625,9 +81022,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 				return items.map(function (item, i) {
 					var subItemsContent = subItems.map(function (subItem, j) {
-						var itemWidth = 100;
-						var itemHeight = 100;
-	
 						var top = (0, _utils.GetRandomInt)(0, self.clientHeight - subItem.height);
 						var left = (0, _utils.GetRandomInt)(width, width + subItem.weight);
 	
@@ -78641,8 +81035,6 @@ return /******/ (function(modules) { // webpackBootstrap
 						var rightToLeft = (0, _styledComponents.keyframes)(_templateObject, left, 3 * left);
 	
 						var Translate = _styledComponents2.default.div(_templateObject2, rightToLeft, subItem.weight / left * 100);
-	
-						console.log('speed: ' + subItem.weight / left * 100 + ' weight: ' + subItem.weight + ' distance: ' + left);
 	
 						return _react2.default.createElement(
 							Translate,
@@ -78742,7 +81134,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 333 */
+/* 336 */
 /***/ function(module, exports, __webpack_require__) {
 
 	(function webpackUniversalModuleDefinition(root, factory) {
@@ -79366,7 +81758,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	//# sourceMappingURL=react-responsive.js.map
 
 /***/ },
-/* 334 */
+/* 337 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -79376,39 +81768,39 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 	exports.withTheme = exports.ThemeProvider = exports.injectGlobal = exports.keyframes = exports.css = undefined;
 	
-	var _generateAlphabeticName = __webpack_require__(335);
+	var _generateAlphabeticName = __webpack_require__(338);
 	
 	var _generateAlphabeticName2 = _interopRequireDefault(_generateAlphabeticName);
 	
-	var _css = __webpack_require__(336);
+	var _css = __webpack_require__(339);
 	
 	var _css2 = _interopRequireDefault(_css);
 	
-	var _injectGlobal = __webpack_require__(342);
+	var _injectGlobal = __webpack_require__(345);
 	
 	var _injectGlobal2 = _interopRequireDefault(_injectGlobal);
 	
-	var _StyledComponent = __webpack_require__(371);
+	var _StyledComponent = __webpack_require__(374);
 	
 	var _StyledComponent2 = _interopRequireDefault(_StyledComponent);
 	
-	var _styled2 = __webpack_require__(378);
+	var _styled2 = __webpack_require__(381);
 	
 	var _styled3 = _interopRequireDefault(_styled2);
 	
-	var _keyframes2 = __webpack_require__(380);
+	var _keyframes2 = __webpack_require__(383);
 	
 	var _keyframes3 = _interopRequireDefault(_keyframes2);
 	
-	var _ComponentStyle2 = __webpack_require__(382);
+	var _ComponentStyle2 = __webpack_require__(385);
 	
 	var _ComponentStyle3 = _interopRequireDefault(_ComponentStyle2);
 	
-	var _ThemeProvider = __webpack_require__(375);
+	var _ThemeProvider = __webpack_require__(378);
 	
 	var _ThemeProvider2 = _interopRequireDefault(_ThemeProvider);
 	
-	var _withTheme = __webpack_require__(402);
+	var _withTheme = __webpack_require__(405);
 	
 	var _withTheme2 = _interopRequireDefault(_withTheme);
 	
@@ -79439,7 +81831,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.withTheme = _withTheme2.default;
 
 /***/ },
-/* 335 */
+/* 338 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -79459,7 +81851,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 336 */
+/* 339 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -79468,19 +81860,19 @@ return /******/ (function(modules) { // webpackBootstrap
 	  value: true
 	});
 	
-	var _interleave = __webpack_require__(337);
+	var _interleave = __webpack_require__(340);
 	
 	var _interleave2 = _interopRequireDefault(_interleave);
 	
-	var _flatten = __webpack_require__(339);
+	var _flatten = __webpack_require__(342);
 	
 	var _flatten2 = _interopRequireDefault(_flatten);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
-	var babelPluginFlowReactPropTypes_proptype_RuleSet = __webpack_require__(338).babelPluginFlowReactPropTypes_proptype_RuleSet || __webpack_require__(2).PropTypes.any;
+	var babelPluginFlowReactPropTypes_proptype_RuleSet = __webpack_require__(341).babelPluginFlowReactPropTypes_proptype_RuleSet || __webpack_require__(2).PropTypes.any;
 	
-	var babelPluginFlowReactPropTypes_proptype_Interpolation = __webpack_require__(338).babelPluginFlowReactPropTypes_proptype_Interpolation || __webpack_require__(2).PropTypes.any;
+	var babelPluginFlowReactPropTypes_proptype_Interpolation = __webpack_require__(341).babelPluginFlowReactPropTypes_proptype_Interpolation || __webpack_require__(2).PropTypes.any;
 	
 	exports.default = function (strings) {
 	  for (var _len = arguments.length, interpolations = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
@@ -79493,7 +81885,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 337 */
+/* 340 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -79502,7 +81894,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  value: true
 	});
 	
-	var babelPluginFlowReactPropTypes_proptype_Interpolation = __webpack_require__(338).babelPluginFlowReactPropTypes_proptype_Interpolation || __webpack_require__(2).PropTypes.any;
+	var babelPluginFlowReactPropTypes_proptype_Interpolation = __webpack_require__(341).babelPluginFlowReactPropTypes_proptype_Interpolation || __webpack_require__(2).PropTypes.any;
 	
 	exports.default = function (strings, interpolations) {
 	  return interpolations.reduce(function (array, interp, i) {
@@ -79513,7 +81905,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 338 */
+/* 341 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -79528,7 +81920,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	/* eslint-disable no-undef */
 
 /***/ },
-/* 339 */
+/* 342 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -79542,7 +81934,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _hyphenateStyleName2 = _interopRequireDefault(_hyphenateStyleName);
 	
-	var _isPlainObject = __webpack_require__(340);
+	var _isPlainObject = __webpack_require__(343);
 	
 	var _isPlainObject2 = _interopRequireDefault(_isPlainObject);
 	
@@ -79550,7 +81942,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 	
-	var babelPluginFlowReactPropTypes_proptype_Interpolation = __webpack_require__(338).babelPluginFlowReactPropTypes_proptype_Interpolation || __webpack_require__(2).PropTypes.any;
+	var babelPluginFlowReactPropTypes_proptype_Interpolation = __webpack_require__(341).babelPluginFlowReactPropTypes_proptype_Interpolation || __webpack_require__(2).PropTypes.any;
 	
 	var objToCss = exports.objToCss = function objToCss(obj, prevKey) {
 	  var css = Object.keys(obj).map(function (key) {
@@ -79580,7 +81972,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = flatten;
 
 /***/ },
-/* 340 */
+/* 343 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*!
@@ -79592,7 +81984,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	'use strict';
 	
-	var isObject = __webpack_require__(341);
+	var isObject = __webpack_require__(344);
 	
 	function isObjectObject(o) {
 	  return isObject(o) === true
@@ -79623,7 +82015,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 341 */
+/* 344 */
 /***/ function(module, exports) {
 
 	/*!
@@ -79642,7 +82034,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 342 */
+/* 345 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -79651,17 +82043,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	  value: true
 	});
 	
-	var _css = __webpack_require__(336);
+	var _css = __webpack_require__(339);
 	
 	var _css2 = _interopRequireDefault(_css);
 	
-	var _GlobalStyle = __webpack_require__(343);
+	var _GlobalStyle = __webpack_require__(346);
 	
 	var _GlobalStyle2 = _interopRequireDefault(_GlobalStyle);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
-	var babelPluginFlowReactPropTypes_proptype_Interpolation = __webpack_require__(338).babelPluginFlowReactPropTypes_proptype_Interpolation || __webpack_require__(2).PropTypes.any;
+	var babelPluginFlowReactPropTypes_proptype_Interpolation = __webpack_require__(341).babelPluginFlowReactPropTypes_proptype_Interpolation || __webpack_require__(2).PropTypes.any;
 	
 	var injectGlobal = function injectGlobal(strings) {
 	  for (var _len = arguments.length, interpolations = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
@@ -79676,7 +82068,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 343 */
+/* 346 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -79687,19 +82079,19 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 	
-	var _parse = __webpack_require__(344);
+	var _parse = __webpack_require__(347);
 	
 	var _parse2 = _interopRequireDefault(_parse);
 	
-	var _postcssNested = __webpack_require__(368);
+	var _postcssNested = __webpack_require__(371);
 	
 	var _postcssNested2 = _interopRequireDefault(_postcssNested);
 	
-	var _flatten = __webpack_require__(339);
+	var _flatten = __webpack_require__(342);
 	
 	var _flatten2 = _interopRequireDefault(_flatten);
 	
-	var _StyleSheet = __webpack_require__(369);
+	var _StyleSheet = __webpack_require__(372);
 	
 	var _StyleSheet2 = _interopRequireDefault(_StyleSheet);
 	
@@ -79707,7 +82099,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 	
-	var babelPluginFlowReactPropTypes_proptype_RuleSet = __webpack_require__(338).babelPluginFlowReactPropTypes_proptype_RuleSet || __webpack_require__(2).PropTypes.any;
+	var babelPluginFlowReactPropTypes_proptype_RuleSet = __webpack_require__(341).babelPluginFlowReactPropTypes_proptype_RuleSet || __webpack_require__(2).PropTypes.any;
 	
 	var ComponentStyle = function () {
 	  function ComponentStyle(rules, selector) {
@@ -79738,7 +82130,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 344 */
+/* 347 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -79748,11 +82140,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 	exports.default = safeParse;
 	
-	var _input = __webpack_require__(345);
+	var _input = __webpack_require__(348);
 	
 	var _input2 = _interopRequireDefault(_input);
 	
-	var _safeParser = __webpack_require__(367);
+	var _safeParser = __webpack_require__(370);
 	
 	var _safeParser2 = _interopRequireDefault(_safeParser);
 	
@@ -79770,7 +82162,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 345 */
+/* 348 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -79781,9 +82173,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); // break cyclical dependency deadlock – #87
 	
-	__webpack_require__(346);
+	__webpack_require__(349);
 	
-	var _cssSyntaxError = __webpack_require__(355);
+	var _cssSyntaxError = __webpack_require__(358);
 	
 	var _cssSyntaxError2 = _interopRequireDefault(_cssSyntaxError);
 	
@@ -79974,7 +82366,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 346 */
+/* 349 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -79987,21 +82379,21 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
 	
-	__webpack_require__(347);
+	__webpack_require__(350);
 	
-	var _container = __webpack_require__(349);
+	var _container = __webpack_require__(352);
 	
 	var _container2 = _interopRequireDefault(_container);
 	
-	var _lazyResult = __webpack_require__(363);
+	var _lazyResult = __webpack_require__(366);
 	
 	var _lazyResult2 = _interopRequireDefault(_lazyResult);
 	
-	var _processor = __webpack_require__(366);
+	var _processor = __webpack_require__(369);
 	
 	var _processor2 = _interopRequireDefault(_processor);
 	
-	var _warnOnce = __webpack_require__(353);
+	var _warnOnce = __webpack_require__(356);
 	
 	var _warnOnce2 = _interopRequireDefault(_warnOnce);
 	
@@ -80129,7 +82521,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 347 */
+/* 350 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -80140,17 +82532,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 	
-	__webpack_require__(348);
+	__webpack_require__(351);
 	
-	var _container = __webpack_require__(349);
+	var _container = __webpack_require__(352);
 	
 	var _container2 = _interopRequireDefault(_container);
 	
-	var _warnOnce = __webpack_require__(353);
+	var _warnOnce = __webpack_require__(356);
 	
 	var _warnOnce2 = _interopRequireDefault(_warnOnce);
 	
-	var _list = __webpack_require__(362);
+	var _list = __webpack_require__(365);
 	
 	var _list2 = _interopRequireDefault(_list);
 	
@@ -80273,7 +82665,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 348 */
+/* 351 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -80286,11 +82678,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
 	
-	var _container = __webpack_require__(349);
+	var _container = __webpack_require__(352);
 	
 	var _container2 = _interopRequireDefault(_container);
 	
-	var _warnOnce = __webpack_require__(353);
+	var _warnOnce = __webpack_require__(356);
 	
 	var _warnOnce2 = _interopRequireDefault(_warnOnce);
 	
@@ -80442,7 +82834,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 349 */
+/* 352 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -80455,35 +82847,35 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
 	
-	var _parse = __webpack_require__(350);
+	var _parse = __webpack_require__(353);
 	
 	var _parse2 = _interopRequireDefault(_parse);
 	
-	var _root = __webpack_require__(346);
+	var _root = __webpack_require__(349);
 	
 	var _root2 = _interopRequireDefault(_root);
 	
-	var _rule = __webpack_require__(347);
+	var _rule = __webpack_require__(350);
 	
 	var _rule2 = _interopRequireDefault(_rule);
 	
-	var _atRule = __webpack_require__(348);
+	var _atRule = __webpack_require__(351);
 	
 	var _atRule2 = _interopRequireDefault(_atRule);
 	
-	var _declaration = __webpack_require__(352);
+	var _declaration = __webpack_require__(355);
 	
 	var _declaration2 = _interopRequireDefault(_declaration);
 	
-	var _warnOnce = __webpack_require__(353);
+	var _warnOnce = __webpack_require__(356);
 	
 	var _warnOnce2 = _interopRequireDefault(_warnOnce);
 	
-	var _comment = __webpack_require__(361);
+	var _comment = __webpack_require__(364);
 	
 	var _comment2 = _interopRequireDefault(_comment);
 	
-	var _node = __webpack_require__(354);
+	var _node = __webpack_require__(357);
 	
 	var _node2 = _interopRequireDefault(_node);
 	
@@ -81336,7 +83728,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 350 */
+/* 353 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -81346,11 +83738,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 	exports.default = parse;
 	
-	var _parser = __webpack_require__(351);
+	var _parser = __webpack_require__(354);
 	
 	var _parser2 = _interopRequireDefault(_parser);
 	
-	var _input = __webpack_require__(345);
+	var _input = __webpack_require__(348);
 	
 	var _input2 = _interopRequireDefault(_input);
 	
@@ -81383,7 +83775,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 351 */
+/* 354 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -81394,27 +83786,27 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 	
-	var _declaration = __webpack_require__(352);
+	var _declaration = __webpack_require__(355);
 	
 	var _declaration2 = _interopRequireDefault(_declaration);
 	
-	var _tokenize = __webpack_require__(358);
+	var _tokenize = __webpack_require__(361);
 	
 	var _tokenize2 = _interopRequireDefault(_tokenize);
 	
-	var _comment = __webpack_require__(361);
+	var _comment = __webpack_require__(364);
 	
 	var _comment2 = _interopRequireDefault(_comment);
 	
-	var _atRule = __webpack_require__(348);
+	var _atRule = __webpack_require__(351);
 	
 	var _atRule2 = _interopRequireDefault(_atRule);
 	
-	var _root = __webpack_require__(346);
+	var _root = __webpack_require__(349);
 	
 	var _root2 = _interopRequireDefault(_root);
 	
-	var _rule = __webpack_require__(347);
+	var _rule = __webpack_require__(350);
 	
 	var _rule2 = _interopRequireDefault(_rule);
 	
@@ -81922,7 +84314,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 352 */
+/* 355 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -81933,11 +84325,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 	
-	var _warnOnce = __webpack_require__(353);
+	var _warnOnce = __webpack_require__(356);
 	
 	var _warnOnce2 = _interopRequireDefault(_warnOnce);
 	
-	var _node = __webpack_require__(354);
+	var _node = __webpack_require__(357);
 	
 	var _node2 = _interopRequireDefault(_node);
 	
@@ -82059,7 +84451,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 353 */
+/* 356 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -82079,7 +84471,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 354 */
+/* 357 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -82092,19 +84484,19 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 	
-	var _cssSyntaxError = __webpack_require__(355);
+	var _cssSyntaxError = __webpack_require__(358);
 	
 	var _cssSyntaxError2 = _interopRequireDefault(_cssSyntaxError);
 	
-	var _stringifier = __webpack_require__(359);
+	var _stringifier = __webpack_require__(362);
 	
 	var _stringifier2 = _interopRequireDefault(_stringifier);
 	
-	var _stringify = __webpack_require__(360);
+	var _stringify = __webpack_require__(363);
 	
 	var _stringify2 = _interopRequireDefault(_stringify);
 	
-	var _warnOnce = __webpack_require__(353);
+	var _warnOnce = __webpack_require__(356);
 	
 	var _warnOnce2 = _interopRequireDefault(_warnOnce);
 	
@@ -82765,7 +85157,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 355 */
+/* 358 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -82776,15 +85168,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 	
-	var _supportsColor = __webpack_require__(356);
+	var _supportsColor = __webpack_require__(359);
 	
 	var _supportsColor2 = _interopRequireDefault(_supportsColor);
 	
-	var _terminalHighlight = __webpack_require__(357);
+	var _terminalHighlight = __webpack_require__(360);
 	
 	var _terminalHighlight2 = _interopRequireDefault(_terminalHighlight);
 	
-	var _warnOnce = __webpack_require__(353);
+	var _warnOnce = __webpack_require__(356);
 	
 	var _warnOnce2 = _interopRequireDefault(_warnOnce);
 	
@@ -83027,7 +85419,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 356 */
+/* 359 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -83035,7 +85427,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 357 */
+/* 360 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -83044,11 +85436,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: true
 	});
 	
-	var _tokenize = __webpack_require__(358);
+	var _tokenize = __webpack_require__(361);
 	
 	var _tokenize2 = _interopRequireDefault(_tokenize);
 	
-	var _input = __webpack_require__(345);
+	var _input = __webpack_require__(348);
 	
 	var _input2 = _interopRequireDefault(_input);
 	
@@ -83091,7 +85483,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 358 */
+/* 361 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -83370,7 +85762,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 359 */
+/* 362 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -83737,7 +86129,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 360 */
+/* 363 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -83747,7 +86139,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 	exports.default = stringify;
 	
-	var _stringifier = __webpack_require__(359);
+	var _stringifier = __webpack_require__(362);
 	
 	var _stringifier2 = _interopRequireDefault(_stringifier);
 	
@@ -83760,7 +86152,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 361 */
+/* 364 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -83771,11 +86163,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 	
-	var _warnOnce = __webpack_require__(353);
+	var _warnOnce = __webpack_require__(356);
 	
 	var _warnOnce2 = _interopRequireDefault(_warnOnce);
 	
-	var _node = __webpack_require__(354);
+	var _node = __webpack_require__(357);
 	
 	var _node2 = _interopRequireDefault(_node);
 	
@@ -83855,7 +86247,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 362 */
+/* 365 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -83956,7 +86348,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 363 */
+/* 366 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -83969,19 +86361,19 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 	
-	var _stringify2 = __webpack_require__(360);
+	var _stringify2 = __webpack_require__(363);
 	
 	var _stringify3 = _interopRequireDefault(_stringify2);
 	
-	var _warnOnce = __webpack_require__(353);
+	var _warnOnce = __webpack_require__(356);
 	
 	var _warnOnce2 = _interopRequireDefault(_warnOnce);
 	
-	var _result = __webpack_require__(364);
+	var _result = __webpack_require__(367);
 	
 	var _result2 = _interopRequireDefault(_result);
 	
-	var _parse = __webpack_require__(350);
+	var _parse = __webpack_require__(353);
 	
 	var _parse2 = _interopRequireDefault(_parse);
 	
@@ -84391,7 +86783,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 364 */
+/* 367 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -84402,7 +86794,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 	
-	var _warning = __webpack_require__(365);
+	var _warning = __webpack_require__(368);
 	
 	var _warning2 = _interopRequireDefault(_warning);
 	
@@ -84605,7 +86997,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 365 */
+/* 368 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -84739,7 +87131,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 366 */
+/* 369 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -84752,7 +87144,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 	
-	var _lazyResult = __webpack_require__(363);
+	var _lazyResult = __webpack_require__(366);
 	
 	var _lazyResult2 = _interopRequireDefault(_lazyResult);
 	
@@ -84976,7 +87368,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 367 */
+/* 370 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -84987,15 +87379,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 	
-	var _tokenize2 = __webpack_require__(358);
+	var _tokenize2 = __webpack_require__(361);
 	
 	var _tokenize3 = _interopRequireDefault(_tokenize2);
 	
-	var _comment = __webpack_require__(361);
+	var _comment = __webpack_require__(364);
 	
 	var _comment2 = _interopRequireDefault(_comment);
 	
-	var _parser = __webpack_require__(351);
+	var _parser = __webpack_require__(354);
 	
 	var _parser2 = _interopRequireDefault(_parser);
 	
@@ -85110,7 +87502,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 368 */
+/* 371 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -85202,7 +87594,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 369 */
+/* 372 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -85217,13 +87609,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	to use. */
 	
 	
-	var _sheet = __webpack_require__(370);
+	var _sheet = __webpack_require__(373);
 	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 	
-	var babelPluginFlowReactPropTypes_proptype_GlamorInsertedRule = __webpack_require__(338).babelPluginFlowReactPropTypes_proptype_GlamorInsertedRule || __webpack_require__(2).PropTypes.any;
+	var babelPluginFlowReactPropTypes_proptype_GlamorInsertedRule = __webpack_require__(341).babelPluginFlowReactPropTypes_proptype_GlamorInsertedRule || __webpack_require__(2).PropTypes.any;
 	
-	var babelPluginFlowReactPropTypes_proptype_GlamorRule = __webpack_require__(338).babelPluginFlowReactPropTypes_proptype_GlamorRule || __webpack_require__(2).PropTypes.any;
+	var babelPluginFlowReactPropTypes_proptype_GlamorRule = __webpack_require__(341).babelPluginFlowReactPropTypes_proptype_GlamorRule || __webpack_require__(2).PropTypes.any;
 	
 	var StyleSheet = function () {
 	  function StyleSheet() {
@@ -85277,7 +87669,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 370 */
+/* 373 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
@@ -85490,7 +87882,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
 
 /***/ },
-/* 371 */
+/* 374 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -85505,19 +87897,19 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _react = __webpack_require__(2);
 	
-	var _validAttr = __webpack_require__(372);
+	var _validAttr = __webpack_require__(375);
 	
 	var _validAttr2 = _interopRequireDefault(_validAttr);
 	
-	var _isTag = __webpack_require__(373);
+	var _isTag = __webpack_require__(376);
 	
 	var _isTag2 = _interopRequireDefault(_isTag);
 	
-	var _AbstractStyledComponent = __webpack_require__(374);
+	var _AbstractStyledComponent = __webpack_require__(377);
 	
 	var _AbstractStyledComponent2 = _interopRequireDefault(_AbstractStyledComponent);
 	
-	var _ThemeProvider = __webpack_require__(375);
+	var _ThemeProvider = __webpack_require__(378);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
@@ -85527,11 +87919,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 	
-	var babelPluginFlowReactPropTypes_proptype_Theme = __webpack_require__(375).babelPluginFlowReactPropTypes_proptype_Theme || __webpack_require__(2).PropTypes.any;
+	var babelPluginFlowReactPropTypes_proptype_Theme = __webpack_require__(378).babelPluginFlowReactPropTypes_proptype_Theme || __webpack_require__(2).PropTypes.any;
 	
-	var babelPluginFlowReactPropTypes_proptype_Target = __webpack_require__(338).babelPluginFlowReactPropTypes_proptype_Target || __webpack_require__(2).PropTypes.any;
+	var babelPluginFlowReactPropTypes_proptype_Target = __webpack_require__(341).babelPluginFlowReactPropTypes_proptype_Target || __webpack_require__(2).PropTypes.any;
 	
-	var babelPluginFlowReactPropTypes_proptype_RuleSet = __webpack_require__(338).babelPluginFlowReactPropTypes_proptype_RuleSet || __webpack_require__(2).PropTypes.any;
+	var babelPluginFlowReactPropTypes_proptype_RuleSet = __webpack_require__(341).babelPluginFlowReactPropTypes_proptype_RuleSet || __webpack_require__(2).PropTypes.any;
 	
 	exports.default = function (ComponentStyle) {
 	  // eslint-disable-next-line no-undef
@@ -85669,7 +88061,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 372 */
+/* 375 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -86274,7 +88666,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 373 */
+/* 376 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -86284,7 +88676,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 	exports.default = isTag;
 	
-	var babelPluginFlowReactPropTypes_proptype_Target = __webpack_require__(338).babelPluginFlowReactPropTypes_proptype_Target || __webpack_require__(2).PropTypes.any;
+	var babelPluginFlowReactPropTypes_proptype_Target = __webpack_require__(341).babelPluginFlowReactPropTypes_proptype_Target || __webpack_require__(2).PropTypes.any;
 	
 	function isTag(target) /* : %checks */{
 	  return typeof target === 'string';
@@ -86292,7 +88684,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 374 */
+/* 377 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -86303,7 +88695,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _react = __webpack_require__(2);
 	
-	var _ThemeProvider = __webpack_require__(375);
+	var _ThemeProvider = __webpack_require__(378);
 	
 	function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 	
@@ -86332,7 +88724,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 375 */
+/* 378 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -86350,15 +88742,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _react2 = _interopRequireDefault(_react);
 	
-	var _isFunction = __webpack_require__(376);
+	var _isFunction = __webpack_require__(379);
 	
 	var _isFunction2 = _interopRequireDefault(_isFunction);
 	
-	var _isPlainObject = __webpack_require__(340);
+	var _isPlainObject = __webpack_require__(343);
 	
 	var _isPlainObject2 = _interopRequireDefault(_isPlainObject);
 	
-	var _createBroadcast = __webpack_require__(377);
+	var _createBroadcast = __webpack_require__(380);
 	
 	var _createBroadcast2 = _interopRequireDefault(_createBroadcast);
 	
@@ -86375,7 +88767,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	
 	// NOTE: DO NOT CHANGE, changing this is a semver major change!
-	var babelPluginFlowReactPropTypes_proptype_Broadcast = __webpack_require__(377).babelPluginFlowReactPropTypes_proptype_Broadcast || __webpack_require__(2).PropTypes.any;
+	var babelPluginFlowReactPropTypes_proptype_Broadcast = __webpack_require__(380).babelPluginFlowReactPropTypes_proptype_Broadcast || __webpack_require__(2).PropTypes.any;
 	
 	var CHANNEL = exports.CHANNEL = '__styled-components__';
 	
@@ -86475,7 +88867,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = ThemeProvider;
 
 /***/ },
-/* 376 */
+/* 379 */
 /***/ function(module, exports) {
 
 	module.exports = isFunction
@@ -86496,7 +88888,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 377 */
+/* 380 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -86546,7 +88938,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports["default"];
 
 /***/ },
-/* 378 */
+/* 381 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -86555,19 +88947,19 @@ return /******/ (function(modules) { // webpackBootstrap
 	  value: true
 	});
 	
-	var _css = __webpack_require__(336);
+	var _css = __webpack_require__(339);
 	
 	var _css2 = _interopRequireDefault(_css);
 	
-	var _domElements = __webpack_require__(379);
+	var _domElements = __webpack_require__(382);
 	
 	var _domElements2 = _interopRequireDefault(_domElements);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
-	var babelPluginFlowReactPropTypes_proptype_Target = __webpack_require__(338).babelPluginFlowReactPropTypes_proptype_Target || __webpack_require__(2).PropTypes.any;
+	var babelPluginFlowReactPropTypes_proptype_Target = __webpack_require__(341).babelPluginFlowReactPropTypes_proptype_Target || __webpack_require__(2).PropTypes.any;
 	
-	var babelPluginFlowReactPropTypes_proptype_Interpolation = __webpack_require__(338).babelPluginFlowReactPropTypes_proptype_Interpolation || __webpack_require__(2).PropTypes.any;
+	var babelPluginFlowReactPropTypes_proptype_Interpolation = __webpack_require__(341).babelPluginFlowReactPropTypes_proptype_Interpolation || __webpack_require__(2).PropTypes.any;
 	
 	exports.default = function (styledComponent) {
 	  var styled = function styled(tag) {
@@ -86591,7 +88983,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 379 */
+/* 382 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -86609,7 +89001,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 380 */
+/* 383 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -86618,23 +89010,23 @@ return /******/ (function(modules) { // webpackBootstrap
 	  value: true
 	});
 	
-	var _hash = __webpack_require__(381);
+	var _hash = __webpack_require__(384);
 	
 	var _hash2 = _interopRequireDefault(_hash);
 	
-	var _css = __webpack_require__(336);
+	var _css = __webpack_require__(339);
 	
 	var _css2 = _interopRequireDefault(_css);
 	
-	var _GlobalStyle = __webpack_require__(343);
+	var _GlobalStyle = __webpack_require__(346);
 	
 	var _GlobalStyle2 = _interopRequireDefault(_GlobalStyle);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
-	var babelPluginFlowReactPropTypes_proptype_NameGenerator = __webpack_require__(338).babelPluginFlowReactPropTypes_proptype_NameGenerator || __webpack_require__(2).PropTypes.any;
+	var babelPluginFlowReactPropTypes_proptype_NameGenerator = __webpack_require__(341).babelPluginFlowReactPropTypes_proptype_NameGenerator || __webpack_require__(2).PropTypes.any;
 	
-	var babelPluginFlowReactPropTypes_proptype_Interpolation = __webpack_require__(338).babelPluginFlowReactPropTypes_proptype_Interpolation || __webpack_require__(2).PropTypes.any;
+	var babelPluginFlowReactPropTypes_proptype_Interpolation = __webpack_require__(341).babelPluginFlowReactPropTypes_proptype_Interpolation || __webpack_require__(2).PropTypes.any;
 	
 	var replaceWhitespace = function replaceWhitespace(str) {
 	  return str.replace(/\s|\\n/g, '');
@@ -86658,7 +89050,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 381 */
+/* 384 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -86733,7 +89125,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ },
-/* 382 */
+/* 385 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -86744,27 +89136,27 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 	
-	var _hash = __webpack_require__(381);
+	var _hash = __webpack_require__(384);
 	
 	var _hash2 = _interopRequireDefault(_hash);
 	
-	var _flatten = __webpack_require__(339);
+	var _flatten = __webpack_require__(342);
 	
 	var _flatten2 = _interopRequireDefault(_flatten);
 	
-	var _parse = __webpack_require__(344);
+	var _parse = __webpack_require__(347);
 	
 	var _parse2 = _interopRequireDefault(_parse);
 	
-	var _postcssNested = __webpack_require__(368);
+	var _postcssNested = __webpack_require__(371);
 	
 	var _postcssNested2 = _interopRequireDefault(_postcssNested);
 	
-	var _autoprefix = __webpack_require__(383);
+	var _autoprefix = __webpack_require__(386);
 	
 	var _autoprefix2 = _interopRequireDefault(_autoprefix);
 	
-	var _StyleSheet = __webpack_require__(369);
+	var _StyleSheet = __webpack_require__(372);
 	
 	var _StyleSheet2 = _interopRequireDefault(_StyleSheet);
 	
@@ -86772,11 +89164,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 	
-	var babelPluginFlowReactPropTypes_proptype_GlamorInsertedRule = __webpack_require__(338).babelPluginFlowReactPropTypes_proptype_GlamorInsertedRule || __webpack_require__(2).PropTypes.any;
+	var babelPluginFlowReactPropTypes_proptype_GlamorInsertedRule = __webpack_require__(341).babelPluginFlowReactPropTypes_proptype_GlamorInsertedRule || __webpack_require__(2).PropTypes.any;
 	
-	var babelPluginFlowReactPropTypes_proptype_NameGenerator = __webpack_require__(338).babelPluginFlowReactPropTypes_proptype_NameGenerator || __webpack_require__(2).PropTypes.any;
+	var babelPluginFlowReactPropTypes_proptype_NameGenerator = __webpack_require__(341).babelPluginFlowReactPropTypes_proptype_NameGenerator || __webpack_require__(2).PropTypes.any;
 	
-	var babelPluginFlowReactPropTypes_proptype_RuleSet = __webpack_require__(338).babelPluginFlowReactPropTypes_proptype_RuleSet || __webpack_require__(2).PropTypes.any;
+	var babelPluginFlowReactPropTypes_proptype_RuleSet = __webpack_require__(341).babelPluginFlowReactPropTypes_proptype_RuleSet || __webpack_require__(2).PropTypes.any;
 	
 	/*
 	 ComponentStyle is all the CSS-specific stuff, not
@@ -86828,7 +89220,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 383 */
+/* 386 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -86845,7 +89237,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _hyphenateStyleName2 = _interopRequireDefault(_hyphenateStyleName);
 	
-	var _static = __webpack_require__(384);
+	var _static = __webpack_require__(387);
 	
 	var _static2 = _interopRequireDefault(_static);
 	
@@ -86856,7 +89248,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	// eslint-disable-next-line
 	
 	
-	var babelPluginFlowReactPropTypes_proptype_Container = __webpack_require__(349).babelPluginFlowReactPropTypes_proptype_Container || __webpack_require__(2).PropTypes.any;
+	var babelPluginFlowReactPropTypes_proptype_Container = __webpack_require__(352).babelPluginFlowReactPropTypes_proptype_Container || __webpack_require__(2).PropTypes.any;
 	
 	exports.default = function (root) {
 	  root.walkDecls(function (decl) {
@@ -86882,14 +89274,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 384 */
+/* 387 */
 /***/ function(module, exports, __webpack_require__) {
 
-	module.exports = __webpack_require__(385)
+	module.exports = __webpack_require__(388)
 
 
 /***/ },
-/* 385 */
+/* 388 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -86899,51 +89291,51 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 	exports.default = prefixAll;
 	
-	var _prefixProps = __webpack_require__(386);
+	var _prefixProps = __webpack_require__(389);
 	
 	var _prefixProps2 = _interopRequireDefault(_prefixProps);
 	
-	var _capitalizeString = __webpack_require__(387);
+	var _capitalizeString = __webpack_require__(390);
 	
 	var _capitalizeString2 = _interopRequireDefault(_capitalizeString);
 	
-	var _sortPrefixedStyle = __webpack_require__(388);
+	var _sortPrefixedStyle = __webpack_require__(391);
 	
 	var _sortPrefixedStyle2 = _interopRequireDefault(_sortPrefixedStyle);
 	
-	var _position = __webpack_require__(390);
+	var _position = __webpack_require__(393);
 	
 	var _position2 = _interopRequireDefault(_position);
 	
-	var _calc = __webpack_require__(391);
+	var _calc = __webpack_require__(394);
 	
 	var _calc2 = _interopRequireDefault(_calc);
 	
-	var _cursor = __webpack_require__(394);
+	var _cursor = __webpack_require__(397);
 	
 	var _cursor2 = _interopRequireDefault(_cursor);
 	
-	var _flex = __webpack_require__(395);
+	var _flex = __webpack_require__(398);
 	
 	var _flex2 = _interopRequireDefault(_flex);
 	
-	var _sizing = __webpack_require__(396);
+	var _sizing = __webpack_require__(399);
 	
 	var _sizing2 = _interopRequireDefault(_sizing);
 	
-	var _gradient = __webpack_require__(397);
+	var _gradient = __webpack_require__(400);
 	
 	var _gradient2 = _interopRequireDefault(_gradient);
 	
-	var _transition = __webpack_require__(398);
+	var _transition = __webpack_require__(401);
 	
 	var _transition2 = _interopRequireDefault(_transition);
 	
-	var _flexboxIE = __webpack_require__(400);
+	var _flexboxIE = __webpack_require__(403);
 	
 	var _flexboxIE2 = _interopRequireDefault(_flexboxIE);
 	
-	var _flexboxOld = __webpack_require__(401);
+	var _flexboxOld = __webpack_require__(404);
 	
 	var _flexboxOld2 = _interopRequireDefault(_flexboxOld);
 	
@@ -87009,7 +89401,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 386 */
+/* 389 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -87021,7 +89413,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports["default"];
 
 /***/ },
-/* 387 */
+/* 390 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -87038,7 +89430,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports["default"];
 
 /***/ },
-/* 388 */
+/* 391 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -87048,7 +89440,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 	exports.default = sortPrefixedStyle;
 	
-	var _isPrefixedProperty = __webpack_require__(389);
+	var _isPrefixedProperty = __webpack_require__(392);
 	
 	var _isPrefixedProperty2 = _interopRequireDefault(_isPrefixedProperty);
 	
@@ -87070,7 +89462,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 389 */
+/* 392 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -87086,7 +89478,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports["default"];
 
 /***/ },
-/* 390 */
+/* 393 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -87103,7 +89495,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 391 */
+/* 394 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -87113,11 +89505,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 	exports.default = calc;
 	
-	var _joinPrefixedValue = __webpack_require__(392);
+	var _joinPrefixedValue = __webpack_require__(395);
 	
 	var _joinPrefixedValue2 = _interopRequireDefault(_joinPrefixedValue);
 	
-	var _isPrefixedValue = __webpack_require__(393);
+	var _isPrefixedValue = __webpack_require__(396);
 	
 	var _isPrefixedValue2 = _interopRequireDefault(_isPrefixedValue);
 	
@@ -87133,7 +89525,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 392 */
+/* 395 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -87158,7 +89550,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 393 */
+/* 396 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -87176,7 +89568,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 394 */
+/* 397 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -87186,7 +89578,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 	exports.default = cursor;
 	
-	var _joinPrefixedValue = __webpack_require__(392);
+	var _joinPrefixedValue = __webpack_require__(395);
 	
 	var _joinPrefixedValue2 = _interopRequireDefault(_joinPrefixedValue);
 	
@@ -87207,7 +89599,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 395 */
+/* 398 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -87228,7 +89620,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 396 */
+/* 399 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -87238,7 +89630,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 	exports.default = sizing;
 	
-	var _joinPrefixedValue = __webpack_require__(392);
+	var _joinPrefixedValue = __webpack_require__(395);
 	
 	var _joinPrefixedValue2 = _interopRequireDefault(_joinPrefixedValue);
 	
@@ -87269,7 +89661,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 397 */
+/* 400 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -87279,11 +89671,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 	exports.default = gradient;
 	
-	var _joinPrefixedValue = __webpack_require__(392);
+	var _joinPrefixedValue = __webpack_require__(395);
 	
 	var _joinPrefixedValue2 = _interopRequireDefault(_joinPrefixedValue);
 	
-	var _isPrefixedValue = __webpack_require__(393);
+	var _isPrefixedValue = __webpack_require__(396);
 	
 	var _isPrefixedValue2 = _interopRequireDefault(_isPrefixedValue);
 	
@@ -87299,7 +89691,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 398 */
+/* 401 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -87309,19 +89701,19 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 	exports.default = transition;
 	
-	var _hyphenateStyleName = __webpack_require__(399);
+	var _hyphenateStyleName = __webpack_require__(402);
 	
 	var _hyphenateStyleName2 = _interopRequireDefault(_hyphenateStyleName);
 	
-	var _capitalizeString = __webpack_require__(387);
+	var _capitalizeString = __webpack_require__(390);
 	
 	var _capitalizeString2 = _interopRequireDefault(_capitalizeString);
 	
-	var _isPrefixedValue = __webpack_require__(393);
+	var _isPrefixedValue = __webpack_require__(396);
 	
 	var _isPrefixedValue2 = _interopRequireDefault(_isPrefixedValue);
 	
-	var _prefixProps = __webpack_require__(386);
+	var _prefixProps = __webpack_require__(389);
 	
 	var _prefixProps2 = _interopRequireDefault(_prefixProps);
 	
@@ -87386,7 +89778,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 399 */
+/* 402 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -87408,7 +89800,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 400 */
+/* 403 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -87445,7 +89837,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 401 */
+/* 404 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -87486,7 +89878,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 402 */
+/* 405 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -87503,7 +89895,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _react2 = _interopRequireDefault(_react);
 	
-	var _ThemeProvider = __webpack_require__(375);
+	var _ThemeProvider = __webpack_require__(378);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
@@ -87572,14 +89964,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = exports['default'];
 
 /***/ },
-/* 403 */
+/* 406 */
 /***/ function(module, exports) {
 
 	// removed by extract-text-webpack-plugin
 	module.exports = {"container":"CloudCarousel_container","header":"CloudCarousel_header","content":"CloudCarousel_content","row":"CloudCarousel_row","column":"CloudCarousel_column","carousel_container":"CloudCarousel_carousel_container","carousel_content":"CloudCarousel_carousel_content","carousel_item_wrapper":"CloudCarousel_carousel_item_wrapper","carousel_item":"CloudCarousel_carousel_item","item_row":"CloudCarousel_item_row","item_column":"CloudCarousel_item_column"};
 
 /***/ },
-/* 404 */
+/* 407 */
 /***/ function(module, exports) {
 
 	// removed by extract-text-webpack-plugin

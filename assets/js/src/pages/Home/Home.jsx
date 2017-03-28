@@ -141,7 +141,7 @@ class Home extends React.Component {
 				<div className={`${Styles.excel_table_view_container} ms-Grid-row`}>
 					<div className="container">
 						<div className="ms-Grid-col ms-u-sm12">
-							<ExcelTableView docUrl={`${_spPageContextInfo.siteAbsoluteUrl}/Documents/DoveColumnsDev.xlsx`} />
+							<ExcelTableView />
 						</div>
 					</div>
 				</div>

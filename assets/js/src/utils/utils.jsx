@@ -196,3 +196,14 @@ export function AjaxTransport() {
 export function GetRandomInt(min, max) {
 	return Math.floor(Math.random() * (max - min) + min);
 }
+
+export function ToCamelCase(sentenceCase) {
+	let out = '';
+
+	sentenceCase.split(' ').forEach((e) => {
+		const add = e.toLowerCase();
+		out += (add[0].toUpperCase() + add.slice(1));
+	});
+
+	return out;
+}

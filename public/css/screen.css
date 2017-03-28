@@ -1,4 +1,7 @@
 /**
+ * Font family
+ */
+/**
  * Breakpoints
  */
 /**
@@ -15,6 +18,9 @@
  */
 /**
  * Import all utilities
+ */
+/**
+ * Font family
  */
 /**
  * Breakpoints
@@ -6291,6 +6297,8 @@
   .spcrowd body {
     direction: ltr;
     background: #FFF; }
+  .spcrowd button {
+    font-family: "RobotoRegular", "Segoe UI WestEuropean", "Segoe UI", "Helvetica Neue", HelveticaNeue, Helvetica, Arial, sans-serif; }
   .spcrowd .container {
     margin: 0 auto;
     padding-left: 0;
@@ -6366,6 +6374,9 @@
 .ms-Icon--ChevronDown:before {
   content: '\E70D'; }
 /**
+ * Font family
+ */
+/**
  * Breakpoints
  */
 /**
@@ -6393,6 +6404,9 @@
   font-weight: 400;
   -webkit-font-smoothing: antialiased;
   color: #333333; }
+/**
+ * Font family
+ */
 /**
  * Breakpoints
  */
@@ -6437,6 +6451,54 @@
     color: #757575;
     font-weight: 500; }
 
+.ExcelTableView_container .ExcelTableView_content .ExcelTableView_dropzone_container .ExcelTableView_dropzone {
+  height: 100px;
+  width: 100%;
+  margin-bottom: 12px;
+  border-width: 2px;
+  border-color: #0078d7;
+  border-style: dashed;
+  border-radius: 5px;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-align: center;
+  align-items: center;
+  -ms-flex-pack: center;
+  justify-content: center; }
+  .ExcelTableView_container .ExcelTableView_content .ExcelTableView_dropzone_container .ExcelTableView_dropzone .ExcelTableView_dropzone_title {
+    color: #757575;
+    font-weight: 500; }
+
+.ExcelTableView_container .ExcelTableView_content .ExcelTableView_dropzone_container .ExcelTableView_dropzone_button {
+  height: 32px;
+  min-width: 80px;
+  padding: 6px 20px;
+  background-color: #0078d7;
+  border-color: #0078d7;
+  color: white;
+  cursor: pointer;
+  margin-left: auto;
+  margin-right: auto;
+  display: block; }
+
+.ExcelTableView_container .ExcelTableView_content .ExcelTableView_dropzone_container .ExcelTableView_dropzone_files {
+  padding-top: 20px;
+  padding-bottom: 5px; }
+  .ExcelTableView_container .ExcelTableView_content .ExcelTableView_dropzone_container .ExcelTableView_dropzone_files .ExcelTableView_dropzone_files_list {
+    display: inline-block;
+    padding-right: 5px; }
+    .ExcelTableView_container .ExcelTableView_content .ExcelTableView_dropzone_container .ExcelTableView_dropzone_files .ExcelTableView_dropzone_files_list .ExcelTableView_dropzone_files_title {
+      font-size: 18px; }
+  .ExcelTableView_container .ExcelTableView_content .ExcelTableView_dropzone_container .ExcelTableView_dropzone_files .ExcelTableView_dropzone_files_uploading {
+    display: inline-block; }
+    .ExcelTableView_container .ExcelTableView_content .ExcelTableView_dropzone_container .ExcelTableView_dropzone_files .ExcelTableView_dropzone_files_uploading .ms-Spinner .ms-Spinner-circle {
+      display: inline-block;
+      float: right; }
+    .ExcelTableView_container .ExcelTableView_content .ExcelTableView_dropzone_container .ExcelTableView_dropzone_files .ExcelTableView_dropzone_files_uploading .ms-Spinner .ms-Spinner-label {
+      display: inline-block;
+      margin-right: 10px;
+      margin-top: 0; }
+
 .ExcelTableView_container .ExcelTableView_content .ExcelTableView_item_row {
   background-color: white;
   display: -ms-flexbox;
@@ -6446,6 +6508,9 @@
     font-weight: normal; }
   .ExcelTableView_container .ExcelTableView_content .ExcelTableView_item_row:last-child .ExcelTableView_item_column {
     border-bottom: 1px solid #E5E5E5; }
+/**
+ * Font family
+ */
 /**
  * Breakpoints
  */
@@ -6476,6 +6541,8 @@
     .CloudCarousel_container .CloudCarousel_content .CloudCarousel_row .CloudCarousel_column .CloudCarousel_carousel_container .CloudCarousel_carousel_content .CloudCarousel_carousel_item_wrapper .CloudCarousel_carousel_item .CloudCarousel_item_row {
       margin: 0;
       position: relative; }
+      .CloudCarousel_container .CloudCarousel_content .CloudCarousel_row .CloudCarousel_column .CloudCarousel_carousel_container .CloudCarousel_carousel_content .CloudCarousel_carousel_item_wrapper .CloudCarousel_carousel_item .CloudCarousel_item_row > div:hover {
+        z-index: 10; }
       .CloudCarousel_container .CloudCarousel_content .CloudCarousel_row .CloudCarousel_column .CloudCarousel_carousel_container .CloudCarousel_carousel_content .CloudCarousel_carousel_item_wrapper .CloudCarousel_carousel_item .CloudCarousel_item_row .CloudCarousel_item_column {
         position: absolute;
         background-color: #d2fcd9;
@@ -6487,6 +6554,9 @@
         justify-content: center;
         font-size: 37px;
         border: 1px solid black; }
+/**
+ * Font family
+ */
 /**
  * Breakpoints
  */

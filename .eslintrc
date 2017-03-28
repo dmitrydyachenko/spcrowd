@@ -62,7 +62,9 @@
         "import/no-extraneous-dependencies": 0,
         "camelcase": 0,
         "no-mixed-operators": 0,
-        "no-param-reassign": 0
+        "no-param-reassign": 1,
+        "no-case-declarations": 0,
+        "no-fallthrough": 1
     }
 }
 

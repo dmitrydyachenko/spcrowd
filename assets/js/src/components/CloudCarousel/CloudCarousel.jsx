@@ -1,5 +1,4 @@
 /* External libraries */
-import $ from 'jquery';
 import React from 'react';
 import MediaQuery from 'react-responsive';
 import styled, { keyframes } from 'styled-components';
@@ -94,11 +93,8 @@ class CloudCarousel extends React.Component {
 		return (
 			items.map((item, i) => {
 				const subItemsContent = subItems.map((subItem, j) => {
-					const itemWidth = 100;
-					const itemHeight = 100;
-
 					const top = GetRandomInt(0, self.clientHeight - subItem.height);
-					const left = GetRandomInt(width, (width + subItem.weight));
+					const left = GetRandomInt(width, width + subItem.weight);
 
 					const style = { 
 						top, 
@@ -122,8 +118,6 @@ class CloudCarousel extends React.Component {
 						position: relative;
 						animation: ${rightToLeft} ${((subItem.weight) / left) * 100}s linear infinite;
 					`;
-
-					console.log(`speed: ${((subItem.weight) / left) * 100} weight: ${subItem.weight} distance: ${left}`);
 
 					return (
 						<Translate key={(2 * j) + 1}>
