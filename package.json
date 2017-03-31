@@ -45,6 +45,7 @@
     "eslint-plugin-jsx-a11y": "^2.2.3",
     "eslint-plugin-react": "^6.9.0",
     "extract-text-webpack-plugin": "^1.0.1",
+    "gifshot": "^0.3.2",
     "identity-obj-proxy": "^3.0.0",
     "immutability-helper": "^2.1.0",
     "jest": "^17.0.3",

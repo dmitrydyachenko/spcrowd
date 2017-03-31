@@ -1,6 +1,7 @@
 .container {
     .top_container {
         display: block;
+        padding-bottom: 30px;
 
         .header {
             display: block;
@@ -21,6 +22,10 @@
                 font-size: 18px;
             }
         }
+    }
+
+    .gif_generator_container {
+        padding-bottom: 30px;
     }
 
     .content_container {}

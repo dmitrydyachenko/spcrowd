@@ -207,3 +207,43 @@ export function ToCamelCase(sentenceCase) {
 
 	return out;
 }
+
+export function FormatXml(xml) {
+	const reg = /(>)(<)(\/*)/g;
+
+	let formatted = '';
+	let pad = 0;
+
+	xml = xml.toString().replace(reg, '$1\r\n$2$3');
+
+	const nodes = xml.split('\r\n');
+
+	for (let n = 0; n < nodes.length; n++) {
+		const node = nodes[n];
+
+		let indent = 0;
+
+		if (node.match(/.+<\/\w[^>]*>$/)) {
+			indent = 0;
+		} else if (node.match(/^<\/\w/)) {
+			if (pad !== 0) {
+				pad -= 1;
+			}
+		} else if (node.match(/^<\w[^>]*[^/]>.*$/)) {
+			indent = 1;
+		} else {
+			indent = 0;
+		}
+
+		let padding = '';
+
+		for (let i = 0; i < pad; i++) {
+			padding += '  ';
+		}
+
+		formatted += `${padding}${node}\r\n`;
+		pad += indent;
+	}
+
+	return formatted.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/ /g, '&nbsp;');
+}

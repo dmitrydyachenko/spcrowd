@@ -11,6 +11,7 @@ import { PAGESLIST, STYLELIBRARY } from '../../utils/settings';
 import PagesList from '../../components/PagesList/PagesList';
 import ExcelTableView from '../../components/ExcelTableView/ExcelTableView';
 import CloudCarousel from '../../components/CloudCarousel/CloudCarousel';
+import GifGenerator from '../../components/GifGenerator/GifGenerator';
 
 /* CSS styles */
 import Styles from './Home.scss';
@@ -108,43 +109,64 @@ class Home extends React.Component {
 						</div>
 					</div>
 				</div>
-				<div className={`${Styles.content_container} ms-Grid-row`}>
+				{
+					0 === 1 ? (
+						<div>
+							<div className={`${Styles.content_container} ms-Grid-row`}>
+								<div className="container">
+									<div className="ms-Grid-col ms-u-sm12">
+										<PagesList data={this.state.data} 
+													guid={GenerateGuid()} 
+													fontsize={this.state.fontsize} />
+									</div>
+								</div>
+							</div>
+							<div className={`${Styles.bottom_container} ms-Grid-row`}>
+								<div className="container">
+									<div className="ms-Grid-col ms-u-sm12">
+										<Slider label="Font size:" 
+												min={8} max={64} step={2}
+												defaultValue={14} 
+												showValue
+												onChange={fontsize => this.setState({ fontsize: `${fontsize}px` })} />
+									</div>
+								</div>
+							</div>
+						</div>
+					) : null
+				}
+				<div className={`${Styles.gif_generator_container} ms-Grid-row`}>
 					<div className="container">
 						<div className="ms-Grid-col ms-u-sm12">
-							<PagesList data={this.state.data} 
-										guid={GenerateGuid()} 
-										fontsize={this.state.fontsize} />
+							<GifGenerator />
 						</div>
 					</div>
 				</div>
-				<div className={`${Styles.bottom_container} ms-Grid-row`}>
-					<div className="container">
-						<div className="ms-Grid-col ms-u-sm12">
-							<Slider label="Font size:" 
-									min={8} max={64} step={2}
-									defaultValue={14} 
-									showValue
-									onChange={fontsize => this.setState({ fontsize: `${fontsize}px` })} />
+				{
+					0 === 1 ? (
+						<div className={`${Styles.cloud_carousel_container} ms-Grid-row`}>
+							<div className="container">
+								<div className="ms-Grid-col ms-u-sm12">
+									{
+										this.state.subItems && this.state.subItems.length > 0 ?
+											<CloudCarousel items={[1, 2]} subItems={this.state.subItems} /> : null
+									}
+								</div>
+							</div>
 						</div>
-					</div>
-				</div>
-				<div className={`${Styles.cloud_carousel_container} ms-Grid-row`}>
-					<div className="container">
-						<div className="ms-Grid-col ms-u-sm12">
-							{
-								this.state.subItems && this.state.subItems.length > 0 ?
-									<CloudCarousel items={[1, 2]} subItems={this.state.subItems} /> : null
-							}
+					) : null
+				}
+				{
+					0 === 0 ? (
+						<div className={`${Styles.excel_table_view_container} ms-Grid-row`}>
+							<div className="container">
+								<div className="ms-Grid-col ms-u-sm12">
+									<ExcelTableView />
+								</div>
+							</div>
 						</div>
-					</div>
-				</div>
-				<div className={`${Styles.excel_table_view_container} ms-Grid-row`}>
-					<div className="container">
-						<div className="ms-Grid-col ms-u-sm12">
-							<ExcelTableView />
-						</div>
-					</div>
-				</div>
+					) : null
+				}
 			</div>
 		);
 

@@ -6445,6 +6445,22 @@
   .ExcelTableView_container .ExcelTableView_content .ExcelTableView_column:first-child {
     border-left: 1px solid #E5E5E5; }
 
+.ExcelTableView_container .ExcelTableView_content .ExcelTableView_button,
+.ExcelTableView_container .ExcelTableView_content .ExcelTableView_link_button {
+  height: 20px;
+  min-width: 80px;
+  padding: 5px 20px 8px 20px;
+  background-color: #0078d7;
+  color: white;
+  cursor: pointer;
+  margin-left: auto;
+  margin-right: auto;
+  display: inline-block;
+  font-weight: normal; }
+
+.ExcelTableView_container .ExcelTableView_content .ExcelTableView_link_button:hover {
+  text-decoration: none; }
+
 .ExcelTableView_container .ExcelTableView_content .ExcelTableView_header_row {
   background-color: #FAFAFA; }
   .ExcelTableView_container .ExcelTableView_content .ExcelTableView_header_row .ExcelTableView_header_column {
@@ -6469,17 +6485,10 @@
     color: #757575;
     font-weight: 500; }
 
-.ExcelTableView_container .ExcelTableView_content .ExcelTableView_dropzone_container .ExcelTableView_dropzone_button {
-  height: 32px;
-  min-width: 80px;
-  padding: 6px 20px;
-  background-color: #0078d7;
-  border-color: #0078d7;
-  color: white;
-  cursor: pointer;
-  margin-left: auto;
-  margin-right: auto;
-  display: block; }
+.ExcelTableView_container .ExcelTableView_content .ExcelTableView_dropzone_container .ExcelTableView_buttons_container {
+  text-align: center; }
+  .ExcelTableView_container .ExcelTableView_content .ExcelTableView_dropzone_container .ExcelTableView_buttons_container .ExcelTableView_xml_button {
+    margin-left: 30px; }
 
 .ExcelTableView_container .ExcelTableView_content .ExcelTableView_dropzone_container .ExcelTableView_dropzone_files {
   padding-top: 20px;
@@ -6487,14 +6496,15 @@
   .ExcelTableView_container .ExcelTableView_content .ExcelTableView_dropzone_container .ExcelTableView_dropzone_files .ExcelTableView_dropzone_files_list {
     display: inline-block;
     padding-right: 5px; }
-    .ExcelTableView_container .ExcelTableView_content .ExcelTableView_dropzone_container .ExcelTableView_dropzone_files .ExcelTableView_dropzone_files_list .ExcelTableView_dropzone_files_title {
-      font-size: 18px; }
-  .ExcelTableView_container .ExcelTableView_content .ExcelTableView_dropzone_container .ExcelTableView_dropzone_files .ExcelTableView_dropzone_files_uploading {
+  .ExcelTableView_container .ExcelTableView_content .ExcelTableView_dropzone_container .ExcelTableView_dropzone_files .ExcelTableView_excel_file_loading,
+  .ExcelTableView_container .ExcelTableView_content .ExcelTableView_dropzone_container .ExcelTableView_dropzone_files .ExcelTableView_xml_file_loading {
     display: inline-block; }
-    .ExcelTableView_container .ExcelTableView_content .ExcelTableView_dropzone_container .ExcelTableView_dropzone_files .ExcelTableView_dropzone_files_uploading .ms-Spinner .ms-Spinner-circle {
+    .ExcelTableView_container .ExcelTableView_content .ExcelTableView_dropzone_container .ExcelTableView_dropzone_files .ExcelTableView_excel_file_loading .ms-Spinner .ms-Spinner-circle,
+    .ExcelTableView_container .ExcelTableView_content .ExcelTableView_dropzone_container .ExcelTableView_dropzone_files .ExcelTableView_xml_file_loading .ms-Spinner .ms-Spinner-circle {
       display: inline-block;
       float: right; }
-    .ExcelTableView_container .ExcelTableView_content .ExcelTableView_dropzone_container .ExcelTableView_dropzone_files .ExcelTableView_dropzone_files_uploading .ms-Spinner .ms-Spinner-label {
+    .ExcelTableView_container .ExcelTableView_content .ExcelTableView_dropzone_container .ExcelTableView_dropzone_files .ExcelTableView_excel_file_loading .ms-Spinner .ms-Spinner-label,
+    .ExcelTableView_container .ExcelTableView_content .ExcelTableView_dropzone_container .ExcelTableView_dropzone_files .ExcelTableView_xml_file_loading .ms-Spinner .ms-Spinner-label {
       display: inline-block;
       margin-right: 10px;
       margin-top: 0; }
@@ -6572,8 +6582,74 @@
 /**
  * Paths to Sharepoint assets 
  */
+.GifGenerator_container .GifGenerator_header {
+  display: block;
+  font-size: 20px;
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+  color: #333333; }
+
+.GifGenerator_container .GifGenerator_content .ms-Grid {
+  padding: 0 8px 0 8px;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19); }
+
+.GifGenerator_container .GifGenerator_content .GifGenerator_column {
+  border: 0;
+  border-right: 1px solid #E5E5E5;
+  border-top: 1px solid #E5E5E5;
+  line-height: 24px;
+  padding: 12px;
+  vertical-align: middle;
+  font-size: 13px;
+  -webkit-font-smoothing: antialiased; }
+  .GifGenerator_container .GifGenerator_content .GifGenerator_column:first-child {
+    border-left: 1px solid #E5E5E5; }
+
+.GifGenerator_container .GifGenerator_content .GifGenerator_header_row .GifGenerator_header_column {
+  text-align: center; }
+
+.GifGenerator_container .GifGenerator_content .GifGenerator_item_row {
+  background-color: white;
+  display: -ms-flexbox;
+  display: flex; }
+  .GifGenerator_container .GifGenerator_content .GifGenerator_item_row .GifGenerator_item_column {
+    color: #212121;
+    font-weight: normal;
+    text-align: center; }
+    .GifGenerator_container .GifGenerator_content .GifGenerator_item_row .GifGenerator_item_column .GifGenerator_gif_create_button {
+      height: 32px;
+      min-width: 80px;
+      padding: 6px 20px;
+      background-color: #0078d7;
+      border-color: #0078d7;
+      color: white;
+      cursor: pointer;
+      margin-left: auto;
+      margin-right: auto;
+      display: block; }
+  .GifGenerator_container .GifGenerator_content .GifGenerator_item_row:last-child .GifGenerator_item_column {
+    border-bottom: 1px solid #E5E5E5; }
+/**
+ * Font family
+ */
+/**
+ * Breakpoints
+ */
+/**
+ * Tweakpoints
+ */
+/**
+ * Other variables
+ */
+/**
+ * Colours
+ */
+/**
+ * Paths to Sharepoint assets 
+ */
 .Home_container .Home_top_container {
-  display: block; }
+  display: block;
+  padding-bottom: 30px; }
   .Home_container .Home_top_container .Home_header {
     display: block; }
     .Home_container .Home_top_container .Home_header .Home_header_title,
@@ -6586,6 +6662,9 @@
       font-size: 20px; }
     .Home_container .Home_top_container .Home_header .Home_header_description {
       font-size: 18px; }
+
+.Home_container .Home_gif_generator_container {
+  padding-bottom: 30px; }
 
 .Home_container .Home_bottom_container {
   padding-top: 20px; }

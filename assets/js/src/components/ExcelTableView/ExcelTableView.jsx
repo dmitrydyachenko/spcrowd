@@ -3,14 +3,17 @@ import $ from 'jquery';
 import xlsx from 'xlsx';
 import React from 'react';
 import SPOC from 'SPOCExt';
-import Data2xml from 'data2xml';
 import Dropzone from 'react-dropzone';
+import Xslt from 'xslt';
 
-/* CSS styles */
+/* Components */
 import { Spinner } from 'office-ui-fabric-react/lib/Spinner';
 import CamlBuilder from '../../../vendor/camljs';
-import { AjaxTransport, ToCamelCase } from '../../utils/utils';
-import { DOCUMENTSLIBRARY } from '../../utils/settings';
+import { DOCUMENTSLIBRARY, FORMATXMLXSLT } from '../../utils/settings';
+import { AjaxTransport, FormatXml } from '../../utils/utils';
+import { GetFieldsXmlDefinition } from '../Controller/Fields/Fields';
+
+/* CSS styles */
 import Styles from './ExcelTableView.scss';
 
 class ExcelTableView extends React.Component {
@@ -18,59 +21,74 @@ class ExcelTableView extends React.Component {
 		super();
 
 		this.state = {
-			completed: 0,
-			submitting: false,
-			filePath: '',
-			uploadedFiles: {
+			excelContent: [],
+			excelFilePath: '',
+			excelUploadedFile: {
 				value: '',
 				files: []
-			}
+			},
+			excelFileLoading: false,
+			xmlContent: '',
+			xmlFilePath: '',
+			xmlFileLoading: true
 		};
 
+		this.group = 'SPCrowd';
 		this.prefix = 'SPCrowd';
+
 		this.site = new SPOC.SP.Site();
 
 		this.handleOnDrop = this.handleOnDrop.bind(this);
-		this.handleOnClick = this.handleOnClick.bind(this);
+		this.handleOnExcelClick = this.handleOnExcelClick.bind(this);
 	}
 
 	componentDidMount() { 
 		this.init();
 	}
 
+	init() {
+		const self = this;
+	}
+
+	handleOnExcelClick() {
+		const self = this;
+
+		self.setState({
+			excelContent: [],
+			excelFilePath: '',
+			excelUploadedFile: {
+				value: '',
+				files: []
+			},
+			excelFileLoading: false,
+			xmlContent: '',
+			xmlFilePath: '',
+			xmlFileLoading: true
+		}, () => {
+			self.dropzone.open();
+		});
+	}
+
 	handleOnDrop(acceptedFiles) {
 		const self = this;
-		const uploadedFiles = self.state.uploadedFiles;
+		const excelUploadedFile = self.state.excelUploadedFile;
 
-		uploadedFiles.value = acceptedFiles[0].name;
-		uploadedFiles.files = acceptedFiles;
+		excelUploadedFile.value = acceptedFiles[0].name;
+		excelUploadedFile.files = acceptedFiles;
 
-		self.setState({ uploadedFiles }, () => {
-			const uploadInput = self.state.uploadedFiles;    
+		self.setState({ excelUploadedFile }, () => {
+			const uploadInput = self.state.excelUploadedFile;    
 
 			if (uploadInput && uploadInput.value) {
-				self.setState({ completed: 1, submitting: true }, () => {
+				self.setState({ excelFileLoading: true }, () => {
 					const parts = uploadInput.value.split('\\');
 					const fileName = parts[parts.length - 1];                     
-					const library = self.site.Files(DOCUMENTSLIBRARY);
 
-					library.upload(uploadInput).then(() => {  
-						const filePath = encodeURI(`${_spPageContextInfo.webServerRelativeUrl}/${DOCUMENTSLIBRARY}/${fileName}`);
+					self.site.Files(DOCUMENTSLIBRARY).upload(uploadInput).then(() => {  
+						const excelFilePath = encodeURI(`${_spPageContextInfo.webServerRelativeUrl}/${DOCUMENTSLIBRARY}/${fileName}`);
 
-						self.setState({ filePath }, () => {
-							const caml = new CamlBuilder()
-											.View(['ID', 'FileRef', 'LinkFilename'])
-											.Query()
-											.Where()
-											.ComputedField('LinkFilename')
-											.EqualTo(fileName)
-											.ToString();
-
-							self.site.ListItems(DOCUMENTSLIBRARY).queryCSOM(caml).then((results) => {
-								if (results && results.length > 0) {									
-									self.getExcel(self.state.filePath);
-								}                   
-							}); 
+						self.setState({ excelFilePath }, () => {
+							self.getExcelData(self.state.excelFilePath); 
 						});
 					});
 				});
@@ -78,17 +96,13 @@ class ExcelTableView extends React.Component {
 		});
 	}
 
-	handleOnClick() {
-		this.dropzone.open();
-	}
-
-	getExcel(filePath) {
+	getExcelData(excelFilePath) {
 		const self = this;
 
 		AjaxTransport();
 
 		$.ajax({
-			url: filePath,
+			url: excelFilePath,
 			type: 'GET',
 			dataType: 'binary',
 			responseType: 'arraybuffer',
@@ -102,174 +116,72 @@ class ExcelTableView extends React.Component {
 				}
 
 				const workbook = xlsx.read(arr.join(''), { type: 'binary' });
-				const first_sheet_name = workbook.SheetNames[0];
-				const worksheet = workbook.Sheets[first_sheet_name];
+				const worksheet = workbook.Sheets[workbook.SheetNames[0]];
 
 				self.setState({ 
-					submitting: false, 
-					data: xlsx.utils.sheet_to_json(worksheet) 
+					excelFileLoading: false, 
+					excelContent: xlsx.utils.sheet_to_json(worksheet) 
 				}, () => {
-					self.getXml(self.state.data, self.prefix);
-				});
+					const xmlContent = GetFieldsXmlDefinition(self.state.excelContent, self.group, self.prefix);
+
+					if (xmlContent) {
+						self.setState({ xmlContent }, () => {
+							self.uploadFileToLibrary(self.state.xmlContent);
+						});
+					}
+				});                         
 			}
 		});
 	}
 
-	getXml(data, prefix) {
-		const convert = Data2xml({ xmlDecl: false });
-		const formattedData = [];
+	uploadFileToLibrary(xmlContent) {
+		const self = this;
+		const fileName = self.state.excelUploadedFile.value.replace('.xlsx', '.xml');
+		const fileCreateInfo = new SP.FileCreationInformation();
 
-		for (let i = 0; i < data.length; i++) {
-			const type = data[i].Type;
-			const lowerCaseType = type.toLowerCase().replace(/\s+/g, '');
+		fileCreateInfo.set_url(fileName);
+		fileCreateInfo.set_overwrite(true);
+		fileCreateInfo.set_content(new SP.Base64EncodedByteArray());
 
-			const _attr = { 
-				Name: `${prefix}${ToCamelCase(data[i].Name)}`, 
-				DisplayName: data[i].Name, 
-				Type: type
-			};
+		xmlContent = FormatXml(xmlContent);
 
-			let constraints = data[i].Constraints;
-
-			let field = {};
-
-			switch (lowerCaseType) {
-				case 'text': 
-					field = { _attr };
-					break;
-				case 'boolean': 
-					field = { _attr, Default: constraints && constraints === 'Yes' ? 1 : 0 };
-					break;
-				case 'checkbox': 
-				case 'dropdown': 
-					_attr.Type = lowerCaseType === 'checkbox' ? 'MultiChoice' : 'Choice';
-
-					field = { _attr };
-
-					if (constraints) {
-						constraints = constraints.split(',');
-
-						if (constraints && constraints.length > 0) {
-							const constraintsObject = [];
-
-							for (let j = 0; j < constraints.length; j++) {
-								constraintsObject.push({ _value: constraints[j].trim() });
-							}
-
-							field = { _attr, CHOICES: { CHOICE: constraintsObject } }; 
-						}
-					}
-					break;
-				case 'multiplelinesoftext': 
-					_attr.NumLines = '6';
-					_attr.RichText = 'TRUE';
-					_attr.RichTextMode = 'FullHtml';
-
-					if (constraints) {
-						constraints = constraints.split(',');
-
-						switch (constraints.length) {
-							case 3:
-								_attr.RichTextMode = constraints[2];
-							case 2:
-								_attr.RichText = constraints[1].toLowerCase().replace(/\s+/g, '') === 'richtext' ? 
-													'TRUE' : 'FALSE';
-							case 1:
-								_attr.NumLines = constraints[0];
-								break;
-							default: 
-								break;
-						}
-					} 
-
-					_attr.Type = 'Note';
-
-					field = { _attr };
-					break;
-				case 'hyperlinkorpicture':
-					_attr.Format = 'URL';
-
-					if (constraints) {
-						const lowerCaseConstraints = constraints.toLowerCase().replace(/\s+/g, '');
-
-						if (lowerCaseConstraints === 'hyperlink') {
-							_attr.Format = 'URL';
-						} else if (lowerCaseConstraints === 'picture') {
-							_attr.Format = 'Image';
-						}
-					} 
-
-					_attr.Type = 'URL';
-
-					field = { _attr };
-					break;
-				case 'number':
-					_attr.Min = '0';
-
-					if (constraints && !isNaN(parseInt(constraints, 10))) {
-						_attr.Min = constraints;
-					} 
-
-					_attr.Type = 'Number';
-
-					field = { _attr };
-					break;
-				case 'dateandtime': case 'date':
-					if (lowerCaseType === 'date') {
-						_attr.Format = 'DateOnly';
-					}
-					_attr.Type = 'DateTime';
-					field = { _attr };
-					break;
-				case 'person':
-					_attr.Type = 'UserMulti';
-					_attr.Mult = 'TRUE';
-					_attr.UserSelectionMode = 'PeopleOnly';
-
-					switch (constraints.toLowerCase().replace(/\s+/g, '')) {
-						case 'peopleandgroups':
-							_attr.Type = 'User';
-							_attr.Mult = 'FALSE';
-							_attr.UserSelectionMode = 'PeopleAndGroups';
-							break;
-						case 'peopleandgroupsmulti':
-							_attr.Type = 'UserMulti';
-							_attr.Mult = 'TRUE';
-							_attr.UserSelectionMode = 'PeopleAndGroups';
-							break;
-						case 'peopleonly':
-							_attr.Type = 'User';
-							_attr.Mult = 'FALSE';
-							_attr.UserSelectionMode = 'PeopleOnly';
-							break;
-						default: 
-							break;
-					}
-
-					field = { _attr };
-					break;
-				default: 
-					break;
-			}
-
-			formattedData.push(field);
+		for (let i = 0; i < xmlContent.length; i++) {
+			fileCreateInfo.get_content().append(xmlContent.charCodeAt(i));
 		}
 
-		let xml = convert('Field', formattedData);
-		xml = `<Fields>${xml}</Fields>`;
+		const context = SP.ClientContext.get_current();   
+		const currentWeb = context.get_web();
+		const documentsLibrary = currentWeb.get_lists().getByTitle(DOCUMENTSLIBRARY);
+		const xmlFile = documentsLibrary.get_rootFolder().get_files().add(fileCreateInfo);
 
-		console.log(xml);
-	}
+		context.load(xmlFile);
+		context.executeQueryAsync(() => {
+			const caml = new CamlBuilder()
+							.View(['ID', 'FileRef', 'LinkFilename'])
+							.Query()
+							.Where()
+							.ComputedField('LinkFilename')
+							.EqualTo(fileName)
+							.ToString();
 
-	init() {
-		const self = this;
+			self.site.ListItems(DOCUMENTSLIBRARY).queryCSOM(caml).then((results) => {
+				if (results && results.length > 0) {
+					self.setState({
+						xmlFileLoading: false,
+						xmlFilePath: results[0].FileRef
+					});
+				}                   
+			}); 
+		}, (sender, args) => {
+			console.log(args.get_message());
+		});
 	}
 
 	render() {
 		const self = this;
-		const data = self.state.data;
-		const show = data && data.length > 0;
-		const content = show ? data.map((item, i) => 
+		const excelContent = self.state.excelContent;
+		const show = excelContent && excelContent.length > 0;
+		const content = show ? excelContent.map((item, i) => 
 			<div key={i} className={`${Styles.item_row} ms-Grid-row`}>
 				<div className={`${Styles.item_column} ${Styles.column} ms-Grid-col ms-u-sm3`}>	
 					{item.Name}
@@ -326,15 +238,25 @@ class ExcelTableView extends React.Component {
 										Try dropping some files here, or click to select files to upload.
 									</div>
 								</Dropzone>
-								<button className={Styles.dropzone_button} type="button" onClick={self.handleOnClick}>
-									Open Dropzone
-								</button>
+								<div className={Styles.buttons_container}>
+									<div className={Styles.button} type="button" onClick={self.handleOnExcelClick}>
+										Open Dropzone
+									</div>
+									{	
+										!self.state.xmlFileLoading && self.state.xmlFilePath ? 
+										(
+											<a className={`${Styles.link_button} ${Styles.xml_button}`} href={self.state.xmlFilePath}>
+												Download XML
+											</a>
+										) : null
+									}
+								</div>
 								{
-									self.state.uploadedFiles.files.length > 0 ? (
+									self.state.excelUploadedFile.files.length > 0 ? (
 										<div className={Styles.dropzone_files}>
 											<div className={Styles.dropzone_files_list}>
 												{
-													self.state.uploadedFiles.files.map((file, i) => 
+													self.state.excelUploadedFile.files.map((file, i) => 
 														(
 															<div className={Styles.dropzone_files_title} key={i}>
 																{file.name}
@@ -344,11 +266,21 @@ class ExcelTableView extends React.Component {
 												}
 											</div>
 											{
-												self.state.submitting ? (
-													<div className={Styles.dropzone_files_uploading}>
+												self.state.excelFileLoading ? 
+												(
+													<div className={Styles.excel_file_loading}>
 														<Spinner label="is uploading..." />
 													</div>
-												) : null
+												) 
+												: 
+												(
+													self.state.xmlFileLoading ? 
+													(
+														<div className={Styles.xml_file_loading}>
+															<Spinner label="is processing..." />
+														</div>
+													) : null
+												)
 											}
 										</div>
 									) : null

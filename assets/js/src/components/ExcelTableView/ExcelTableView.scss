@@ -28,6 +28,26 @@
             }
         }
 
+        .button,
+        .link_button {
+            height: 20px;
+            min-width: 80px;
+            padding: 5px 20px 8px 20px;
+            background-color: #0078d7;
+            color: white;
+            cursor: pointer;
+            margin-left: auto;
+            margin-right: auto;
+            display: inline-block;
+            font-weight: normal;
+        }
+
+        .link_button {
+            &:hover {
+                text-decoration: none;
+            }
+        }
+
         .header_row {
             background-color: #FAFAFA;
 
@@ -56,17 +76,12 @@
                 }
             }
 
-            .dropzone_button {
-                height: 32px;
-                min-width: 80px;
-                padding: 6px 20px;
-                background-color: #0078d7;
-                border-color: #0078d7;
-                color: white;
-                cursor: pointer;
-                margin-left: auto;
-                margin-right: auto;
-                display: block;
+            .buttons_container {
+                text-align: center;
+
+                .xml_button {
+                    margin-left: 30px;
+                }
             }
 
             .dropzone_files {
@@ -76,13 +91,10 @@
                 .dropzone_files_list {
                     display: inline-block;
                     padding-right: 5px;
-
-                    .dropzone_files_title {
-                        font-size: 18px;
-                    }
                 }
 
-                .dropzone_files_uploading {
+                .excel_file_loading,
+                .xml_file_loading {
                     display: inline-block;
 
                     :global .ms-Spinner {
