@@ -1,0 +1,90 @@
+.container {
+    .header {
+        display: block;
+        font-size: 20px;
+        font-weight: 400;
+        -webkit-font-smoothing: antialiased;
+        color: #333333;
+    }
+
+    .content {
+        :global .ms-Grid {
+            padding: 0 8px 0 8px;
+            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+        }
+
+        .column {
+            border: 0;
+            border-right: 1px solid #E5E5E5;
+            border-top: 1px solid #E5E5E5;
+            line-height: 24px;
+            padding: 12px;
+            vertical-align: middle;
+            font-size: 13px;
+            -webkit-font-smoothing: antialiased;
+
+            &:first-child {
+                border-left: 1px solid #E5E5E5;
+            }
+        }
+
+        .header_row {
+            background-color: #FAFAFA;
+
+            .header_column {
+                color: #757575;
+                font-weight: 500;
+
+                .title_container {
+                    display: inline-block;
+                    font-size: 20px;
+                    font-weight: 400;
+                    -webkit-font-smoothing: antialiased;
+                    color: #333333;
+                    vertical-align: -webkit-baseline-middle;
+                }
+
+                .buttons_container {
+                    display: inline-block;
+                    float: right;
+                }
+            }
+        }
+
+        .item_row {
+            background-color: white;
+            display: flex;
+
+            .item_column {
+                color: #212121;
+                font-weight: normal;
+            }
+
+            &:last-child {
+                .item_column {
+                    border-bottom: 1px solid #E5E5E5;
+                }
+            }
+        }
+    }
+
+    .button,
+    .link_button {
+        height: 20px;
+        min-width: 80px;
+        padding: 5px 20px 8px 20px;
+        background-color: #0078d7;
+        color: white;
+        cursor: pointer;
+        margin-left: auto;
+        margin-right: auto;
+        display: inline-block;
+        font-weight: normal;
+        -webkit-font-smoothing: antialiased;
+        line-height: 24px;
+
+        &:hover {
+            text-decoration: none;
+        }
+    }
+}

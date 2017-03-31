@@ -9,7 +9,7 @@ import { Slider } from 'office-ui-fabric-react/lib/Slider';
 import { GenerateGuid, GetRandomInt } from '../../utils/utils';
 import { PAGESLIST, STYLELIBRARY } from '../../utils/settings';
 import PagesList from '../../components/PagesList/PagesList';
-import ExcelTableView from '../../components/ExcelTableView/ExcelTableView';
+import ExcelTable from '../../components/ExcelTable/ExcelTable';
 import CloudCarousel from '../../components/CloudCarousel/CloudCarousel';
 import GifGenerator from '../../components/GifGenerator/GifGenerator';
 
@@ -161,7 +161,7 @@ class Home extends React.Component {
 						<div className={`${Styles.excel_table_view_container} ms-Grid-row`}>
 							<div className="container">
 								<div className="ms-Grid-col ms-u-sm12">
-									<ExcelTableView />
+									<ExcelTable />
 								</div>
 							</div>
 						</div>

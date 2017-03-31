@@ -208,7 +208,7 @@ export function ToCamelCase(sentenceCase) {
 	return out;
 }
 
-export function FormatXml(xml) {
+export function FormatXml(xml, encode) {
 	const reg = /(>)(<)(\/*)/g;
 
 	let formatted = '';
@@ -245,5 +245,5 @@ export function FormatXml(xml) {
 		pad += indent;
 	}
 
-	return formatted.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/ /g, '&nbsp;');
+	return encode ? formatted.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/ /g, '&nbsp;') : formatted;
 }
