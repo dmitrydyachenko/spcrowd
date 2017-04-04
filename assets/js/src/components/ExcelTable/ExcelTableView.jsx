@@ -5,18 +5,19 @@ import Dropzone from 'react-dropzone';
 /* Components */
 import { Spinner, SpinnerType } from 'office-ui-fabric-react/lib/Spinner';
 import { Pivot, PivotItem, PivotLinkSize } from 'office-ui-fabric-react/lib/Pivot';
-import FieldsView from '../Views/Fields/Fields';
+import { DOCUMENTSLIBRARY } from '../../utils/settings';
+import Table from '../Views/Table';
 
 /* CSS styles */
 import Styles from './ExcelTableView.scss';
 
 class ExcelTableView extends React.Component {
 	static propTypes = {
-		excelFields: React.PropTypes.arrayOf(React.PropTypes.object),
-		excelFiles: React.PropTypes.arrayOf(React.PropTypes.object),
-		xmlFilePath: React.PropTypes.string,
-		excelFileLoading: React.PropTypes.bool,
-		xmlFileLoading: React.PropTypes.bool,
+		excel: React.PropTypes.objectOf(React.PropTypes.any),
+		xml: React.PropTypes.objectOf(React.PropTypes.any),
+		source: React.PropTypes.objectOf(React.PropTypes.any),
+		loadingMessage: React.PropTypes.string,
+		xmlFileNames: React.PropTypes.objectOf(React.PropTypes.string),
 		onDrop: React.PropTypes.func
 	};
 
@@ -24,8 +25,10 @@ class ExcelTableView extends React.Component {
 		super(props);
 
 		this.state = {
-			excelFileLoading: props.excelFileLoading,
-			xmlFileLoading: props.xmlFileLoading
+			excel: props.excel,
+			xml: props.xml,
+			source: props.source,
+			loadingMessage: props.loadingMessage
 		};
 
 		this.handleOnDrop = this.handleOnDrop.bind(this);
@@ -34,8 +37,10 @@ class ExcelTableView extends React.Component {
 
 	componentWillReceiveProps(nextProps) {        
 		this.setState({ 
-			excelFileLoading: nextProps.excelFileLoading, 
-			xmlFileLoading: nextProps.xmlFileLoading 
+			excel: nextProps.excel,
+			xml: nextProps.xml,
+			source: nextProps.source,
+			loadingMessage: nextProps.loadingMessage
 		});
 	}
 
@@ -51,27 +56,28 @@ class ExcelTableView extends React.Component {
 
 	render() {
 		const self = this;
+		const filePath = `${_spPageContextInfo.webServerRelativeUrl}/${DOCUMENTSLIBRARY}/`;
 
 		const mainContent = (
 			<div className="ms-Grid">
-				<div className={`${Styles.header_row} ms-Grid-row`}>
-					<div className={`${Styles.header_column} ${Styles.column} ${Styles.dropzone_container} ms-Grid-col ms-u-sm12`}>	
-						<Dropzone className={Styles.dropzone} ref={(d) => { self.dropzone = d; }} onDrop={self.handleOnDrop}>
+				<div className="ms-Grid-row">
+					<div className={`${Styles.dropzone} ms-Grid-col ms-u-sm12`}>	
+						<Dropzone className={Styles.dropzone_container} ref={(d) => { self.dropzone = d; }} onDrop={self.handleOnDrop}>
 							<div className={Styles.dropzone_title}>
 								Try dropping some files here, or click to select files to upload.
 							</div>
 						</Dropzone>
-						<div className={Styles.buttons_container}>
-							<div className={Styles.button} type="button" onClick={self.handleOnExcelClick}>
+						<div className={Styles.dropzone_buttons}>
+							<div className="button" type="button" onClick={self.handleOnExcelClick}>
 								Open Dropzone
 							</div>
 						</div>
 						{
-							self.props.excelFiles.length > 0 ? 
+							self.state.source.files.length > 0 ? 
 							(
 								<div className={Styles.dropzone_files}>
 									{
-										self.state.excelFileLoading ? 
+										self.state.excel.loading ? 
 										(
 											<div className={Styles.loading}>
 												<Spinner type={SpinnerType.large} label="Uploading..." />
@@ -79,17 +85,18 @@ class ExcelTableView extends React.Component {
 										) 
 										: 
 										(
-											self.state.xmlFileLoading ? 
+											self.state.xml.loading ? 
 											(
 												<div className={Styles.loading}>
-													<Spinner type={SpinnerType.large} label="Processing..." />
+													<Spinner type={SpinnerType.large} 
+																label={`${self.state.loadingMessage} are being processed...`} />
 												</div>
 											) 
 											:
 											(
 												<div className={Styles.dropzone_files_list}>
 													{
-														self.props.excelFiles.map((file, i) => 
+														self.state.source.files.map((file, i) => 
 															(
 																<div className={Styles.dropzone_files_title} key={i}>
 																	{file.name}
@@ -110,12 +117,12 @@ class ExcelTableView extends React.Component {
 					<Pivot linkSize={PivotLinkSize.large}>
 						<PivotItem linkText="Fields">
 							{
-								self.props.excelFields && self.props.excelFields.length > 0 ? 
+								self.state.excel.fields && self.state.excel.fields.length > 0 ? 
 								(
-									<FieldsView data={self.props.excelFields} 
-												xmlFilePath={self.props.xmlFilePath}
-												columns={['Name', 'Type', 'Constraints', 'Comments']} 
-												title="Fields table" />
+									<Table data={self.state.excel.fields} 
+											xmlFilePath={`${filePath}${self.props.xmlFileNames.fields}`}
+											columns={['Name', 'Type', 'Constraints', 'Comments']} 
+											title="Fields table" />
 								) 
 								:
 								(
@@ -126,7 +133,21 @@ class ExcelTableView extends React.Component {
 							}
 						</PivotItem>
 						<PivotItem linkText="Lists">
-							<div>Lists are coming soon</div>
+							{
+								self.state.excel.lists && self.state.excel.lists.length > 0 ? 
+								(
+									<Table data={self.state.excel.lists} 
+											xmlFilePath={`${filePath}${self.props.xmlFileNames.lists}`}
+											columns={['Name', 'Type']} 
+											title="Lists table" />
+								) 
+								:
+								(
+									<div className={Styles.upload_message}>
+										Upload an Excel file to see lists definition
+									</div>
+								)
+							}
 						</PivotItem>
 						<PivotItem linkText="Content Types">
 							<div>Content Types are coming soon</div>
@@ -138,7 +159,7 @@ class ExcelTableView extends React.Component {
 
 		return (
 			<div className={Styles.container}>
-				<p className={Styles.header}>
+				<p className="header">
 					Excel tables
 				</p>
 				<div className={Styles.content}>

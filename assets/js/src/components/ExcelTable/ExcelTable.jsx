@@ -7,8 +7,10 @@ import SPOC from 'SPOCExt';
 /* Components */
 import CamlBuilder from '../../../vendor/camljs';
 import { DOCUMENTSLIBRARY } from '../../utils/settings';
-import { AjaxTransport, FormatXml } from '../../utils/utils';
-import { GetFieldsXmlDefinition } from '../Controller/Fields/Fields';
+import { AjaxTransport, FormatXml, MergeObjects } from '../../utils/utils';
+import { GetFieldsXml } from '../Controllers/Fields/Fields';
+import { GetListsXml } from '../Controllers/Lists/Lists';
+import { GetContentTypesXml } from '../Controllers/ContentTypes/ContentTypes';
 import ExcelTableView from './ExcelTableView';
 
 class ExcelTable extends React.Component {
@@ -16,18 +18,39 @@ class ExcelTable extends React.Component {
 		super();
 
 		this.state = {
-			excelFields: [],
-			excelFilePath: '',
-			excelFile: { value: '', files: [] },
-			excelFileLoading: false,
-			xmlContent: '',
-			xmlFilePath: '',
-			xmlFileLoading: true
+			excel: {
+				fields: [],
+				lists: [],
+				contentTypes: [],
+				path: '',
+				loading: false
+			},
+			xml: {
+				fields: [],
+				lists: [],
+				contentTypes: [],
+				loading: true
+			},
+			source: { value: '', files: [] },
+			loadingMessage: ''
 		};
 
-		this.xmlFileName = 'Fields.xml';
-		this.group = 'SPCrowd';
-		this.prefix = 'SPCrowd';
+		this.namespaces = {
+			group: 'SPCrowd',
+			prefix: 'SPCrowd'
+		};
+
+		this.xmlFileNames = {
+			fields: 'Fields.xml',
+			lists: 'Lists.xml',
+			contentTypes: 'ContentTypes.xml'
+		};
+
+		this.excelSheetNames = {
+			fields: 'Fields',
+			lists: 'Lists',
+			contentTypes: 'ContentTypes'
+		};
 
 		this.site = new SPOC.SP.Site();
 
@@ -44,24 +67,24 @@ class ExcelTable extends React.Component {
 
 	handleOnDrop(files) {
 		const self = this;
-		const excelFile = self.state.excelFile;
+		const source = self.state.source;
 
-		excelFile.value = files[0].name;
-		excelFile.files = files;
+		source.value = files[0].name;
+		source.files = files;
 
-		self.setState({ excelFile }, () => {
-			const uploadInput = self.state.excelFile;    
+		self.setState({ source }, () => {
+			const uploadInput = self.state.source;    
 
 			if (uploadInput && uploadInput.value) {
-				self.setState({ excelFileLoading: true }, () => {
+				self.setState({ excel: MergeObjects(self.state.excel, { loading: true }) }, () => {
 					const parts = uploadInput.value.split('\\');
 					const fileName = parts[parts.length - 1];                     
 
 					self.site.Files(DOCUMENTSLIBRARY).upload(uploadInput).then(() => {  
-						const excelFilePath = encodeURI(`${_spPageContextInfo.webServerRelativeUrl}/${DOCUMENTSLIBRARY}/${fileName}`);
+						const path = encodeURI(`${_spPageContextInfo.webServerRelativeUrl}/${DOCUMENTSLIBRARY}/${fileName}`);
 
-						self.setState({ excelFilePath }, () => {
-							self.getExcelData(self.state.excelFilePath); 
+						self.setState({ excel: MergeObjects(self.state.excel, { path }) }, () => {
+							self.getExcelData(path); 
 						});
 					});
 				});
@@ -89,18 +112,52 @@ class ExcelTable extends React.Component {
 				}
 
 				const workbook = xlsx.read(arr.join(''), { type: 'binary' });
-				const worksheet = workbook.Sheets[workbook.SheetNames[0]];
+
+				const fieldsSheet = workbook.Sheets[self.excelSheetNames.fields];
+				const listsSheet = workbook.Sheets[self.excelSheetNames.lists];
+				const contentTypesSheet = workbook.Sheets[self.excelSheetNames.contentTypes];
+
+				const excel = {
+					fields: xlsx.utils.sheet_to_json(fieldsSheet),
+					lists: xlsx.utils.sheet_to_json(listsSheet),
+					contentTypes: xlsx.utils.sheet_to_json(contentTypesSheet),
+					loading: false
+				};
 
 				self.setState({ 
-					excelFileLoading: false, 
-					xmlFileLoading: true,
-					excelFields: xlsx.utils.sheet_to_json(worksheet) 
+					excel,
+					xml: MergeObjects(self.state.xml, { loading: true })
 				}, () => {
-					const xmlContent = GetFieldsXmlDefinition(self.state.excelFields, self.group, self.prefix);
+					const fields = GetFieldsXml(excel.fields, self.namespaces);
 
-					if (xmlContent) {
-						self.setState({ xmlContent }, () => {
-							self.uploadFileToLibrary(self.state.xmlContent);
+					if (fields) {
+						self.setState({ 
+							xml: MergeObjects(self.state.xml, { fields }), 
+							loadingMessage: 'Fields' 
+						}, () => {
+							self.uploadFileToLibrary(fields, 'fields');
+						});
+					}
+
+					const lists = GetListsXml(excel.lists);
+
+					if (lists) {
+						self.setState({ 
+							xml: MergeObjects(self.state.xml, { lists }), 
+							loadingMessage: 'Lists' 
+						}, () => {
+							self.uploadFileToLibrary(lists, 'lists');
+						});
+					}
+
+					const contentTypes = GetContentTypesXml(excel.contentTypes, self.namespaces);
+
+					if (contentTypes) {
+						self.setState({ 
+							xml: MergeObjects(self.state.xml, { contentTypes }), 
+							loadingMessage: 'Content Types' 
+						}, () => {
+							self.uploadFileToLibrary(contentTypes, 'contentTypes');
 						});
 					}
 				});                         
@@ -108,9 +165,9 @@ class ExcelTable extends React.Component {
 		});
 	}
 
-	uploadFileToLibrary(xmlContent) {
+	uploadFileToLibrary(xmlContent, xmlType) {
 		const self = this;
-		const fileName = this.xmlFileName;
+		const fileName = self.xmlFileNames[xmlType];
 		const fileCreateInfo = new SP.FileCreationInformation();
 
 		fileCreateInfo.set_url(fileName);
@@ -140,7 +197,9 @@ class ExcelTable extends React.Component {
 
 			self.site.ListItems(DOCUMENTSLIBRARY).queryCSOM(caml).then((results) => {
 				if (results && results.length > 0) {
-					self.setState({ xmlFileLoading: false, xmlFilePath: results[0].FileRef });
+					self.setState({ 
+						xml: MergeObjects(self.state.xml, { loading: false }) 
+					});
 				}                   
 			}); 
 		}, (sender, args) => {
@@ -150,11 +209,11 @@ class ExcelTable extends React.Component {
 
 	render() {
 		return (
-			<ExcelTableView excelFields={this.state.excelFields} 
-							excelFiles={this.state.excelFile.files} 
-							xmlFilePath={this.state.xmlFilePath}
-							excelFileLoading={this.state.excelFileLoading}
-							xmlFileLoading={this.state.xmlFileLoading}
+			<ExcelTableView excel={this.state.excel} 
+							xml={this.state.xml}
+							source={this.state.source}  
+							loadingMessage={this.state.loadingMessage}
+							xmlFileNames={this.xmlFileNames}
 							onDrop={this.handleOnDrop} />
 		);
 	}

@@ -4,7 +4,7 @@ import Data2xml from 'data2xml';
 /* Components */
 import { ToCamelCase } from '../../../utils/utils';
 
-export function GetFieldsXmlDefinition(data, group, prefix) {
+export function GetFieldsXml(data, namespaces) {
 	const convert = Data2xml({ xmlDecl: false });
 	const formattedData = [];
 
@@ -13,7 +13,7 @@ export function GetFieldsXmlDefinition(data, group, prefix) {
 		const lowerCaseType = type.toLowerCase().replace(/\s+/g, '');
 
 		const _attr = { 
-			Name: `${prefix}${ToCamelCase(data[i].Name)}`, 
+			Name: `${namespaces.prefix}${ToCamelCase(data[i].Name)}`, 
 			DisplayName: data[i].Name, 
 			Type: type
 		};
@@ -112,10 +112,12 @@ export function GetFieldsXmlDefinition(data, group, prefix) {
 			case 'number':
 				_attr.Min = '0';
 
-				constraints = constraints.trim();
+				if (constraints) {
+					constraints = constraints.trim();
 
-				if (constraints && !isNaN(parseInt(constraints, 10))) {
-					_attr.Min = constraints;
+					if (!isNaN(parseInt(constraints, 10))) {
+						_attr.Min = constraints;
+					}
 				} 
 
 				_attr.Type = 'Number';
@@ -136,24 +138,26 @@ export function GetFieldsXmlDefinition(data, group, prefix) {
 				_attr.Mult = 'TRUE';
 				_attr.UserSelectionMode = 'PeopleOnly';
 
-				switch (constraints.toLowerCase().replace(/\s+/g, '')) {
-					case 'peopleandgroups':
-						_attr.Type = 'User';
-						_attr.Mult = 'FALSE';
-						_attr.UserSelectionMode = 'PeopleAndGroups';
-						break;
-					case 'peopleandgroupsmulti':
-						_attr.Type = 'UserMulti';
-						_attr.Mult = 'TRUE';
-						_attr.UserSelectionMode = 'PeopleAndGroups';
-						break;
-					case 'peopleonly':
-						_attr.Type = 'User';
-						_attr.Mult = 'FALSE';
-						_attr.UserSelectionMode = 'PeopleOnly';
-						break;
-					default: 
-						break;
+				if (constraints) {
+					switch (constraints.toLowerCase().replace(/\s+/g, '')) {
+						case 'peopleandgroups':
+							_attr.Type = 'User';
+							_attr.Mult = 'FALSE';
+							_attr.UserSelectionMode = 'PeopleAndGroups';
+							break;
+						case 'peopleandgroupsmulti':
+							_attr.Type = 'UserMulti';
+							_attr.Mult = 'TRUE';
+							_attr.UserSelectionMode = 'PeopleAndGroups';
+							break;
+						case 'peopleonly':
+							_attr.Type = 'User';
+							_attr.Mult = 'FALSE';
+							_attr.UserSelectionMode = 'PeopleOnly';
+							break;
+						default: 
+							break;
+					}
 				}
 
 				field = { _attr };
@@ -196,7 +200,7 @@ export function GetFieldsXmlDefinition(data, group, prefix) {
 	}
 
 	let xml = convert('Field', formattedData);
-	xml = `<Fields Group="${group}">${xml}</Fields>`;
+	xml = `<Fields Group="${namespaces.group}">${xml}</Fields>`;
 
 	console.log(xml);
 

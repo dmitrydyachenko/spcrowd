@@ -135,13 +135,17 @@ class Home extends React.Component {
 						</div>
 					) : null
 				}
-				<div className={`${Styles.gif_generator_container} ms-Grid-row`}>
-					<div className="container">
-						<div className="ms-Grid-col ms-u-sm12">
-							<GifGenerator />
+				{
+					0 === 1 ? (
+						<div className={`${Styles.gif_generator_container} ms-Grid-row`}>
+							<div className="container">
+								<div className="ms-Grid-col ms-u-sm12">
+									<GifGenerator />
+								</div>
+							</div>
 						</div>
-					</div>
-				</div>
+					) : null
+				}
 				{
 					0 === 1 ? (
 						<div className={`${Styles.cloud_carousel_container} ms-Grid-row`}>

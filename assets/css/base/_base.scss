@@ -8,5 +8,59 @@ body {
 }
 
 button {
-	font-family: $base-font-stack;
+    font-family: $base-font-stack;
+}
+
+.header {
+    display: block;
+    font-size: 20px;
+    font-weight: 400;
+    -webkit-font-smoothing: antialiased;
+    color: #333333;
+}
+
+.column {
+    border: 0;
+    border-right: 1px solid #E5E5E5;
+    border-top: 1px solid #E5E5E5;
+    line-height: 24px;
+    padding: 12px;
+    vertical-align: middle;
+    font-size: 13px;
+    -webkit-font-smoothing: antialiased;
+
+    &:first-child {
+        border-left: 1px solid #E5E5E5;
+    }
+}
+
+.loading {
+    text-align: center;
+
+    :global .ms-Spinner {
+        .ms-Spinner-label {
+            margin-top: 0;
+        }
+    }
+}
+
+.button {
+    height: 20px;
+    min-width: 80px;
+    padding: 5px 20px 8px 20px;
+    background-color: #0078d7;
+    color: white;
+    cursor: pointer;
+    margin-left: auto;
+    margin-right: auto;
+    display: inline-block;
+    font-weight: normal;
+    -webkit-font-smoothing: antialiased;
+    line-height: 24px;
+    font-size: 13px;
+
+    &:hover {
+    	background-color: #005a9e;
+        text-decoration: none;
+    }
 }

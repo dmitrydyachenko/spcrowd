@@ -2,9 +2,9 @@
 import React from 'react';
 
 /* CSS styles */
-import Styles from './Fields.scss';
+import Styles from './Lists.scss';
 
-class Fields extends React.Component {
+class Lists extends React.Component {
 	static propTypes = {
 		data: React.PropTypes.arrayOf(React.PropTypes.object),
 		columns: React.PropTypes.arrayOf(React.PropTypes.string),
@@ -13,7 +13,7 @@ class Fields extends React.Component {
 	};
 
 	static defaultProps = {	
-		title: 'Fields table'
+		title: 'Lists table'
 	};
 
 	constructor(props) {
@@ -105,4 +105,4 @@ class Fields extends React.Component {
 	}
 }
 
-export default Fields;
+export default Lists;

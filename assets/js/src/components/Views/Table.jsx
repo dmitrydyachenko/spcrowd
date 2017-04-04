@@ -2,18 +2,14 @@
 import React from 'react';
 
 /* CSS styles */
-import Styles from './Fields.scss';
+import Styles from './Table.scss';
 
-class Fields extends React.Component {
+class Table extends React.Component {
 	static propTypes = {
 		data: React.PropTypes.arrayOf(React.PropTypes.object),
 		columns: React.PropTypes.arrayOf(React.PropTypes.string),
 		title: React.PropTypes.string,
 		xmlFilePath: React.PropTypes.string
-	};
-
-	static defaultProps = {	
-		title: 'Fields table'
 	};
 
 	constructor(props) {
@@ -36,24 +32,20 @@ class Fields extends React.Component {
 		const self = this;
 		const data = self.state.data;
 		const show = data && data.length > 0;
+		const cx = 12 / self.props.columns.length;
 
 		let mainContent = null;
 
 		if (show) {
 			const content = data.map((item, i) => 
 				<div key={i} className={`${Styles.item_row} ms-Grid-row`}>
-					<div className={`${Styles.item_column} column ms-Grid-col ms-u-sm3`}>	
-						{item.Name}
-					</div>
-					<div className={`${Styles.item_column} column ms-Grid-col ms-u-sm3`}>	
-						{item.Type}
-					</div>
-					<div className={`${Styles.item_column} column ms-Grid-col ms-u-sm3`}>	
-						{item.Constraints}
-					</div>
-					<div className={`${Styles.item_column} column ms-Grid-col ms-u-sm3`}>	
-						{item.Comments}
-					</div>
+					{
+						self.props.columns.map((column, j) => 
+							<div key={j} className={`${Styles.item_column} column ms-Grid-col ms-u-sm${cx}`}>	
+								{item[column]}
+							</div>
+						)
+					}
 				</div>
 			);
 
@@ -78,18 +70,13 @@ class Fields extends React.Component {
 							</div>
 						</div>
 						<div className={`${Styles.header_row} ms-Grid-row`}>
-							<div className={`${Styles.header_column} column ms-Grid-col ms-u-sm3`}>	
-								Name
-							</div>
-							<div className={`${Styles.header_column} column ms-Grid-col ms-u-sm3`}>	
-								Type
-							</div>
-							<div className={`${Styles.header_column} column ms-Grid-col ms-u-sm3`}>	
-								Constraints
-							</div>
-							<div className={`${Styles.header_column} column ms-Grid-col ms-u-sm3`}>	
-								Comments
-							</div>
+							{
+								self.props.columns.map((column, i) => 
+									<div key={i} className={`${Styles.header_column} column ms-Grid-col ms-u-sm${cx}`}>	
+										{column}
+									</div>
+								)
+							}
 						</div>
 						{content}
 					</div>
@@ -105,4 +92,4 @@ class Fields extends React.Component {
 	}
 }
 
-export default Fields;
+export default Table;
