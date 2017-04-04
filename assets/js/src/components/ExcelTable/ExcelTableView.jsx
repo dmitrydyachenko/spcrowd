@@ -4,9 +4,7 @@ import Dropzone from 'react-dropzone';
 
 /* Components */
 import { Spinner, SpinnerType } from 'office-ui-fabric-react/lib/Spinner';
-import { Pivot, PivotItem, PivotLinkSize } from 'office-ui-fabric-react/lib/Pivot';
-import { DOCUMENTSLIBRARY } from '../../utils/settings';
-import Table from '../Views/Table';
+import PivotView from '../Views/PivotView/PivotView';
 
 /* CSS styles */
 import Styles from './ExcelTableView.scss';
@@ -56,7 +54,6 @@ class ExcelTableView extends React.Component {
 
 	render() {
 		const self = this;
-		const filePath = `${_spPageContextInfo.webServerRelativeUrl}/${DOCUMENTSLIBRARY}/`;
 
 		const mainContent = (
 			<div className="ms-Grid">
@@ -114,45 +111,7 @@ class ExcelTableView extends React.Component {
 					</div>
 				</div>
 				<div className={`${Styles.content_row} ms-Grid-row`}>
-					<Pivot linkSize={PivotLinkSize.large}>
-						<PivotItem linkText="Fields">
-							{
-								self.state.excel.fields && self.state.excel.fields.length > 0 ? 
-								(
-									<Table data={self.state.excel.fields} 
-											xmlFilePath={`${filePath}${self.props.xmlFileNames.fields}`}
-											columns={['Name', 'Type', 'Constraints', 'Comments']} 
-											title="Fields table" />
-								) 
-								:
-								(
-									<div className={Styles.upload_message}>
-										Upload an Excel file to see fields definition
-									</div>
-								)
-							}
-						</PivotItem>
-						<PivotItem linkText="Lists">
-							{
-								self.state.excel.lists && self.state.excel.lists.length > 0 ? 
-								(
-									<Table data={self.state.excel.lists} 
-											xmlFilePath={`${filePath}${self.props.xmlFileNames.lists}`}
-											columns={['Name', 'Type']} 
-											title="Lists table" />
-								) 
-								:
-								(
-									<div className={Styles.upload_message}>
-										Upload an Excel file to see lists definition
-									</div>
-								)
-							}
-						</PivotItem>
-						<PivotItem linkText="Content Types">
-							<div>Content Types are coming soon</div>
-						</PivotItem>
-					</Pivot>
+					<PivotView excel={self.state.excel} xmlFileNames={self.props.xmlFileNames} />
 				</div>
 			</div>
 		);

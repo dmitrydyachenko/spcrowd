@@ -6507,6 +6507,32 @@
 /**
  * Paths to Sharepoint assets 
  */
+.ms-Pivot {
+  padding: 20px;
+  background-color: #f4f4f4; }
+  .ms-Pivot .ms-Pivot-link.is-selected {
+    font-weight: 500; }
+
+.pivotItem {
+  padding-top: 10px; }
+/**
+ * Font family
+ */
+/**
+ * Breakpoints
+ */
+/**
+ * Tweakpoints
+ */
+/**
+ * Other variables
+ */
+/**
+ * Colours
+ */
+/**
+ * Paths to Sharepoint assets 
+ */
 .ExcelTableView_container .ExcelTableView_content .ms-Grid {
   padding: 0 8px 0 8px; }
 

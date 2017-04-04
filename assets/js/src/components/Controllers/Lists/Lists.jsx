@@ -15,7 +15,7 @@ export function GetListsXml(data) {
 		if (lowerCaseType !== 'system') {
 			const _attr = { 
 				Name: ToCamelCase(data[i].Name), 
-				Type: lowerCaseType && lowerCaseType === 'library' ? 'DocumentLibrary' : 'GenericList'
+				Type: type ? type.replace(/\s+/g, '') : 'GenericList'
 			};
 
 			const list = { _attr };

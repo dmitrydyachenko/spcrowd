@@ -6,11 +6,12 @@ import SPOC from 'SPOCExt';
 
 /* Components */
 import CamlBuilder from '../../../vendor/camljs';
-import { DOCUMENTSLIBRARY } from '../../utils/settings';
+import * as Settings from '../../utils/settings';
 import { AjaxTransport, FormatXml, MergeObjects } from '../../utils/utils';
 import { GetFieldsXml } from '../Controllers/Fields/Fields';
 import { GetListsXml } from '../Controllers/Lists/Lists';
 import { GetContentTypesXml } from '../Controllers/ContentTypes/ContentTypes';
+import { GetGroupsXml } from '../Controllers/Groups/Groups';
 import ExcelTableView from './ExcelTableView';
 
 class ExcelTable extends React.Component {
@@ -22,6 +23,7 @@ class ExcelTable extends React.Component {
 				fields: [],
 				lists: [],
 				contentTypes: [],
+				groups: [],
 				path: '',
 				loading: false
 			},
@@ -29,27 +31,11 @@ class ExcelTable extends React.Component {
 				fields: [],
 				lists: [],
 				contentTypes: [],
+				groups: [],
 				loading: true
 			},
 			source: { value: '', files: [] },
 			loadingMessage: ''
-		};
-
-		this.namespaces = {
-			group: 'SPCrowd',
-			prefix: 'SPCrowd'
-		};
-
-		this.xmlFileNames = {
-			fields: 'Fields.xml',
-			lists: 'Lists.xml',
-			contentTypes: 'ContentTypes.xml'
-		};
-
-		this.excelSheetNames = {
-			fields: 'Fields',
-			lists: 'Lists',
-			contentTypes: 'ContentTypes'
 		};
 
 		this.site = new SPOC.SP.Site();
@@ -80,8 +66,8 @@ class ExcelTable extends React.Component {
 					const parts = uploadInput.value.split('\\');
 					const fileName = parts[parts.length - 1];                     
 
-					self.site.Files(DOCUMENTSLIBRARY).upload(uploadInput).then(() => {  
-						const path = encodeURI(`${_spPageContextInfo.webServerRelativeUrl}/${DOCUMENTSLIBRARY}/${fileName}`);
+					self.site.Files(Settings.DOCUMENTSLIBRARY).upload(uploadInput).then(() => {  
+						const path = encodeURI(`${_spPageContextInfo.webServerRelativeUrl}/${Settings.DOCUMENTSLIBRARY}/${fileName}`);
 
 						self.setState({ excel: MergeObjects(self.state.excel, { path }) }, () => {
 							self.getExcelData(path); 
@@ -113,14 +99,16 @@ class ExcelTable extends React.Component {
 
 				const workbook = xlsx.read(arr.join(''), { type: 'binary' });
 
-				const fieldsSheet = workbook.Sheets[self.excelSheetNames.fields];
-				const listsSheet = workbook.Sheets[self.excelSheetNames.lists];
-				const contentTypesSheet = workbook.Sheets[self.excelSheetNames.contentTypes];
+				const fieldsSheet = workbook.Sheets[Settings.EXCELSHEETNAMES.fields];
+				const listsSheet = workbook.Sheets[Settings.EXCELSHEETNAMES.lists];
+				const contentTypesSheet = workbook.Sheets[Settings.EXCELSHEETNAMES.contentTypes];
+				const groupsSheet = workbook.Sheets[Settings.EXCELSHEETNAMES.groups];
 
 				const excel = {
 					fields: xlsx.utils.sheet_to_json(fieldsSheet),
 					lists: xlsx.utils.sheet_to_json(listsSheet),
 					contentTypes: xlsx.utils.sheet_to_json(contentTypesSheet),
+					groups: xlsx.utils.sheet_to_json(groupsSheet),
 					loading: false
 				};
 
@@ -128,7 +116,7 @@ class ExcelTable extends React.Component {
 					excel,
 					xml: MergeObjects(self.state.xml, { loading: true })
 				}, () => {
-					const fields = GetFieldsXml(excel.fields, self.namespaces);
+					const fields = GetFieldsXml(excel.fields, Settings.NAMESPACES);
 
 					if (fields) {
 						self.setState({ 
@@ -150,7 +138,7 @@ class ExcelTable extends React.Component {
 						});
 					}
 
-					const contentTypes = GetContentTypesXml(excel.contentTypes, self.namespaces);
+					const contentTypes = GetContentTypesXml(excel.contentTypes, Settings.NAMESPACES);
 
 					if (contentTypes) {
 						self.setState({ 
@@ -160,6 +148,17 @@ class ExcelTable extends React.Component {
 							self.uploadFileToLibrary(contentTypes, 'contentTypes');
 						});
 					}
+
+					const groups = GetGroupsXml(excel.groups, Settings.NAMESPACES);
+
+					if (groups) {
+						self.setState({ 
+							xml: MergeObjects(self.state.xml, { groups }), 
+							loadingMessage: 'Groups' 
+						}, () => {
+							self.uploadFileToLibrary(groups, 'groups');
+						});
+					}
 				});                         
 			}
 		});
@@ -167,7 +166,7 @@ class ExcelTable extends React.Component {
 
 	uploadFileToLibrary(xmlContent, xmlType) {
 		const self = this;
-		const fileName = self.xmlFileNames[xmlType];
+		const fileName = Settings.XMLFILENAMES[xmlType];
 		const fileCreateInfo = new SP.FileCreationInformation();
 
 		fileCreateInfo.set_url(fileName);
@@ -182,7 +181,7 @@ class ExcelTable extends React.Component {
 
 		const context = SP.ClientContext.get_current();   
 		const currentWeb = context.get_web();
-		const documentsLibrary = currentWeb.get_lists().getByTitle(DOCUMENTSLIBRARY);
+		const documentsLibrary = currentWeb.get_lists().getByTitle(Settings.DOCUMENTSLIBRARY);
 		const xmlFile = documentsLibrary.get_rootFolder().get_files().add(fileCreateInfo);
 
 		context.load(xmlFile);
@@ -195,7 +194,7 @@ class ExcelTable extends React.Component {
 							.EqualTo(fileName)
 							.ToString();
 
-			self.site.ListItems(DOCUMENTSLIBRARY).queryCSOM(caml).then((results) => {
+			self.site.ListItems(Settings.DOCUMENTSLIBRARY).queryCSOM(caml).then((results) => {
 				if (results && results.length > 0) {
 					self.setState({ 
 						xml: MergeObjects(self.state.xml, { loading: false }) 
@@ -213,7 +212,7 @@ class ExcelTable extends React.Component {
 							xml={this.state.xml}
 							source={this.state.source}  
 							loadingMessage={this.state.loadingMessage}
-							xmlFileNames={this.xmlFileNames}
+							xmlFileNames={Settings.XMLFILENAMES}
 							onDrop={this.handleOnDrop} />
 		);
 	}
