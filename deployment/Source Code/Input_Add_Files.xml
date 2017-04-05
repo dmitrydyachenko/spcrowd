@@ -2,14 +2,14 @@
 <Input>
   	<Module Name="FileUpload" rootlocation="">
 	    <Folder SourcePath="\Assets\templates"
-	            TargetPath="/Style%20Library/starterpack/templates"></Folder>
+	            TargetPath="/Style%20Library/csagroup/templates"></Folder>
 	    <Folder SourcePath="\Assets\css"
-	            TargetPath="/Style%20Library/starterpack/css"></Folder>
+	            TargetPath="/Style%20Library/csagroup/css"></Folder>
 	    <Folder SourcePath="\Assets\js"
-	            TargetPath="/Style%20Library/starterpack/js"></Folder>
+	            TargetPath="/Style%20Library/csagroup/js"></Folder>
 	    <Folder SourcePath="\Assets\img"
-	             TargetPath="/Style%20Library/starterpack/img"></Folder>
+	             TargetPath="/Style%20Library/csagroup/img"></Folder>
 	    <Folder SourcePath="\Assets\fonts"
-	            TargetPath="/Style%20Library/starterpack/fonts"></Folder>
+	            TargetPath="/Style%20Library/csagroup/fonts"></Folder>
   	</Module>
 </Input>

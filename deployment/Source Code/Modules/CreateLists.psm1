@@ -1,10 +1,19 @@
-Function CreateLists([string]$inputFile, [string]$RootLocation, [bool]$recreate, [bool]$debug) {
+Function CreateLists([string]$inputFile, [string]$RootLocation, [string]$SubSite, [bool]$recreate, [bool]$debug) {
 
     $logFilePath = "$RootLocation\CreateListsLog.txt"
     $ErrorActionPreference = "Stop"
 
     Try {
         #Write-Host -ForegroundColor Green "Deploying lists..."
+
+        $web = ''
+
+        if($SubSite) {
+            $web = Get-PnPWeb -Identity $SubSite
+        } 
+        else {
+            $web = Get-PnPWeb
+        }
 
         $inputDoc = [xml](Get-Content $inputFile)
         $lists = $inputDoc.Lists
@@ -20,11 +29,11 @@ Function CreateLists([string]$inputFile, [string]$RootLocation, [bool]$recreate,
 
             #Write-Host -ForegroundColor Green "Trying to create $listName"
 
-            $isExist = Get-SPOList -Identity $listName -ErrorAction SilentlyContinue
+            $isExist = Get-PnPList -Identity $listName -ErrorAction SilentlyContinue -Web $web
 
             if($isExist -eq $null) {
                       
-                New-SPOList -Title $listName -Template $list.Template -EnableContentTypes
+                New-PnPList -Title $listName -Template $list.Template -EnableContentTypes -Web $web
 
                 #Write-Host -ForegroundColor Green "List $listName created"
 
@@ -37,12 +46,12 @@ Function CreateLists([string]$inputFile, [string]$RootLocation, [bool]$recreate,
 
                             #Write-Host -ForegroundColor Green "Trying to add content type $contentTypeName for list $listName"
 
-                            $contentTypeObject = Get-SPOContentType -Identity $contentTypeName -InSiteHierarchy
+                            $contentTypeObject = Get-PnPContentType -Identity $contentTypeName -InSiteHierarchy -Web $web
 
                             if($contentTypeObject){
                                 #Write-Host -ForegroundColor Green "Trying to map content type $contentTypeName to list $listName"
 
-                                Add-SPOContentTypeToList -List $listName -ContentType $contentTypeName -DefaultContentType
+                                Add-PnPContentTypeToList -List $listName -ContentType $contentTypeName -DefaultContentType -Web $web
 
                                 #Write-Host -ForegroundColor Green "Content type $contentTypeName mapped to list $listName"
                             }

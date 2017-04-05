@@ -3,17 +3,18 @@
    [Parameter(Mandatory = $true)]
    [string]$Credential,
    [Parameter(Mandatory = $true)]
-   [string]$RootLocation 
+   [string]$RootLocation,
+   [string]$SubSite
 )
 
 $logFilePath = "$RootLocation\UploadFilesToAssetsLog.txt"
 $ErrorActionPreference = "Stop"
 
 #------------------------------------------------------------------
-#                        Connect to SPOnline
+#                        Connect to site
 #------------------------------------------------------------------
 
-Connect-SPOnline -Url $SiteUrl -Credentials $Credential
+Connect-PnPOnline -Url $SiteUrl -Credentials $Credential
 
 #------------------------------------------------------------------
 #                      Upload files
@@ -32,10 +33,9 @@ foreach($module in $inputDoc.Input.Module)
 {
 	foreach($folder in $module.Folder)
 	{
-		AddFiles -SourceDir ($RootLocation + $folder.SourcePath) -TargetDir $folder.TargetPath -logFilePath $logFilePath -SubSite ""
+		AddFiles -SourceDir ($RootLocation + $folder.SourcePath) -TargetDir $folder.TargetPath -logFilePath $logFilePath -SubSite $SubSite
 	}
 }
 
 
-Disconnect-SPOnline
-
+Disconnect-PnPOnline

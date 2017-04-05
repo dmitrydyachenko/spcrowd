@@ -6,11 +6,11 @@ Function AddFiles
 	{
 		if($SubSite.length -eq 0)
 		{
-			$Web = Get-SPOWeb
+			$Web = Get-PnPWeb
 		}
 		else
 		{
-			$Web = Get-SPOWeb -Identity $SubSite	
+			$Web = Get-PnPWeb -Identity $SubSite	
 		}
 
 		$Files =  Get-ChildItem $SourceDir
@@ -19,7 +19,7 @@ Function AddFiles
 		{
 			if($Files[$i].Attributes -ne "Directory")
 			{
-				Add-SPOFile -Path $Files[$i].FullName -folder $TargetDir -Checkout -Web $Web
+				Add-PnPFile -Path $Files[$i].FullName -folder $TargetDir -Checkout -Web $Web
 			     
 				$DateTime= Get-Date
 				"Time:" + $DateTime + " Successfully added file:" + $Files[$i].FullName + "in $TargetDir folder "| Out-File $logFilePath –append
@@ -46,7 +46,7 @@ Function AddSolutionFiles
 		{
 			if($Files[$i].Attributes -ne "Directory")
 			{
-				Add-SPOFile -Path $Files[$i].FullName -folder $TargetDir -Checkout
+				Add-PnPFile -Path $Files[$i].FullName -folder $TargetDir -Checkout
 				$DateTime= Get-Date
 				Write "Time:" + $DateTime + " Successfully added file:" + $Files[$i].FullName + "in $TargetDir folder "
 			}

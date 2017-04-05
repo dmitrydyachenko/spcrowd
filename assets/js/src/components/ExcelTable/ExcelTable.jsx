@@ -5,14 +5,14 @@ import React from 'react';
 import SPOC from 'SPOCExt';
 
 /* Components */
-import CamlBuilder from '../../../vendor/camljs';
 import * as Settings from '../../utils/settings';
+import CamlBuilder from '../../../vendor/camljs';
 import { AjaxTransport, FormatXml, MergeObjects } from '../../utils/utils';
 import { GetFieldsXml } from '../Controllers/Fields/Fields';
 import { GetListsXml } from '../Controllers/Lists/Lists';
 import { GetContentTypesXml } from '../Controllers/ContentTypes/ContentTypes';
 import { GetGroupsXml } from '../Controllers/Groups/Groups';
-import ExcelTableView from './ExcelTableView';
+import { ExcelTableView } from '../Views/ExcelTableView/ExcelTableView';
 
 class ExcelTable extends React.Component {
 	constructor() {

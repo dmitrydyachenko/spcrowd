@@ -1,4 +1,4 @@
-<Fields Group="Starterpack">
+<Fields Group="CSA Group">
     <!-- Text Fields -->
     <Field Name="Strapline" DisplayName="Strapline" Type="Text"></Field>
     <Field Name="CastName" DisplayName="Name" Type="Text"></Field>

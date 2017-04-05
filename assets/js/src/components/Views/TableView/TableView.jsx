@@ -2,9 +2,9 @@
 import React from 'react';
 
 /* CSS styles */
-import Styles from './Table.scss';
+import Styles from './TableView.scss';
 
-class Table extends React.Component {
+class TableView extends React.Component {
 	static propTypes = {
 		data: React.PropTypes.arrayOf(React.PropTypes.object),
 		columns: React.PropTypes.arrayOf(React.PropTypes.string),
@@ -92,4 +92,4 @@ class Table extends React.Component {
 	}
 }
 
-export default Table;
+export default TableView;

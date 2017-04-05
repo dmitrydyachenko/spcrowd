@@ -4,8 +4,8 @@
     $ErrorActionPreference = "Continue"
 
     Try {
-        if ($contentTypeName -and (Get-SPOContentType -Identity $contentTypeName -ErrorAction SilentlyContinue) -ne $null) {                                                                   
-            Remove-SPOContentType -Identity $contentTypeName -Force  
+        if ($contentTypeName -and (Get-PnPContentType -Identity $contentTypeName -ErrorAction SilentlyContinue) -ne $null) {                                                                   
+            Remove-PnPContentType -Identity $contentTypeName -Force  
             #Write-Host "Content type $contentTypeName removed" -ForegroundColor Green               
         }
         else {

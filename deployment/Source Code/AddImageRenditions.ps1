@@ -3,7 +3,8 @@
     [Parameter(Mandatory = $true)]
     [string]$Credential,
     [Parameter(Mandatory = $true)]
-    [string]$RootLocation 
+    [string]$RootLocation,
+    [string]$SubSite
 )
 
 $LogFilePath = "$RootLocation\AddImageRenditionsLog.txt"
@@ -14,12 +15,20 @@ $ErrorActionPreference = "Stop"
 #------------------------------------------------------------------
 
 Try {
-    Connect-SPOnline -Url $SiteUrl -Credentials $Credential
+    Connect-PnPOnline -Url $SiteUrl -Credentials $Credential
 
-    Add-SPOPublishingImageRendition -Name "Thumbnail" -Width 213 -Height 215
-    Add-SPOPublishingImageRendition -Name "Photos" -Width 230 -Height -1
+    $web = ''
 
-    Disconnect-SPOnline
+    if($SubSite) {
+        $web = Get-PnPWeb -Identity $SubSite
+    } 
+    else {
+        $web = Get-PnPWeb
+    }
+
+    Add-PnPPublishingImageRendition -Name "Thumbnail" -Width 213 -Height 215 -Web $Web
+
+    Disconnect-PnPOnline
 }
 Catch {
     $DateTime = Get-Date

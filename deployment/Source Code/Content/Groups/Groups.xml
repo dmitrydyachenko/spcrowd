@@ -1,5 +1,5 @@
 <Groups>
-	<Group Name="Starterpack Owners" PermissionLevel="Full Control" />   
-	<Group Name="Starterpack Leaders" PermissionLevel="Contribute" />   
-	<Group Name="Starterpack Visitors" PermissionLevel="Read" />   
+	<Group Name="CSA Group Owners" PermissionLevel="Full Control" />   
+	<Group Name="CSA Group Leaders" PermissionLevel="Contribute" />   
+	<Group Name="CSA Group Visitors" PermissionLevel="Read" />   
 </Groups>

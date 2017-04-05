@@ -1,4 +1,4 @@
-<ContentTypes Group="Starterpack">
+<ContentTypes Group="CSA Group">
     <!-- Item Content Types -->
     <ContentType Name="Header Links" ParentContentType="Item">
         <Fields>

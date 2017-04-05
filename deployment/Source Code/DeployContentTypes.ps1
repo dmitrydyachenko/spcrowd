@@ -3,7 +3,8 @@
     [Parameter(Mandatory = $true)]
     [string]$Credential,
     [Parameter(Mandatory = $true)]
-    [string]$RootLocation 
+    [string]$RootLocation,
+    [string]$SubSite
 )
 
 $LogFilePath = "$RootLocation\DeployContentTypesLog.txt"
@@ -14,12 +15,12 @@ $ErrorActionPreference = "Stop"
 #------------------------------------------------------------------
 
 Try {
-    Connect-SPOnline -Url $SiteUrl -Credentials $Credential
+    Connect-PnPOnline -Url $SiteUrl -Credentials $Credential
 
     Import-Module "$RootLocation\Modules\CreateContentTypes.psm1"    
-    CreateContentTypes -inputFile "$RootLocation\Content\ContentTypes\ContentTypes.xml" -RootLocation $RootLocation -recreate $false -debug $false
+    CreateContentTypes -inputFile "$RootLocation\Content\ContentTypes\ContentTypes.xml" -RootLocation $RootLocation -SubSite $SubSite -recreate $false -debug $false
 
-    Disconnect-SPOnline
+    Disconnect-PnPOnline
 }
 Catch {
     $DateTime = Get-Date

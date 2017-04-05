@@ -4,7 +4,8 @@ import Dropzone from 'react-dropzone';
 
 /* Components */
 import { Spinner, SpinnerType } from 'office-ui-fabric-react/lib/Spinner';
-import PivotView from '../Views/PivotView/PivotView';
+import SettingsView from '../SettingsView/SettingsView';
+import PivotView from '../PivotView/PivotView';
 
 /* CSS styles */
 import Styles from './ExcelTableView.scss';
@@ -65,7 +66,7 @@ class ExcelTableView extends React.Component {
 							</div>
 						</Dropzone>
 						<div className={Styles.dropzone_buttons}>
-							<div className="button" type="button" onClick={self.handleOnExcelClick}>
+							<div className="button" onClick={self.handleOnExcelClick}>
 								Open Dropzone
 							</div>
 						</div>
@@ -109,6 +110,9 @@ class ExcelTableView extends React.Component {
 							) : null
 						}
 					</div>
+				</div>
+				<div className={`${Styles.content_row} ms-Grid-row`}>
+					<SettingsView />
 				</div>
 				<div className={`${Styles.content_row} ms-Grid-row`}>
 					<PivotView excel={self.state.excel} xmlFileNames={self.props.xmlFileNames} />

@@ -1,10 +1,19 @@
-Function MapFields([string]$inputFile, [string]$RootLocation) {
+Function MapFields([string]$inputFile, [string]$RootLocation, [string]$SubSite) {
 
     $logFilePath = "$RootLocation\MapFieldsLog.txt"
     $ErrorActionPreference = "Stop"
 
     Try {
         #Write-Host -ForegroundColor Green "Mapping fields..."
+
+        $web = ''
+
+        if($SubSite) {
+            $web = Get-PnPWeb -Identity $SubSite
+        } 
+        else {
+            $web = Get-PnPWeb
+        }
 
         $inputDoc = [xml](Get-Content $inputFile)
         $contentTypes = $inputDoc.ContentTypes
@@ -21,12 +30,12 @@ Function MapFields([string]$inputFile, [string]$RootLocation) {
                     #Write-Host -ForegroundColor Green "Trying to map field $fieldName to content type $contentTypeName"
 
                     if($field.Required -and $field.Required -eq "True") {
-                        Add-SPOFieldToContentType -Field $fieldName -ContentType $contentTypeName -Required
+                        Add-PnPFieldToContentType -Field $fieldName -ContentType $contentTypeName -Required -Web $web
 
                         #Write-Host -ForegroundColor Green "Field (Required) $fieldName mapped to content type $contentTypeName"
                     }
                     else {
-                        Add-SPOFieldToContentType -Field $fieldName -ContentType $contentTypeName
+                        Add-PnPFieldToContentType -Field $fieldName -ContentType $contentTypeName -Web $web
 
                         #Write-Host -ForegroundColor Green "Field (Optional) $fieldName mapped to content type $contentTypeName"
                     }

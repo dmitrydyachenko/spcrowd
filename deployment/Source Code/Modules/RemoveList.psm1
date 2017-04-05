@@ -4,8 +4,8 @@
     $ErrorActionPreference = "Stop"
 
     Try {
-        if ($listName -and (Get-SPOList -Identity $listName -ErrorAction SilentlyContinue) -ne $null) {                                                                   
-            Remove-SPOList -Identity $listName -Force  
+        if ($listName -and (Get-PnPList -Identity $listName -ErrorAction SilentlyContinue) -ne $null) {                                                                   
+            Remove-PnPList -Identity $listName -Force  
             #Write-Host "List $listName removed" -ForegroundColor Green               
         }
         else {

@@ -1,10 +1,19 @@
-Function MapContentTypes([string]$inputFile, [string]$RootLocation) {
+Function MapContentTypes([string]$inputFile, [string]$SubSite, [string]$RootLocation) {
 
     $logFilePath = "$RootLocation\MapContentTypesLog.txt"
     $ErrorActionPreference = "Stop"
 
     Try {
         #Write-Host -ForegroundColor Green "Mapping content types..."
+
+        $web = ''
+
+        if($SubSite) {
+            $web = Get-PnPWeb -Identity $SubSite
+        } 
+        else {
+            $web = Get-PnPWeb
+        }
 
         $inputDoc = [xml](Get-Content $inputFile)
         $lists = $inputDoc.Lists
@@ -20,15 +29,15 @@ Function MapContentTypes([string]$inputFile, [string]$RootLocation) {
                     
                     #Write-Host -ForegroundColor Green "Trying to map content type $contentTypeName to list $listName"
 
-                    Add-SPOContentTypeToList -List $listName -ContentType $contentTypeName -DefaultContentType
+                    Add-PnPContentTypeToList -List $listName -ContentType $contentTypeName -DefaultContentType -Web $web
 
-                    # $contentTypeObject = Get-SPOContentType -Identity $contentTypeName -InSiteHierarchy
+                    # $contentTypeObject = Get-PnPContentType -Identity $contentTypeName -InSiteHierarchy
                     # $viewFields = $contentTypeObject.Fields
                     # $viewFieldsArray = @()
                     # foreach($viewField in $viewFields) {
                     #     $viewFieldsArray += $viewField.Name
                     # }
-                    # Add-SPOView -List $listName -Title $listName -Fields $viewFieldsArray -SetAsDefault
+                    # Add-PnPView -List $listName -Title $listName -Fields $viewFieldsArray -SetAsDefault
 
                     #Write-Host -ForegroundColor Green "Content type $contentTypeName mapped to list $listName"
                 }

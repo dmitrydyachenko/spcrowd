@@ -5,7 +5,7 @@ Function ConnectToSite([string]$siteUrl, [string]$RootLocation, [string]$credSto
 
     Try {	
         #Write-Host "Connecting to the site..." -ForegroundColor Green
-	    Connect-SPOnline -Url $siteUrl -Credential $credStoreName
+	    Connect-PnPOnline -Url $siteUrl -Credential $credStoreName
         #Write-Host "Connected to the site" -ForegroundColor Green
     }
     Catch {

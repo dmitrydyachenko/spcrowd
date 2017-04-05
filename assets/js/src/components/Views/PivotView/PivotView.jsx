@@ -3,7 +3,7 @@ import React from 'react';
 
 /* Components */
 import { Pivot, PivotItem, PivotLinkSize } from 'office-ui-fabric-react/lib/Pivot';
-import Table from '../Table/Table';
+import TableView from '../TableView/TableView';
 import { DOCUMENTSLIBRARY } from '../../../utils/settings';
 
 /* CSS styles */
@@ -39,10 +39,10 @@ class PivotView extends React.Component {
 					{
 						self.state.excel.fields && self.state.excel.fields.length > 0 ? 
 						(
-							<Table data={self.state.excel.fields} 
-									xmlFilePath={`${filePath}${self.props.xmlFileNames.fields}`}
-									columns={['Name', 'Type', 'Constraints', 'Comments']} 
-									title="Fields table" />
+							<TableView data={self.state.excel.fields} 
+										xmlFilePath={`${filePath}${self.props.xmlFileNames.fields}`}
+										columns={['Name', 'Type', 'Constraints', 'Comments']} 
+										title="Fields table" />
 						) 
 						:
 						(
@@ -56,10 +56,10 @@ class PivotView extends React.Component {
 					{
 						self.state.excel.lists && self.state.excel.lists.length > 0 ? 
 						(
-							<Table data={self.state.excel.lists} 
-									xmlFilePath={`${filePath}${self.props.xmlFileNames.lists}`}
-									columns={['Name', 'Type', 'Comments']} 
-									title="Lists table" />
+							<TableView data={self.state.excel.lists} 
+										xmlFilePath={`${filePath}${self.props.xmlFileNames.lists}`}
+										columns={['Name', 'Type', 'Comments']} 
+										title="Lists table" />
 						) 
 						:
 						(
@@ -73,10 +73,10 @@ class PivotView extends React.Component {
 					{
 						self.state.excel.contentTypes && self.state.excel.contentTypes.length > 0 ? 
 						(
-							<Table data={self.state.excel.contentTypes} 
-									xmlFilePath={`${filePath}${self.props.xmlFileNames.contentTypes}`}
-									columns={['Name', 'Parent Type']} 
-									title="Content Types table" />
+							<TableView data={self.state.excel.contentTypes} 
+										xmlFilePath={`${filePath}${self.props.xmlFileNames.contentTypes}`}
+										columns={['Name', 'Parent Type']} 
+										title="Content Types table" />
 						) 
 						:
 						(
@@ -90,10 +90,10 @@ class PivotView extends React.Component {
 					{
 						self.state.excel.groups && self.state.excel.groups.length > 0 ? 
 						(
-							<Table data={self.state.excel.groups} 
-									xmlFilePath={`${filePath}${self.props.xmlFileNames.groups}`}
-									columns={['Name', 'Permission Level', 'Comments']} 
-									title="Groups table" />
+							<TableView data={self.state.excel.groups} 
+										xmlFilePath={`${filePath}${self.props.xmlFileNames.groups}`}
+										columns={['Name', 'Permission Level', 'Comments']} 
+										title="Groups table" />
 						) 
 						:
 						(

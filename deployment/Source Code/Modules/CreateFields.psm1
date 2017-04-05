@@ -1,10 +1,19 @@
-Function CreateFields([string]$inputFile, [string]$RootLocation, [bool]$recreate, [bool]$debug) {
+Function CreateFields([string]$inputFile, [string]$RootLocation, [string]$SubSite, [bool]$recreate, [bool]$debug) {
 
     $logFilePath = "$RootLocation\CreateFieldsLog.txt"
     $ErrorActionPreference = "Stop"
 
     Try {
         #Write-Host -ForegroundColor Green "Deploying fields..."
+
+        $web = ''
+
+        if($SubSite) {
+            $web = Get-PnPWeb -Identity $SubSite
+        } 
+        else {
+            $web = Get-PnPWeb
+        }
 
         $inputDoc = [xml](Get-Content $inputFile)
         $fields = $inputDoc.Fields
@@ -21,7 +30,7 @@ Function CreateFields([string]$inputFile, [string]$RootLocation, [bool]$recreate
 
             #Write-Host -ForegroundColor Green "Trying to create $fieldName"
 
-            $isExist = Get-SPOField -Identity $fieldName -ErrorAction SilentlyContinue
+            $isExist = Get-PnPField -Identity $fieldName -ErrorAction SilentlyContinue -Web $web
 
             if($isExist -eq $null) {
 
@@ -49,7 +58,7 @@ Function CreateFields([string]$inputFile, [string]$RootLocation, [bool]$recreate
 
                     foreach($groupToTest in $groupsToTest.Group) {
                         $groupToTestName = $groupToTest.Name
-                        $group = Get-SPOTermGroup -GroupName $groupToTestName
+                        $group = Get-PnPTermGroup -GroupName $groupToTestName
 
                         #Write-Host -ForegroundColor Green "Trying to get $groupToTestName term group"
 
@@ -65,13 +74,13 @@ Function CreateFields([string]$inputFile, [string]$RootLocation, [bool]$recreate
                     #Write-Host -ForegroundColor Green "Path for termset is $termSetPath"
 
                     if($field.Mult -and $field.Mult -eq "TRUE") {
-                        Add-SPOTaxonomyField -DisplayName $field.DisplayName -InternalName $field.Name -Group $groupName -TermSetPath $termSetPath -TermPathDelimiter "|" -MultiValue 
+                        Add-PnPTaxonomyField -DisplayName $field.DisplayName -InternalName $field.Name -Group $groupName -TermSetPath $termSetPath -TermPathDelimiter "|" -MultiValue -Web $web 
                     } else {
-                        Add-SPOTaxonomyField -DisplayName $field.DisplayName -InternalName $field.Name -Group $groupName -TermSetPath $termSetPath -TermPathDelimiter "|"
+                        Add-PnPTaxonomyField -DisplayName $field.DisplayName -InternalName $field.Name -Group $groupName -TermSetPath $termSetPath -TermPathDelimiter "|" -Web $web
                     }
                 } else {
                     if($field.Type -eq 'Lookup') {
-                        $list = Get-SPOList -Identity $field.List
+                        $list = Get-PnPList -Identity $field.List -Web $web
                         $listId = $list.Id
                         $field.SetAttribute("List", "{$listId}")
                     }
@@ -103,7 +112,7 @@ Function CreateFields([string]$inputFile, [string]$RootLocation, [bool]$recreate
                         }
                     }
                           
-                    Add-SPOFieldFromXml -FieldXml $field.OuterXml
+                    Add-PnPFieldFromXml -FieldXml $field.OuterXml -Web $web
                 }
 
                 if($debug) {

@@ -14,16 +14,16 @@ Function CreateGroups([string]$inputFile, [string]$RootLocation, [bool]$recreate
 
             #Write-Host -ForegroundColor Green "Trying to create $groupName"
 
-            $isExist = Get-SPOGroup -Identity $groupName -ErrorAction SilentlyContinue 
+            $isExist = Get-PnPGroup -Identity $groupName -ErrorAction SilentlyContinue 
 
             if($isExist -eq $null) {    
-                New-SPOGroup -Title $groupName
+                New-PnPGroup -Title $groupName
 
                 #Write-Host -ForegroundColor Green "Group $groupName created"
 
                 $permissionLevelName = $group.PermissionLevel
 
-                Set-SPOGroupPermissions -Identity $groupName -AddRole $permissionLevelName
+                Set-PnPGroupPermissions -Identity $groupName -AddRole $permissionLevelName
 
                 #Write-Host -ForegroundColor Green "Permission level $permissionLevelName added"
 

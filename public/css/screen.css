@@ -6460,34 +6460,34 @@
 /**
  * Paths to Sharepoint assets 
  */
-.Table_container .Table_content .ms-Grid {
+.TableView_container .TableView_content .ms-Grid {
   padding: 0 8px 0 8px;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19); }
 
-.Table_container .Table_content .Table_header_row {
+.TableView_container .TableView_content .TableView_header_row {
   background-color: #FAFAFA; }
-  .Table_container .Table_content .Table_header_row .Table_header_column {
+  .TableView_container .TableView_content .TableView_header_row .TableView_header_column {
     color: #757575;
     font-weight: 500; }
-    .Table_container .Table_content .Table_header_row .Table_header_column .Table_title_container {
+    .TableView_container .TableView_content .TableView_header_row .TableView_header_column .TableView_title_container {
       display: inline-block;
       font-size: 20px;
       font-weight: 400;
       -webkit-font-smoothing: antialiased;
       color: #333333;
       vertical-align: -webkit-baseline-middle; }
-    .Table_container .Table_content .Table_header_row .Table_header_column .Table_buttons_container {
+    .TableView_container .TableView_content .TableView_header_row .TableView_header_column .TableView_buttons_container {
       display: inline-block;
       float: right; }
 
-.Table_container .Table_content .Table_item_row {
+.TableView_container .TableView_content .TableView_item_row {
   background-color: white;
   display: -ms-flexbox;
   display: flex; }
-  .Table_container .Table_content .Table_item_row .Table_item_column {
+  .TableView_container .TableView_content .TableView_item_row .TableView_item_column {
     color: #212121;
     font-weight: normal; }
-  .Table_container .Table_content .Table_item_row:last-child .Table_item_column {
+  .TableView_container .TableView_content .TableView_item_row:last-child .TableView_item_column {
     border-bottom: 1px solid #E5E5E5; }
 /**
  * Font family

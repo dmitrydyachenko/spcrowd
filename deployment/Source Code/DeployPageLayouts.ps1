@@ -14,12 +14,12 @@ $ErrorActionPreference = "Stop"
 #------------------------------------------------------------------
 
 Try {
-    Connect-SPOnline -Url $SiteUrl -Credentials $Credential
+    Connect-PnPOnline -Url $SiteUrl -Credentials $Credential
 
-    $ArticlePageContentType = Get-SPOContentType -Identity "Article Page"
-    Add-SPOHtmlPublishingPageLayout -SourceFilePath "$RootLocation\Pagelayouts\Starterpack.html" -Title "Starterpack PageLayout" -Description "Starterpack PageLayout" -DestinationFolderHierarchy "/" -AssociatedContentTypeID $ArticlePageContentType.Id
+    $ArticlePageContentType = Get-PnPContentType -Identity "Article Page"
+    Add-PnPHtmlPublishingPageLayout -SourceFilePath "$RootLocation\Pagelayouts\CSAGroup.html" -Title "CSA Group PageLayout" -Description "CSA Group PageLayout" -DestinationFolderHierarchy "/" -AssociatedContentTypeID $ArticlePageContentType.Id
 
-    Disconnect-SPOnline
+    Disconnect-PnPOnline
 }
 Catch {
     $DateTime = Get-Date

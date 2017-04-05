@@ -1,10 +1,19 @@
-Function CreateContentTypes([string]$inputFile, [string]$RootLocation, [bool]$recreate, [bool]$debug) {
+Function CreateContentTypes([string]$inputFile, [string]$RootLocation, [string]$SubSite, [bool]$recreate, [bool]$debug) {
 
     $logFilePath = "$RootLocation\CreateContentTypesLog.txt"
     $ErrorActionPreference = "Stop"
 
     Try {
         #Write-Host -ForegroundColor Green "Deploying content types..."
+
+        $web = ''
+
+        if($SubSite) {
+            $web = Get-PnPWeb -Identity $SubSite
+        } 
+        else {
+            $web = Get-PnPWeb
+        }
 
         $inputDoc = [xml](Get-Content $inputFile)
         $contentTypes = $inputDoc.ContentTypes
@@ -21,13 +30,13 @@ Function CreateContentTypes([string]$inputFile, [string]$RootLocation, [bool]$re
 
             #Write-Host -ForegroundColor Green "Trying to create $contentTypeName"
 
-            $isExist = Get-SPOContentType -Identity $contentTypeName -ErrorAction SilentlyContinue
+            $isExist = Get-PnPContentType -Identity $contentTypeName -ErrorAction SilentlyContinue -Web $web
 
             if($isExist -eq $null) {
                 $parentContentTypeName = $contentType.ParentContentType
-                $parentContentType = Get-SPOContentType -Identity $parentContentTypeName
+                $parentContentType = Get-PnPContentType -Identity $parentContentTypeName -Web $web
 
-                Add-SPOContentType -Name $contentTypeName -Group $contentTypeGroup -ParentContentType $parentContentType
+                Add-PnPContentType -Name $contentTypeName -Group $contentTypeGroup -ParentContentType $parentContentType -Web $web
 
                 #Write-Host -ForegroundColor Green "Content type $contentTypeName created"
 

@@ -4,8 +4,8 @@
     $ErrorActionPreference = "Stop"
 
     Try {
-        if ($fieldName -and (Get-SPOField -Identity $fieldName -ErrorAction SilentlyContinue) -ne $null) {                                                                   
-            Remove-SPOField -Identity $fieldName -Force  
+        if ($fieldName -and (Get-PnPField -Identity $fieldName -ErrorAction SilentlyContinue) -ne $null) {                                                                   
+            Remove-PnPField -Identity $fieldName -Force  
             #Write-Host "Field $fieldName removed" -ForegroundColor Green               
         }
         else {

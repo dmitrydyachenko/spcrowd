@@ -16,11 +16,11 @@ $ErrorActionPreference = "Stop"
 #------------------------------------------------------------------
 
 Try {
-    Connect-SPOnline -Url $SiteUrl -Credentials $Credential
+    Connect-PnPOnline -Url $SiteUrl -Credentials $Credential
 
     & "$RootLocation\Pages\Home.ps1" -SiteUrl $SiteUrl -Credential $Credential -RootLocation $RootLocation -SPWebServerRelativeUrl $SPWebServerRelativeUrl
 
-    Disconnect-SPOnline
+    Disconnect-PnPOnline
 }
 Catch {
     $DateTime = Get-Date
