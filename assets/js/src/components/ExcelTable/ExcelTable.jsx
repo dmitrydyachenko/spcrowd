@@ -12,7 +12,7 @@ import { GetFieldsXml } from '../Controllers/Fields/Fields';
 import { GetListsXml } from '../Controllers/Lists/Lists';
 import { GetContentTypesXml } from '../Controllers/ContentTypes/ContentTypes';
 import { GetGroupsXml } from '../Controllers/Groups/Groups';
-import { ExcelTableView } from '../Views/ExcelTableView/ExcelTableView';
+import ExcelTableView from '../Views/ExcelTableView/ExcelTableView';
 
 class ExcelTable extends React.Component {
 	constructor() {

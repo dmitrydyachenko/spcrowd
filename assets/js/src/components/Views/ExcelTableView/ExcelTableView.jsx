@@ -65,9 +65,14 @@ class ExcelTableView extends React.Component {
 								Try dropping some files here, or click to select files to upload.
 							</div>
 						</Dropzone>
-						<div className={Styles.dropzone_buttons}>
-							<div className="button" onClick={self.handleOnExcelClick}>
-								Open Dropzone
+						<div className={`${Styles.dropzone_buttons} ms-Grid-row`}>
+							<div className="ms-Grid-col ms-u-sm6">	
+								<div className="button" onClick={self.handleOnExcelClick}>
+									Open Dropzone
+								</div>
+							</div>
+							<div className="ms-Grid-col ms-u-sm6">	
+								<SettingsView />
 							</div>
 						</div>
 						{
@@ -110,9 +115,6 @@ class ExcelTableView extends React.Component {
 							) : null
 						}
 					</div>
-				</div>
-				<div className={`${Styles.content_row} ms-Grid-row`}>
-					<SettingsView />
 				</div>
 				<div className={`${Styles.content_row} ms-Grid-row`}>
 					<PivotView excel={self.state.excel} xmlFileNames={self.props.xmlFileNames} />

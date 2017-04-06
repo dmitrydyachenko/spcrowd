@@ -11,14 +11,6 @@ import Styles from './SettingsView.scss';
 class SettingsView extends React.Component {
 	static propTypes = {
 		title: React.PropTypes.string
-	}
-
-	private onClosePanel = () => {
-		this.setState({ showPanel: false });
-	}
-
-	private onShowPanel = () => {
-		this.setState({ showPanel: true });
 	};
 
 	constructor(props) {
@@ -28,6 +20,10 @@ class SettingsView extends React.Component {
 			title: props.title,
 			showPanel: false
 		};
+
+		this.handleOnClosePanel = this.handleOnClosePanel.bind(this);
+		this.handleOnShowPanel = this.handleOnShowPanel.bind(this);
+		this.handleOnRenderFooterContent = this.handleOnRenderFooterContent.bind(this);
 	}
 
 	componentWillReceiveProps(nextProps) {        
@@ -36,28 +32,45 @@ class SettingsView extends React.Component {
 		});
 	}
 
+	handleOnClosePanel() {
+		this.setState({ showPanel: false });
+	}
+
+	handleOnShowPanel() {
+		this.setState({ showPanel: true });
+	}
+
+	handleOnRenderFooterContent() {
+		return (
+			<div>
+				Footer
+			</div>
+		);
+	}
+
 	render() {
 		const self = this;
 
-		return (
-			<div>
-				<div className={Styles.buttons_container}>
-					<div className="button" onClick={self.onShowPanel}>
-						Open settings
-					</div>
+		const mainContent = (
+			<div className={Styles.content}>
+				<div className="button cancel" onClick={self.handleOnClosePanel}>
+					Cancel
 				</div>
-				<Panel isOpen={self.state.showPanel}
-						type={PanelType.smallFixedFar}
-						onDismiss={self.onClosePanel}
-						headerText="Settings"
-						onRenderFooterContent={ () => {
-							return (
-								<div>
-									Footer
-								</div>
-							);
-						}}>
-						Content
+			</div>
+		);
+
+		return (
+			<div className={Styles.container}>
+				<div className="button" onClick={self.handleOnShowPanel}>
+					Open settings
+				</div>
+				<Panel headerText="Settings" 
+						hasCloseButton={false}
+						type={PanelType.medium}
+						isOpen={self.state.showPanel}
+						onDismiss={self.handleOnClosePanel}
+						onRenderFooterContent={self.handleOnRenderFooterContent}>
+					{mainContent}
 				</Panel>
 			</div>
 		);

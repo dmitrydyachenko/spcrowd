@@ -4,20 +4,34 @@
     background-color: #FAFAFA;
 }
 
-:global .ms-Icon--ChevronLeft {
-    &:before {
-        content: "\E76B";
-    }
-}
+:global .button {
+    height: 20px;
+    min-width: 80px;
+    padding: 5px 20px 8px 20px;
+    background-color: #0078d7;
+    color: white;
+    cursor: pointer;
+    margin-left: auto;
+    margin-right: auto;
+    display: inline-block;
+    font-weight: normal;
+    -webkit-font-smoothing: antialiased;
+    line-height: 24px;
+    font-size: 13px;
+    font-family: $base-font-stack;
+    text-align: center;
 
-:global .ms-Icon--ChevronRight {
-    &:before {
-        content: '\E76C';
+    &:hover {
+        background-color: #005a9e;
+        text-decoration: none;
     }
-}
 
-:global .ms-Icon--ChevronDown {
-    &:before {
-        content: '\E70D';
+    &.cancel {
+        background-color: #f4f4f4;
+        color: black;
+
+        &:hover {
+            background-color: #eaeaea;
+        }
     }
 }
