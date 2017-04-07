@@ -1,4 +1,5 @@
 Param (
+    [Parameter(Mandatory = $true)]
     [string]$SiteUrl,
     [Parameter(Mandatory = $true)]
     [string]$Credential,
@@ -15,10 +16,24 @@ $ErrorActionPreference = "Stop"
 #------------------------------------------------------------------
 
 Try {
+    Write-Host -ForegroundColor Green "Connecting to site $SiteUrl$SubSite"
+
     Connect-PnPOnline -Url $SiteUrl -Credentials $Credential
 
-    Import-Module "$RootLocation\Modules\MapContentTypes.psm1"    
-    MapContentTypes -inputFile "$RootLocation\Content\Lists\Lists.xml" -RootLocation $RootLocation -SubSite $SubSite
+    $webName = ''
+
+    if($SubSite) {
+        $webName = $SubSite -replace '\s',''
+        $webName = $webName -replace '/',''
+        $webName = '_' + $webName
+    } 
+
+    Write-Host -ForegroundColor Green "Connected"
+
+    $contentTypesFile = "$RootLocation\Content\ContentTypes\ContentTypes.xml"
+
+    Import-Module "$RootLocation\Modules\MapContentTypes.psm1"  
+    MapContentTypes -inputFile "$RootLocation\Content\Lists\Lists$webName.xml" -contentTypesFile $contentTypesFile -RootLocation $RootLocation -SubSite $SubSite
 
     Disconnect-PnPOnline
 }

@@ -4,7 +4,7 @@ Function CreateFields([string]$inputFile, [string]$RootLocation, [string]$SubSit
     $ErrorActionPreference = "Stop"
 
     Try {
-        #Write-Host -ForegroundColor Green "Deploying fields..."
+        Write-Host -ForegroundColor Green "Deploying fields..."
 
         $web = ''
 
@@ -23,12 +23,12 @@ Function CreateFields([string]$inputFile, [string]$RootLocation, [string]$SubSit
             $fieldName = $field.Name
 
             if($recreate) {
-                #Write-Host -ForegroundColor Green "Trying to remove $fieldName"
+                Write-Host -ForegroundColor Green "Trying to remove $fieldName"
                 Import-Module "$RootLocation\Modules\RemoveField.psm1"	
                 RemoveField -fieldName $fieldName -RootLocation $RootLocation
             }
 
-            #Write-Host -ForegroundColor Green "Trying to create $fieldName"
+            Write-Host -ForegroundColor Green "Trying to create $fieldName"
 
             $isExist = Get-PnPField -Identity $fieldName -ErrorAction SilentlyContinue -Web $web
 
@@ -54,24 +54,24 @@ Function CreateFields([string]$inputFile, [string]$RootLocation, [string]$SubSit
                     $termSetGroup = ''
                     $groupsToTest = $field.GroupsToTest
 
-                    #Write-Host -ForegroundColor Green "Trying to get term groups..."
+                    Write-Host -ForegroundColor Green "Trying to get term groups..."
 
                     foreach($groupToTest in $groupsToTest.Group) {
                         $groupToTestName = $groupToTest.Name
                         $group = Get-PnPTermGroup -GroupName $groupToTestName
 
-                        #Write-Host -ForegroundColor Green "Trying to get $groupToTestName term group"
+                        Write-Host -ForegroundColor Green "Trying to get $groupToTestName term group"
 
                         if($group -ne $null) {
                             $termSetGroup = $groupToTestName
-                            #Write-Host -ForegroundColor Green "Term group $groupToTestName is selected"
+                            Write-Host -ForegroundColor Green "Term group $groupToTestName is selected"
                             break
                         }
                     }
 
                     $termSetPath = $termSetGroup + "|" + $field.TermSet
 
-                    #Write-Host -ForegroundColor Green "Path for termset is $termSetPath"
+                    Write-Host -ForegroundColor Green "Path for termset is $termSetPath"
 
                     if($field.Mult -and $field.Mult -eq "TRUE") {
                         Add-PnPTaxonomyField -DisplayName $field.DisplayName -InternalName $field.Name -Group $groupName -TermSetPath $termSetPath -TermPathDelimiter "|" -MultiValue -Web $web 
@@ -94,7 +94,7 @@ Function CreateFields([string]$inputFile, [string]$RootLocation, [string]$SubSit
 
                             if($path) {
 
-                                #Write-Host -ForegroundColor Green "Getting values from external source $path"
+                                Write-Host -ForegroundColor Green "Getting values from external source $path"
 
                                 $choicesXml = [xml](Get-Content $path)
 
@@ -116,15 +116,15 @@ Function CreateFields([string]$inputFile, [string]$RootLocation, [string]$SubSit
                 }
 
                 if($debug) {
-                    #Write-Host -ForegroundColor DarkYellow $field.OuterXml
+                    Write-Host -ForegroundColor DarkYellow $field.OuterXml
                 }
             }
             else {
-                #Write-Host -ForegroundColor Yellow "Field $fieldName already exists"
+                Write-Host -ForegroundColor Yellow "Field $fieldName already exists"
             }
         }
 
-        #Write-Host -ForegroundColor Green "Fields deployed"
+        Write-Host -ForegroundColor Green "Fields deployed"
     }
     Catch {
         $dateTime = Get-Date

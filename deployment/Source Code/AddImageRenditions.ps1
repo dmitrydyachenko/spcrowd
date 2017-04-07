@@ -1,4 +1,5 @@
 ﻿Param (
+    [Parameter(Mandatory = $true)]
     [string]$SiteUrl,
     [Parameter(Mandatory = $true)]
     [string]$Credential,
@@ -15,6 +16,8 @@ $ErrorActionPreference = "Stop"
 #------------------------------------------------------------------
 
 Try {
+    Write-Host -ForegroundColor Green "Connecting to site $SiteUrl$SubSite"
+
     Connect-PnPOnline -Url $SiteUrl -Credentials $Credential
 
     $web = ''
@@ -26,7 +29,13 @@ Try {
         $web = Get-PnPWeb
     }
 
+    Write-Host -ForegroundColor Green "Connected"
+
+    Write-Host -ForegroundColor Green "Trying to add image rendition"
+
     Add-PnPPublishingImageRendition -Name "Thumbnail" -Width 213 -Height 215 -Web $Web
+
+    Write-Host -ForegroundColor Green "Image rendition added"
 
     Disconnect-PnPOnline
 }

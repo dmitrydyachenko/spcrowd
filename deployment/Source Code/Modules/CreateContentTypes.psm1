@@ -4,7 +4,7 @@ Function CreateContentTypes([string]$inputFile, [string]$RootLocation, [string]$
     $ErrorActionPreference = "Stop"
 
     Try {
-        #Write-Host -ForegroundColor Green "Deploying content types..."
+        Write-Host -ForegroundColor Green "Deploying content types..."
 
         $web = ''
 
@@ -23,12 +23,12 @@ Function CreateContentTypes([string]$inputFile, [string]$RootLocation, [string]$
             $contentTypeName = $contentType.Name
 
             if($recreate) {
-                #Write-Host -ForegroundColor Green "Trying to remove $contentTypeName"
+                Write-Host -ForegroundColor Green "Trying to remove $contentTypeName"
                 Import-Module "$RootLocation\Modules\RemoveContentType.psm1"	
                 RemoveContentType -contentTypeName $contentTypeName -RootLocation $RootLocation
             }
 
-            #Write-Host -ForegroundColor Green "Trying to create $contentTypeName"
+            Write-Host -ForegroundColor Green "Trying to create $contentTypeName"
 
             $isExist = Get-PnPContentType -Identity $contentTypeName -ErrorAction SilentlyContinue -Web $web
 
@@ -38,18 +38,18 @@ Function CreateContentTypes([string]$inputFile, [string]$RootLocation, [string]$
 
                 Add-PnPContentType -Name $contentTypeName -Group $contentTypeGroup -ParentContentType $parentContentType -Web $web
 
-                #Write-Host -ForegroundColor Green "Content type $contentTypeName created"
+                Write-Host -ForegroundColor Green "Content type $contentTypeName created"
 
                 if($debug) {
-                    #Write-Host -ForegroundColor DarkYellow $contentType.OuterXml
+                    Write-Host -ForegroundColor DarkYellow $contentType.OuterXml
                 }
             }
             else {
-                #Write-Host -ForegroundColor Yellow "Content type $contentTypeName already exists"
+                Write-Host -ForegroundColor Yellow "Content type $contentTypeName already exists"
             }
         }
 
-        #Write-Host -ForegroundColor Green "Content types deployed"
+        Write-Host -ForegroundColor Green "Content types deployed"
     }
     Catch {
         $dateTime = Get-Date

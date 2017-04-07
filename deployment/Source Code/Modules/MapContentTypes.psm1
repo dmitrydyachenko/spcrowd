@@ -1,10 +1,10 @@
-Function MapContentTypes([string]$inputFile, [string]$SubSite, [string]$RootLocation) {
+Function MapContentTypes([string]$inputFile, [string]contentTypesFile, [string]$SubSite, [string]$RootLocation) {
 
     $logFilePath = "$RootLocation\MapContentTypesLog.txt"
     $ErrorActionPreference = "Stop"
 
     Try {
-        #Write-Host -ForegroundColor Green "Mapping content types..."
+        Write-Host -ForegroundColor Green "Mapping content types..."
 
         $web = ''
 
@@ -18,6 +18,8 @@ Function MapContentTypes([string]$inputFile, [string]$SubSite, [string]$RootLoca
         $inputDoc = [xml](Get-Content $inputFile)
         $lists = $inputDoc.Lists
 
+        $contentTypesDoc = [xml](Get-Content $contentTypesFile)
+
         foreach($list in $lists.List) {
             $listName = $list.Name
 
@@ -27,24 +29,29 @@ Function MapContentTypes([string]$inputFile, [string]$SubSite, [string]$RootLoca
                 foreach($contentType in $contentTypes.ContentType) {
                     $contentTypeName = $contentType.Name
                     
-                    #Write-Host -ForegroundColor Green "Trying to map content type $contentTypeName to list $listName"
+                    Write-Host -ForegroundColor Green "Trying to map content type $contentTypeName to list $listName"
 
                     Add-PnPContentTypeToList -List $listName -ContentType $contentTypeName -DefaultContentType -Web $web
 
-                    # $contentTypeObject = Get-PnPContentType -Identity $contentTypeName -InSiteHierarchy
-                    # $viewFields = $contentTypeObject.Fields
-                    # $viewFieldsArray = @()
-                    # foreach($viewField in $viewFields) {
-                    #     $viewFieldsArray += $viewField.Name
-                    # }
-                    # Add-PnPView -List $listName -Title $listName -Fields $viewFieldsArray -SetAsDefault
+                    Write-Host -ForegroundColor Green "Content type $contentTypeName mapped to list $listName"
 
-                    #Write-Host -ForegroundColor Green "Content type $contentTypeName mapped to list $listName"
+                    Write-Host -ForegroundColor Green "Trying to create view for list $listName"
+
+                    $viewFields = $contentTypesDoc.ContentTypes.SelectSingleNode("ContentType[@Name='$contentTypeName']")
+                    $viewFieldsArray = @()
+
+                    foreach($viewField in $viewFields.Fields.Field) {
+                        $viewFieldsArray += $viewField.Name
+                    }
+
+                    Add-PnPView -List $listName -Title $listName -Fields $viewFieldsArray -SetAsDefault
+
+                    Write-Host -ForegroundColor Green "View for list $listName created"
                 }
             }
         }
 
-        #Write-Host -ForegroundColor Green "Content types mapped"
+        Write-Host -ForegroundColor Green "Content types mapped"
     }
     Catch {
         $dateTime = Get-Date

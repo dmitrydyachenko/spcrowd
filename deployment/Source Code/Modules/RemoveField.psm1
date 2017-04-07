@@ -6,10 +6,10 @@
     Try {
         if ($fieldName -and (Get-PnPField -Identity $fieldName -ErrorAction SilentlyContinue) -ne $null) {                                                                   
             Remove-PnPField -Identity $fieldName -Force  
-            #Write-Host "Field $fieldName removed" -ForegroundColor Green               
+            Write-Host "Field $fieldName removed" -ForegroundColor Green               
         }
         else {
-            #Write-Host "Field $fieldName doesn't exist" -ForegroundColor Yellow  
+            Write-Host "Field $fieldName doesn't exist" -ForegroundColor Yellow  
         }
     }
     Catch {

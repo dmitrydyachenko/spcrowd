@@ -1,4 +1,5 @@
 Param (
+    [Parameter(Mandatory = $true)]
     [string]$SiteUrl,
     [Parameter(Mandatory = $true)]
     [string]$Credential,
@@ -16,7 +17,11 @@ $ErrorActionPreference = "Stop"
 #------------------------------------------------------------------
 
 Try {
+    Write-Host -ForegroundColor Green "Connecting to site $SiteUrl$SubSite"
+    
     Connect-PnPOnline -Url $SiteUrl -Credentials $Credential
+
+    Write-Host -ForegroundColor Green "Connected"
 
     & "$RootLocation\Pages\Home.ps1" -SiteUrl $SiteUrl -Credential $Credential -RootLocation $RootLocation -SPWebServerRelativeUrl $SPWebServerRelativeUrl
 

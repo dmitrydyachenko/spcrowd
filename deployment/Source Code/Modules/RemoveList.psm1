@@ -6,10 +6,10 @@
     Try {
         if ($listName -and (Get-PnPList -Identity $listName -ErrorAction SilentlyContinue) -ne $null) {                                                                   
             Remove-PnPList -Identity $listName -Force  
-            #Write-Host "List $listName removed" -ForegroundColor Green               
+            Write-Host "List $listName removed" -ForegroundColor Green               
         }
         else {
-            #Write-Host "List $listName doesn't exist" -ForegroundColor Yellow  
+            Write-Host "List $listName doesn't exist" -ForegroundColor Yellow  
         }
     }
     Catch {

@@ -1,4 +1,5 @@
 ﻿Param (
+   [Parameter(Mandatory = $true)]
    [string]$SiteUrl,
    [Parameter(Mandatory = $true)]
    [string]$Credential,

@@ -6,10 +6,10 @@
     Try {
         if ($contentTypeName -and (Get-PnPContentType -Identity $contentTypeName -ErrorAction SilentlyContinue) -ne $null) {                                                                   
             Remove-PnPContentType -Identity $contentTypeName -Force  
-            #Write-Host "Content type $contentTypeName removed" -ForegroundColor Green               
+            Write-Host "Content type $contentTypeName removed" -ForegroundColor Green               
         }
         else {
-            #Write-Host "Content type $contentTypeName doesn't exist" -ForegroundColor Yellow  
+            Write-Host "Content type $contentTypeName doesn't exist" -ForegroundColor Yellow  
         }
     }
     Catch {

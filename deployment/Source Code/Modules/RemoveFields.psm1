@@ -4,7 +4,7 @@
     $ErrorActionPreference = "Stop"
 
     Try {
-        #Write-Host -ForegroundColor Green "Removing fields..."
+        Write-Host -ForegroundColor Green "Removing fields..."
 
         $inputDoc = [xml](Get-Content $inputFile)
         $fields = $inputDoc.Fields
@@ -12,7 +12,7 @@
         foreach($field in $fields.Field) {
             $fieldName = $field.Name
             
-            #Write-Host -ForegroundColor Green "Trying to remove $fieldName"
+            Write-Host -ForegroundColor Green "Trying to remove $fieldName"
             Import-Module "$RootLocation\Modules\RemoveField.psm1"	
             RemoveField -fieldName $fieldName -RootLocation $RootLocation
         }

@@ -4,9 +4,9 @@ Function ConnectToSite([string]$siteUrl, [string]$RootLocation, [string]$credSto
     $ErrorActionPreference = "Stop"
 
     Try {	
-        #Write-Host "Connecting to the site..." -ForegroundColor Green
+        Write-Host "Connecting to the site..." -ForegroundColor Green
 	    Connect-PnPOnline -Url $siteUrl -Credential $credStoreName
-        #Write-Host "Connected to the site" -ForegroundColor Green
+        Write-Host "Connected to the site" -ForegroundColor Green
     }
     Catch {
 	    $dateTime= Get-Date

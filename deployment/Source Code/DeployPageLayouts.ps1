@@ -1,4 +1,5 @@
 ﻿Param (
+    [Parameter(Mandatory = $true)]
     [string]$SiteUrl,
     [Parameter(Mandatory = $true)]
     [string]$Credential,
@@ -14,7 +15,11 @@ $ErrorActionPreference = "Stop"
 #------------------------------------------------------------------
 
 Try {
+    Write-Host -ForegroundColor Green "Connecting to site $SiteUrl$SubSite"
+    
     Connect-PnPOnline -Url $SiteUrl -Credentials $Credential
+
+    Write-Host -ForegroundColor Green "Connected"
 
     $ArticlePageContentType = Get-PnPContentType -Identity "Article Page"
     Add-PnPHtmlPublishingPageLayout -SourceFilePath "$RootLocation\Pagelayouts\CSAGroup.html" -Title "CSA Group PageLayout" -Description "CSA Group PageLayout" -DestinationFolderHierarchy "/" -AssociatedContentTypeID $ArticlePageContentType.Id

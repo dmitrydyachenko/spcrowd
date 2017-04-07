@@ -4,7 +4,7 @@
     $ErrorActionPreference = "Stop"
 
     Try {
-        #Write-Host -ForegroundColor Green "Removing content types..."
+        Write-Host -ForegroundColor Green "Removing content types..."
 
         $inputDoc = [xml](Get-Content $inputFile)
         $contentTypes = $inputDoc.ContentTypes
@@ -12,7 +12,7 @@
         foreach($contentType in $contentTypes.ContentType) {
             $contentTypeName = $contentType.Name
             
-            #Write-Host -ForegroundColor Green "Trying to remove $contentTypeName"
+            Write-Host -ForegroundColor Green "Trying to remove $contentTypeName"
             Import-Module "$RootLocation\Modules\RemoveContentType.psm1"	
             RemoveContentType -contentTypeName $contentTypeName -RootLocation $RootLocation
         }
