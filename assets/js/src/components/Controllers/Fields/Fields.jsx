@@ -28,10 +28,19 @@ export function GetFieldsXml(data, namespaces) {
 
 		switch (lowerCaseType) {
 			case 'singlelineoftext': 
+				_attr.Type = 'Text';
+
 				field = { _attr };
 				break;
 			case 'boolean': 
 				field = { _attr, Default: lowerCaseOptions && lowerCaseOptions === 'yes' ? 1 : 0 };
+				break;
+			case 'image': 
+				_attr.Type = 'Image';
+				_attr.RichText = 'TRUE';
+				_attr.RichTextMode = 'FullHtml';
+
+				field = { _attr };
 				break;
 			case 'checkbox': 
 			case 'dropdown': 
@@ -66,7 +75,24 @@ export function GetFieldsXml(data, namespaces) {
 					}
 				}
 				break;
+			case 'lookup': 
+				_attr.Type = 'Lookup';
+				_attr.ShowField = 'Title';
+
+				if (values) {
+					_attr.List = values;
+				}
+
+				if (lowerCaseOptions && lowerCaseOptions === 'multi') {
+					_attr.Type = 'LookupMulti';
+					_attr.Mult = 'TRUE';
+				} 
+
+				field = { _attr };
+				break;
 			case 'multiplelinesoftext': 
+				_attr.RichText = 'FALSE';
+
 				if (lowerCaseOptions && lowerCaseOptions === 'fullhtml') {
 					_attr.RichText = 'TRUE';
 					_attr.RichTextMode = 'FullHtml';
@@ -85,11 +111,11 @@ export function GetFieldsXml(data, namespaces) {
 			case 'number':
 				_attr.Min = '0';
 
-				if (values) {
-					values = values.trim();
+				if (lowerCaseOptions) {
+					const lowerCaseOptionsTrimmed = lowerCaseOptions.trim();
 
-					if (!isNaN(parseInt(values, 10))) {
-						_attr.Min = values;
+					if (!isNaN(parseInt(lowerCaseOptionsTrimmed, 10))) {
+						_attr.Min = lowerCaseOptionsTrimmed;
 					}
 				} 
 
@@ -111,26 +137,24 @@ export function GetFieldsXml(data, namespaces) {
 				_attr.Mult = 'TRUE';
 				_attr.UserSelectionMode = 'PeopleOnly';
 
-				if (values) {
-					switch (values.toLowerCase().replace(/\s+/g, '')) {
-						case 'peopleandgroups':
-							_attr.Type = 'User';
-							_attr.Mult = 'FALSE';
-							_attr.UserSelectionMode = 'PeopleAndGroups';
-							break;
-						case 'peopleandgroupsmulti':
-							_attr.Type = 'UserMulti';
-							_attr.Mult = 'TRUE';
-							_attr.UserSelectionMode = 'PeopleAndGroups';
-							break;
-						case 'peopleonly':
-							_attr.Type = 'User';
-							_attr.Mult = 'FALSE';
-							_attr.UserSelectionMode = 'PeopleOnly';
-							break;
-						default: 
-							break;
-					}
+				switch (lowerCaseOptions) {
+					case 'peopleandgroups':
+						_attr.Type = 'UserMulti';
+						_attr.Mult = 'TRUE';
+						_attr.UserSelectionMode = 'PeopleAndGroups';
+						break;
+					case 'persononly':
+						_attr.Type = 'User';
+						_attr.Mult = 'FALSE';
+						_attr.UserSelectionMode = 'PeopleOnly';
+						break;
+					case 'personandgroup':
+						_attr.Type = 'User';
+						_attr.Mult = 'FALSE';
+						_attr.UserSelectionMode = 'PeopleAndGroups';
+						break;
+					default: 
+						break;
 				}
 
 				field = { _attr };
@@ -145,10 +169,9 @@ export function GetFieldsXml(data, namespaces) {
 
 					if (values.length > 0) {
 						switch (values.length) {
-							case 2:
-								field._attr.TermSet = values[1].trim();
 							case 1:
-								field._attr.Mult = values[0].toLowerCase().trim() === 'true' ? 'TRUE' : 'FALSE';
+								field._attr.TermSet = values[0].trim();
+								field._attr.Mult = lowerCaseOptions && lowerCaseOptions === 'multi' ? 'TRUE' : 'FALSE';
 								break;
 							default: 
 								const valuesObject = [];
@@ -157,8 +180,8 @@ export function GetFieldsXml(data, namespaces) {
 									valuesObject.push({ _attr: { Name: values[j].trim() } });
 								}
 
-								field._attr.TermSet = values[1].trim();
-								field._attr.Mult = values[0].toLowerCase().trim() === 'true' ? 'TRUE' : 'FALSE';
+								field._attr.TermSet = values[0].trim();
+								field._attr.Mult = lowerCaseOptions && lowerCaseOptions === 'multi' ? 'TRUE' : 'FALSE';
 								field.GroupsToTest = { Group: valuesObject };								
 								break;
 						}

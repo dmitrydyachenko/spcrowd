@@ -8,7 +8,7 @@
     height: 20px;
     min-width: 80px;
     padding: 5px 20px 8px 20px;
-    background-color: #0078d7;
+    background-color: #0078d7 !important;
     color: white;
     cursor: pointer;
     margin-left: auto;
@@ -22,16 +22,16 @@
     text-align: center;
 
     &:hover {
-        background-color: #005a9e;
+        background-color: #005a9e !important;
         text-decoration: none;
     }
 
     &.cancel {
-        background-color: #f4f4f4;
+        background-color: #f4f4f4 !important;
         color: black;
 
         &:hover {
-            background-color: #eaeaea;
+            background-color: #eaeaea !important;
         }
     }
 }

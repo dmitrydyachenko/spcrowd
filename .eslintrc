@@ -22,7 +22,8 @@
         "sinon": true,
         "SPOCExt": false,
         "SP": false,
-        "_spPageContextInfo": false
+        "_spPageContextInfo": false,
+        "FB": false
     },
     "parser": "babel-eslint",
     "plugins": [

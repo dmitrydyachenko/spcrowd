@@ -10,7 +10,6 @@ export function GetContentTypesXml(data, namespaces) {
 
 	for (let i = 0; i < data.length; i++) {
 		const type = data[i]['Parent Type'];
-		const lowerCaseType = type ? type.toLowerCase().replace(/\s+/g, '') : '';
 
 		const _attr = { 
 			Name: ToCamelCase(data[i].Name), 

@@ -5,13 +5,13 @@ import SPOC from 'SPOCExt';
 
 /* Components */
 import { Spinner, SpinnerType } from 'office-ui-fabric-react/lib/Spinner';
-import { Slider } from 'office-ui-fabric-react/lib/Slider';
-import { GenerateGuid, GetRandomInt } from '../../utils/utils';
-import { PAGESLIST, STYLELIBRARY } from '../../utils/settings';
-import PagesList from '../../components/PagesList/PagesList';
+import { GetRandomInt } from '../../utils/utils';
+import { STYLELIBRARY } from '../../utils/settings';
 import ExcelTable from '../../components/ExcelTable/ExcelTable';
-import CloudCarousel from '../../components/CloudCarousel/CloudCarousel';
-import GifGenerator from '../../components/GifGenerator/GifGenerator';
+import CloudCarousel from '../../components/_RD/CloudCarousel/CloudCarousel';
+import GifGenerator from '../../components/_RD/GifGenerator/GifGenerator';
+import Emotions from '../../components/_RD/Emotions/Emotions';
+import FacebookPosts from '../../components/_RD/FacebookPosts/FacebookPosts';
 
 /* CSS styles */
 import Styles from './Home.scss';
@@ -21,9 +21,7 @@ class Home extends React.Component {
 		super();
 
 		this.state = {
-			data: [],
 			headerContent: null,
-			fontsize: '14px',
 			loading: true,
 			subItems: []
 		};
@@ -60,17 +58,6 @@ class Home extends React.Component {
 					self.setState({ headerContent, loading: false });
 				}
 			}
-		});
-
-		const pagesListSettings = {
-			select: 'Title'
-		};
-
-		self.site.ListItems(PAGESLIST).query(pagesListSettings).then((data) => {
-			self.setState({ data });
-		},
-		(error) => {
-			console.log(error);
 		});
 
 		const cloudCarouselSettings = {
@@ -110,26 +97,22 @@ class Home extends React.Component {
 					</div>
 				</div>
 				{
-					0 === 1 ? (
-						<div>
-							<div className={`${Styles.content_container} ms-Grid-row`}>
-								<div className="container">
-									<div className="ms-Grid-col ms-u-sm12">
-										<PagesList data={this.state.data} 
-													guid={GenerateGuid()} 
-													fontsize={this.state.fontsize} />
-									</div>
+					0 === 0 ? (
+						<div className={`${Styles.fbposts_container} ms-Grid-row`}>
+							<div className="container">
+								<div className="ms-Grid-col ms-u-sm12">
+									<FacebookPosts />
 								</div>
 							</div>
-							<div className={`${Styles.bottom_container} ms-Grid-row`}>
-								<div className="container">
-									<div className="ms-Grid-col ms-u-sm12">
-										<Slider label="Font size:" 
-												min={8} max={64} step={2}
-												defaultValue={14} 
-												showValue
-												onChange={fontsize => this.setState({ fontsize: `${fontsize}px` })} />
-									</div>
+						</div>
+					) : null
+				}
+				{
+					0 === 1 ? (
+						<div className={`${Styles.emotions_container} ms-Grid-row`}>
+							<div className="container">
+								<div className="ms-Grid-col ms-u-sm12">
+									<Emotions />
 								</div>
 							</div>
 						</div>

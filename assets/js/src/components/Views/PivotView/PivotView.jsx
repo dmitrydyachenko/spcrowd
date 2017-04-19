@@ -35,23 +35,6 @@ class PivotView extends React.Component {
 
 		return (
 			<Pivot linkSize={PivotLinkSize.large}>
-				<PivotItem linkText="Fields">
-					{
-						self.state.excel.fields && self.state.excel.fields.length > 0 ? 
-						(
-							<TableView data={self.state.excel.fields} 
-										xmlFilePath={`${filePath}${self.props.xmlFileNames.fields}`}
-										columns={['Name', 'Type', 'Constraints', 'Comments']} 
-										title="Fields table" />
-						) 
-						:
-						(
-							<div className={Styles.upload_message}>
-								Upload an Excel file to see fields definition
-							</div>
-						)
-					}
-				</PivotItem>
 				<PivotItem linkText="Lists">
 					{
 						self.state.excel.lists && self.state.excel.lists.length > 0 ? 
@@ -65,6 +48,23 @@ class PivotView extends React.Component {
 						(
 							<div className={Styles.upload_message}>
 								Upload an Excel file to see lists definition
+							</div>
+						)
+					}
+				</PivotItem>
+				<PivotItem linkText="Fields">
+					{
+						self.state.excel.fields && self.state.excel.fields.length > 0 ? 
+						(
+							<TableView data={self.state.excel.fields} 
+										xmlFilePath={`${filePath}${self.props.xmlFileNames.fields}`}
+										columns={['Name', 'Type', 'Values', 'Options']} 
+										title="Fields table" />
+						) 
+						:
+						(
+							<div className={Styles.upload_message}>
+								Upload an Excel file to see fields definition
 							</div>
 						)
 					}

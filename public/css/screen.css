@@ -6389,7 +6389,7 @@
   height: 20px;
   min-width: 80px;
   padding: 5px 20px 8px 20px;
-  background-color: #0078d7;
+  background-color: #0078d7 !important;
   color: white;
   cursor: pointer;
   margin-left: auto;
@@ -6402,44 +6402,13 @@
   font-family: "RobotoRegular", "Segoe UI WestEuropean", "Segoe UI", "Helvetica Neue", HelveticaNeue, Helvetica, Arial, sans-serif;
   text-align: center; }
   .button:hover {
-    background-color: #005a9e;
+    background-color: #005a9e !important;
     text-decoration: none; }
   .button.cancel {
-    background-color: #f4f4f4;
+    background-color: #f4f4f4 !important;
     color: black; }
     .button.cancel:hover {
-      background-color: #eaeaea; }
-/**
- * Font family
- */
-/**
- * Breakpoints
- */
-/**
- * Tweakpoints
- */
-/**
- * Other variables
- */
-/**
- * Colours
- */
-/**
- * Paths to Sharepoint assets 
- */
-.PagesList_container .PagesList_header {
-  display: block;
-  font-size: 14px;
-  font-weight: 400;
-  -webkit-font-smoothing: antialiased;
-  color: #333333; }
-
-.PagesList_container .PagesList_content .PagesList_item {
-  display: block;
-  font-size: 14px;
-  font-weight: 400;
-  -webkit-font-smoothing: antialiased;
-  color: #333333; }
+      background-color: #eaeaea !important; }
 /**
  * Font family
  */
@@ -6703,6 +6672,54 @@
       display: block; }
   .GifGenerator_container .GifGenerator_content .GifGenerator_item_row:last-child .GifGenerator_item_column {
     border-bottom: 1px solid #E5E5E5; }
+/**
+ * Font family
+ */
+/**
+ * Breakpoints
+ */
+/**
+ * Tweakpoints
+ */
+/**
+ * Other variables
+ */
+/**
+ * Colours
+ */
+/**
+ * Paths to Sharepoint assets 
+ */
+.Emotions_container .Emotions_header {
+  display: block;
+  font-size: 20px;
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+  color: #333333; }
+/**
+ * Font family
+ */
+/**
+ * Breakpoints
+ */
+/**
+ * Tweakpoints
+ */
+/**
+ * Other variables
+ */
+/**
+ * Colours
+ */
+/**
+ * Paths to Sharepoint assets 
+ */
+.FacebookPosts_container .FacebookPosts_header {
+  display: block;
+  font-size: 20px;
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+  color: #333333; }
 /**
  * Font family
  */
