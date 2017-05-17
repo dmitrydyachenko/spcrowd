@@ -89,6 +89,13 @@
   font-weight: 500;
   font-style: normal; }
 
+@font-face {
+  font-family: 'Notification';
+  src: url("../fonts/notification.eot?s3g3t9");
+  src: url("../fonts/notification.eot?#iefixs3g3t9") format("embedded-opentype"), url("../fonts/notification.woff?s3g3t9") format("woff"), url("../fonts/notification.ttf?s3g3t9") format("truetype"), url("../fonts/notification.svg?s3g3t9#notification") format("svg");
+  font-weight: normal;
+  font-style: normal; }
+
 .spcrowd {
   /**
      * Import vendor CSS files
@@ -6380,6 +6387,97 @@
 /**
  * Import element CSS files that should be applied on the whole page
  */
+.notification-container {
+  box-sizing: border-box;
+  position: fixed;
+  top: 0;
+  right: 0;
+  z-index: 999999;
+  width: 320px;
+  padding: 0 15px;
+  max-height: calc(100% - 30px);
+  overflow-x: hidden;
+  overflow-y: auto; }
+
+.notification {
+  box-sizing: border-box;
+  padding: 15px 15px 15px 58px;
+  border-radius: 2px;
+  color: #fff;
+  background-color: #ccc;
+  box-shadow: 0 0 12px #999;
+  cursor: pointer;
+  font-size: 1em;
+  line-height: 1.2em;
+  position: relative;
+  opacity: 0.9;
+  margin-top: 15px;
+  margin-bottom: 15px; }
+
+.notification .title {
+  font-size: 1em;
+  line-height: 1.2em;
+  font-weight: bold;
+  margin: 0 0 5px 0; }
+
+.notification:hover, .notification:focus {
+  opacity: 1; }
+
+.notification-enter {
+  visibility: hidden;
+  transform: translate3d(100%, 0, 0); }
+
+.notification-enter.notification-enter-active {
+  visibility: visible;
+  transform: translate3d(0, 0, 0);
+  transition: all 0.4s; }
+
+.notification-leave {
+  visibility: visible;
+  transform: translate3d(0, 0, 0); }
+
+.notification-leave.notification-leave-active {
+  visibility: hidden;
+  transform: translate3d(100%, 0, 0);
+  transition: all 0.4s; }
+
+.notification:before {
+  position: absolute;
+  top: 50%;
+  left: 15px;
+  margin-top: -14px;
+  display: block;
+  font-family: 'Notification';
+  width: 28px;
+  height: 28px;
+  font-size: 28px;
+  text-align: center;
+  line-height: 28px; }
+
+.notification-info {
+  background-color: #2f96b4; }
+
+.notification-info:before {
+  content: "\F05A"; }
+
+.notification-success {
+  background-color: #51a351; }
+
+.notification-success:before {
+  content: "\F058"; }
+
+.notification-warning {
+  background-color: #f89406; }
+
+.notification-warning:before {
+  content: "\F06A"; }
+
+.notification-error {
+  background-color: #bd362f; }
+
+.notification-error:before {
+  content: "\F057"; }
+
 #s4-workspace {
   -webkit-overflow-scrolling: touch;
   overflow-y: scroll;
@@ -6430,6 +6528,18 @@
 .SettingsView_container {
   display: inline-block;
   padding-left: 20px; }
+
+.SettingsView_content .SettingsView_save {
+  padding: 30px 30px 0 0;
+  display: inline-block; }
+
+.SettingsView_content .SettingsView_cancel {
+  padding-top: 30px;
+  display: inline-block; }
+
+.SettingsView_content .SettingsView_notification {
+  padding-left: 30px;
+  display: inline-block; }
 /**
  * Font family
  */
@@ -6503,6 +6613,9 @@
 
 .pivotItem {
   padding-top: 10px; }
+
+.PivotView_upload_message {
+  text-align: center; }
 /**
  * Font family
  */
@@ -6521,22 +6634,22 @@
 /**
  * Paths to Sharepoint assets 
  */
-.ExcelTableView_container .ExcelTableView_content .ms-Grid {
+.ExcelView_container .ExcelView_content .ms-Grid {
   padding: 0 8px 0 8px; }
 
-.ExcelTableView_container .ExcelTableView_content .ExcelTableView_content_row {
+.ExcelView_container .ExcelView_content .ExcelView_content_row {
   padding: 10px 6px 45px 6px; }
-  .ExcelTableView_container .ExcelTableView_content .ExcelTableView_content_row .ms-Pivot {
+  .ExcelView_container .ExcelView_content .ExcelView_content_row .ms-Pivot {
     padding: 20px;
     background-color: #f4f4f4; }
-    .ExcelTableView_container .ExcelTableView_content .ExcelTableView_content_row .ms-Pivot .ms-Pivot-link.is-selected {
+    .ExcelView_container .ExcelView_content .ExcelView_content_row .ms-Pivot .ms-Pivot-link.is-selected {
       font-weight: 500; }
-  .ExcelTableView_container .ExcelTableView_content .ExcelTableView_content_row .pivotItem {
+  .ExcelView_container .ExcelView_content .ExcelView_content_row .pivotItem {
     padding-top: 10px; }
 
-.ExcelTableView_container .ExcelTableView_content .ExcelTableView_dropzone {
+.ExcelView_container .ExcelView_content .ExcelView_dropzone {
   padding-bottom: 30px; }
-  .ExcelTableView_container .ExcelTableView_content .ExcelTableView_dropzone .ExcelTableView_dropzone_container {
+  .ExcelView_container .ExcelView_content .ExcelView_dropzone .ExcelView_dropzone_container {
     height: 100px;
     width: 100%;
     margin-bottom: 12px;
@@ -6550,17 +6663,20 @@
     align-items: center;
     -ms-flex-pack: center;
     justify-content: center; }
-    .ExcelTableView_container .ExcelTableView_content .ExcelTableView_dropzone .ExcelTableView_dropzone_container .ExcelTableView_dropzone_title {
+    .ExcelView_container .ExcelView_content .ExcelView_dropzone .ExcelView_dropzone_container .ExcelView_dropzone_title {
       color: #757575;
       font-weight: 500; }
-  .ExcelTableView_container .ExcelTableView_content .ExcelTableView_dropzone .ExcelTableView_dropzone_buttons {
+  .ExcelView_container .ExcelView_content .ExcelView_dropzone .ExcelView_dropzone_buttons {
     text-align: center; }
-  .ExcelTableView_container .ExcelTableView_content .ExcelTableView_dropzone .ExcelTableView_dropzone_files {
+  .ExcelView_container .ExcelView_content .ExcelView_dropzone .ExcelView_dropzone_files {
     padding: 50px 0 5px 0; }
-    .ExcelTableView_container .ExcelTableView_content .ExcelTableView_dropzone .ExcelTableView_dropzone_files .ExcelTableView_dropzone_files_list {
+    .ExcelView_container .ExcelView_content .ExcelView_dropzone .ExcelView_dropzone_files .ExcelView_dropzone_files_list {
       padding-right: 5px;
       text-align: center;
       font-size: 18px; }
+  .ExcelView_container .ExcelView_content .ExcelView_dropzone .ExcelView_download_all {
+    padding-top: 30px;
+    text-align: center; }
 /**
  * Font family
  */
@@ -6752,7 +6868,8 @@
     .Home_container .Home_top_container .Home_header .Home_header_title {
       font-size: 20px; }
     .Home_container .Home_top_container .Home_header .Home_header_description {
-      font-size: 18px; }
+      font-size: 16px;
+      padding-top: 10px; }
 
 .Home_container .Home_gif_generator_container {
   padding-bottom: 30px; }

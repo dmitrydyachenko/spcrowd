@@ -86,7 +86,7 @@ var config = {
                 exclude: /(node_modules|bower_components)/
             },
             {
-                test: /\.scss$/,
+                test: /(\.scss|\.css)$/,
                 loader: extractTextPlugin.extract('css?url=false&modules&importLoaders=1&localIdentName=[name]_[local]!sass!sass-resources!postcss')
             }
         ],

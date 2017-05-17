@@ -76,3 +76,14 @@
     font-weight: 500;
     font-style: normal;
 }
+
+@font-face {
+  font-family: 'Notification';
+  src: url('#{$fontspath}/notification.eot?s3g3t9');
+  src: url('#{$fontspath}/notification.eot?#iefixs3g3t9') format('embedded-opentype'), 
+       url('#{$fontspath}/notification.woff?s3g3t9') format('woff'), 
+       url('#{$fontspath}/notification.ttf?s3g3t9') format('truetype'), 
+       url('#{$fontspath}/notification.svg?s3g3t9#notification') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}

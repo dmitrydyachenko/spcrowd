@@ -79,22 +79,22 @@ export function ListUserProfileProperties(results) {
 
 export function DetectIE() {
 	const ua = window.navigator.userAgent;
-	const msie = ua.indexOf('MSIE ');
+	const msie = ua.includes('MSIE ');
 
-	if (msie > 0) {
+	if (msie) {
 		return parseInt(ua.substring(msie + 5, ua.indexOf('.', msie)), 10);
 	}
 
-	const trident = ua.indexOf('Trident/');
+	const trident = ua.includes('Trident/');
 
-	if (trident > 0) {
+	if (trident) {
 		const rv = ua.indexOf('rv:');
 		return parseInt(ua.substring(rv + 3, ua.indexOf('.', rv)), 10);
 	}
 
-	const edge = ua.indexOf('Edge/');
+	const edge = ua.includes('Edge/');
 
-	if (edge > 0) {
+	if (edge) {
 		return parseInt(ua.substring(edge + 5, ua.indexOf('.', edge)), 10);
 	}
 

@@ -4,7 +4,6 @@ import React from 'react';
 /* Components */
 import { Pivot, PivotItem, PivotLinkSize } from 'office-ui-fabric-react/lib/Pivot';
 import TableView from '../TableView/TableView';
-import { DOCUMENTSLIBRARY } from '../../../utils/settings';
 
 /* CSS styles */
 import Styles from './PivotView.scss';
@@ -12,26 +11,29 @@ import Styles from './PivotView.scss';
 class PivotView extends React.Component {
 	static propTypes = {
 		excel: React.PropTypes.objectOf(React.PropTypes.any),
-		xmlFileNames: React.PropTypes.objectOf(React.PropTypes.string)
+		xmlFileNames: React.PropTypes.objectOf(React.PropTypes.string),
+		listName: React.PropTypes.string
 	};
 
 	constructor(props) {
 		super(props);
 
 		this.state = {
-			excel: props.excel
+			excel: props.excel,
+			listName: props.listName
 		};
 	}
 
 	componentWillReceiveProps(nextProps) {        
 		this.setState({ 
-			excel: nextProps.excel
+			excel: nextProps.excel,
+			listName: nextProps.listName
 		});
 	}
 
 	render() {
 		const self = this;
-		const filePath = `${_spPageContextInfo.webServerRelativeUrl}/${DOCUMENTSLIBRARY}/`;
+		const filePath = `${_spPageContextInfo.webServerRelativeUrl}/${self.state.listName}/`;
 
 		return (
 			<Pivot linkSize={PivotLinkSize.large}>

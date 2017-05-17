@@ -7,7 +7,7 @@ import SPOC from 'SPOCExt';
 import { Spinner, SpinnerType } from 'office-ui-fabric-react/lib/Spinner';
 import { GetRandomInt } from '../../utils/utils';
 import { STYLELIBRARY } from '../../utils/settings';
-import ExcelTable from '../../components/ExcelTable/ExcelTable';
+import ContentTable from '../../components/ContentTable/ContentTable';
 import CloudCarousel from '../../components/_RD/CloudCarousel/CloudCarousel';
 import GifGenerator from '../../components/_RD/GifGenerator/GifGenerator';
 import Emotions from '../../components/_RD/Emotions/Emotions';
@@ -97,7 +97,7 @@ class Home extends React.Component {
 					</div>
 				</div>
 				{
-					0 === 0 ? (
+					0 === 1 ? (
 						<div className={`${Styles.fbposts_container} ms-Grid-row`}>
 							<div className="container">
 								<div className="ms-Grid-col ms-u-sm12">
@@ -148,7 +148,7 @@ class Home extends React.Component {
 						<div className={`${Styles.excel_table_view_container} ms-Grid-row`}>
 							<div className="container">
 								<div className="ms-Grid-col ms-u-sm12">
-									<ExcelTable />
+									<ContentTable />
 								</div>
 							</div>
 						</div>

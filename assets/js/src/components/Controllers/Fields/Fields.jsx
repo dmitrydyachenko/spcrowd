@@ -72,6 +72,10 @@ export function GetFieldsXml(data, namespaces) {
 
 							field = { _attr, CHOICES: { CHOICE: valuesObject } }; 
 						}
+
+						if (options) {
+							field.Default = { _value: options.trim() }; 
+						}
 					}
 				}
 				break;
