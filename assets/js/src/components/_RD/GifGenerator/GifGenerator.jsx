@@ -13,8 +13,8 @@ import { DOCUMENTSLIBRARY } from '../../../utils/settings';
 import Styles from './GifGenerator.scss';
 
 class GifGenerator extends React.Component {
-	constructor() {
-		super();
+	constructor(props) {
+		super(props);
 
 		this.state = {
 			gifImage: '',

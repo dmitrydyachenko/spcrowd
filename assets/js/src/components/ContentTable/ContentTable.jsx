@@ -1,9 +1,9 @@
 /* External libraries */
 import $ from 'jquery';
 import xlsx from 'xlsx';
-import React from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import SPOC from 'SPOCExt';
-import { createStore } from 'redux';
 
 /* Components */
 import * as Settings from '../../utils/settings';
@@ -13,13 +13,11 @@ import { GetFieldsXml } from '../Controllers/Fields/Fields';
 import { GetListsXml } from '../Controllers/Lists/Lists';
 import { GetContentTypesXml } from '../Controllers/ContentTypes/ContentTypes';
 import { GetGroupsXml } from '../Controllers/Groups/Groups';
-import ExcelView from '../Views/ExcelView/ExcelView';
-import { addTodo, toggleTodo, setVisibilityFilter, VisibilityFilters } from '../../redux/actions';
-import todoApp from '../../redux/reducers';
+import ExcelViewContainer from '../Views/ExcelView/ExcelViewContainer';
 
-class ContentTable extends React.Component {
-	constructor() {
-		super();
+export default class ContentTable extends Component {
+	constructor(props) {
+		super(props);
 
 		this.state = {
 			excel: {
@@ -37,8 +35,6 @@ class ContentTable extends React.Component {
 				groups: [],
 				loading: true
 			},
-			source: { value: '', files: [] },
-			listName: Settings.DOCUMENTSLIBRARY,
 			loadingMessage: ''
 		};
 
@@ -53,55 +49,31 @@ class ContentTable extends React.Component {
 
 	init() {
 		const self = this;
-
-		const store = createStore(todoApp);
-
-		// Log the initial state
-		console.log(store.getState());
-
-		// Every time the state changes, log it
-		// Note that subscribe() returns a function for unregistering the listener
-		const unsubscribe = store.subscribe(() =>
-			console.log(store.getState())
-		);
-
-		// Dispatch some actions
-		store.dispatch(addTodo('Learn about actions'));
-		store.dispatch(addTodo('Learn about reducers'));
-		store.dispatch(addTodo('Learn about store'));
-		store.dispatch(toggleTodo(0));
-		store.dispatch(toggleTodo(1));
-		store.dispatch(setVisibilityFilter(VisibilityFilters.SHOW_COMPLETED));
-
-		// Stop listening to state updates
-		unsubscribe();
 	}
 
 	handleOnDrop(files) {
 		const self = this;
-		const source = self.state.source;
 
-		source.value = files[0].name;
-		source.files = files;
+		const uploadInput = self.props.setSource({
+			value: files[0].name,
+			files
+		}).source;    
 
-		self.setState({ source }, () => {
-			const uploadInput = self.state.source;    
+		if (uploadInput && uploadInput.value) {
+			self.setState({ excel: MergeObjects(self.state.excel, { loading: true }) }, () => {
+				const parts = uploadInput.value.split('\\');
+				const fileName = parts[parts.length - 1];     
+				const listName = self.props.contentTable.listName;               
 
-			if (uploadInput && uploadInput.value) {
-				self.setState({ excel: MergeObjects(self.state.excel, { loading: true }) }, () => {
-					const parts = uploadInput.value.split('\\');
-					const fileName = parts[parts.length - 1];                     
+				self.site.Files(listName).upload(uploadInput).then(() => {  
+					const path = encodeURI(`${_spPageContextInfo.webServerRelativeUrl}/${listName}/${fileName}`);
 
-					self.site.Files(self.state.listName).upload(uploadInput).then(() => {  
-						const path = encodeURI(`${_spPageContextInfo.webServerRelativeUrl}/${self.state.listName}/${fileName}`);
-
-						self.setState({ excel: MergeObjects(self.state.excel, { path }) }, () => {
-							self.getExcelData(path); 
-						});
+					self.setState({ excel: MergeObjects(self.state.excel, { path }) }, () => {
+						self.getExcelData(path); 
 					});
 				});
-			} 
-		});
+			});
+		} 
 	}
 
 	getExcelData(excelFilePath) {
@@ -192,6 +164,7 @@ class ContentTable extends React.Component {
 
 	uploadFileToLibrary(xmlContent, xmlType) {
 		const self = this;
+		const listName = self.props.contentTable.listName;    
 		const fileName = Settings.XMLFILENAMES[xmlType];
 		const fileCreateInfo = new SP.FileCreationInformation();
 
@@ -207,7 +180,7 @@ class ContentTable extends React.Component {
 
 		const context = SP.ClientContext.get_current();   
 		const currentWeb = context.get_web();
-		const documentsLibrary = currentWeb.get_lists().getByTitle(self.state.listName);
+		const documentsLibrary = currentWeb.get_lists().getByTitle(listName);
 		const xmlFile = documentsLibrary.get_rootFolder().get_files().add(fileCreateInfo);
 
 		context.load(xmlFile);
@@ -220,7 +193,7 @@ class ContentTable extends React.Component {
 							.EqualTo(fileName)
 							.ToString();
 
-			self.site.ListItems(self.state.listName).queryCSOM(caml).then((results) => {
+			self.site.ListItems(listName).queryCSOM(caml).then((results) => {
 				if (results && results.length > 0) {
 					self.setState({ 
 						xml: MergeObjects(self.state.xml, { loading: false }) 
@@ -233,18 +206,28 @@ class ContentTable extends React.Component {
 	}
 
 	render() {
+		const {
+			contentTable,
+			setListName
+		} = this.props;
+
 		return (
-			<ExcelView 
+			<ExcelViewContainer
 				excel={this.state.excel} 
 				xml={this.state.xml}
-				source={this.state.source}  
+				source={contentTable.source}  
 				loadingMessage={this.state.loadingMessage}
-				listName={this.state.listName}
+				listName={contentTable.listName}
 				onDrop={this.handleOnDrop}
 				site={this.site}
-				xmlFileNames={Settings.XMLFILENAMES} />
+				xmlFileNames={Settings.XMLFILENAMES}
+				setListName={setListName} />
 		);
 	}
 }
 
-export default ContentTable;
+ContentTable.propTypes = {
+	contentTable: PropTypes.objectOf(PropTypes.any),
+	setSource: PropTypes.func,
+	setListName: PropTypes.func
+};

@@ -7,6 +7,9 @@ import 'css/screen.scss';
 /* Global Components */
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { Provider, connect } from 'react-redux';
+
+import { store, mapStateToProps, mapDispatchToProps } from './redux/store';
 import AppComponentsList from './AppConfig';
 
 function ready(fn) {
@@ -23,10 +26,16 @@ ready(() => {
 		(component) => {
 			const AppComponentId = component.getAttribute('id').toLowerCase();
 			const AppComponent = AppComponentsList[AppComponentId];
-
+			
 			if (AppComponent) {
+				const App = connect(mapStateToProps, mapDispatchToProps)(AppComponent);
+
 				ReactDOM.render(
-					<AppComponent />,
+					(
+						<Provider store={store}>
+							<App />
+						</Provider>
+					),
 					document.getElementById(AppComponentId)
 				);
 			}

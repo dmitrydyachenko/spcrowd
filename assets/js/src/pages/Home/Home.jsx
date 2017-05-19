@@ -1,6 +1,7 @@
 /* External libraries */
 import $ from 'jquery';
-import React from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import SPOC from 'SPOCExt';
 
 /* Components */
@@ -16,9 +17,9 @@ import FacebookPosts from '../../components/_RD/FacebookPosts/FacebookPosts';
 /* CSS styles */
 import Styles from './Home.scss';
 
-class Home extends React.Component {
-	constructor() {
-		super();
+export default class Home extends Component {
+	constructor(props) {
+		super(props);
 
 		this.state = {
 			headerContent: null,
@@ -119,7 +120,7 @@ class Home extends React.Component {
 					) : null
 				}
 				{
-					0 === 1 ? (
+					1 === 1 ? (
 						<div className={`${Styles.gif_generator_container} ms-Grid-row`}>
 							<div className="container">
 								<div className="ms-Grid-col ms-u-sm12">
@@ -148,7 +149,9 @@ class Home extends React.Component {
 						<div className={`${Styles.excel_table_view_container} ms-Grid-row`}>
 							<div className="container">
 								<div className="ms-Grid-col ms-u-sm12">
-									<ContentTable />
+									<ContentTable setSource={this.props.setSource} 
+													setListName={this.props.setListName}
+													contentTable={this.props.contentTable} />
 								</div>
 							</div>
 						</div>
@@ -165,4 +168,8 @@ class Home extends React.Component {
 	}
 }
 
-export default Home;
+Home.propTypes = {
+	contentTable: PropTypes.objectOf(PropTypes.any),
+	setSource: PropTypes.func,
+	setListName: PropTypes.func
+};
