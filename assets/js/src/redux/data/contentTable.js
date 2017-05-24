@@ -1,4 +1,4 @@
-import { DOCUMENTSLIBRARY } from '../../utils/settings';
+import { DOCUMENTSLIBRARY, NAMESPACES } from '../../utils/settings';
 
 export default {
 	excel: {
@@ -21,5 +21,9 @@ export default {
 		files: [] 
 	},
 	listName: DOCUMENTSLIBRARY,
+	groupName: NAMESPACES.group,
+	prefixName: NAMESPACES.prefix,
+	useContentTypePrefix: true,
+	useListPrefix: true,
 	loadingMessage: ''
 };

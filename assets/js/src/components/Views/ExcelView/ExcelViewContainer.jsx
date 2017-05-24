@@ -69,7 +69,15 @@ export default class ExcelViewContainer extends Component {
 			site,
 			loadingMessage,
 			listName,
-			setListName
+			prefixName,
+			groupName,
+			useContentTypePrefix,
+			useListPrefix,
+			setListName,
+			setPrefixName,
+			setGroupName,
+			setContentTypesPrefix,
+			setListsPrefix
 		} = this.props;
 
 		return (
@@ -81,9 +89,17 @@ export default class ExcelViewContainer extends Component {
 				site={site}
 				loadingMessage={loadingMessage}
 				listName={listName}
+				prefixName={prefixName}
+				groupName={groupName}
+				useContentTypePrefix={useContentTypePrefix}
+				useListPrefix={useListPrefix}
 				onDrop={files => this.handleOnDrop(files)}
 				onDownloadAllClick={() => this.handleOnDownloadAllClick()}
-				setListName={setListName} />
+				setListName={setListName}
+				setPrefixName={setPrefixName}
+				setGroupName={setGroupName}
+				setContentTypesPrefix={setContentTypesPrefix}
+				setListsPrefix={setListsPrefix} />
 		);
 	}
 }
@@ -96,6 +112,14 @@ ExcelViewContainer.propTypes = {
 	site: React.PropTypes.objectOf(PropTypes.any),
 	loadingMessage: PropTypes.string,
 	listName: PropTypes.string,
+	prefixName: PropTypes.string,
+	groupName: PropTypes.string,
+	useContentTypePrefix: PropTypes.bool,
+	useListPrefix: PropTypes.bool,
 	onDrop: PropTypes.func,
-	setListName: PropTypes.func
+	setListName: PropTypes.func,
+	setPrefixName: PropTypes.func,
+	setGroupName: PropTypes.func,
+	setContentTypesPrefix: PropTypes.func,
+	setListsPrefix: PropTypes.func
 };

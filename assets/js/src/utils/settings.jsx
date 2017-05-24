@@ -5,8 +5,8 @@ export const DOCUMENTSLIBRARY = 'Documents';
 export const SETTINGSLIST = 'Settings';
 export const PUBLISHINGIMAGESLIBRARY = 'PublishingImages';
 export const NAMESPACES = {
-	group: 'SPCrowd',
-	prefix: 'SPCrowd'
+	group: 'Golin',
+	prefix: 'Golin'
 };
 export const XMLFILENAMES = {
 	fields: 'Fields.xml',
@@ -18,5 +18,6 @@ export const EXCELSHEETNAMES = {
 	fields: 'Fields',
 	lists: 'Lists',
 	contentTypes: 'ContentTypes',
-	groups: 'Groups'
+	groups: 'Groups',
+	fieldsMapping: 'FieldsMapping'
 };

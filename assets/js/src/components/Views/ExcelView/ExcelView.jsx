@@ -18,9 +18,17 @@ const ExcelView = (props) => {
 		site,
 		loadingMessage,
 		listName,
+		prefixName,
+		groupName,
+		useContentTypePrefix,
+		useListPrefix,
 		onDrop,
 		onDownloadAllClick,
-		setListName
+		setListName,
+		setPrefixName,
+		setGroupName,
+		setContentTypesPrefix,
+		setListsPrefix
 	} = props;
 
 	const mainContent = (
@@ -40,7 +48,17 @@ const ExcelView = (props) => {
 							</div>
 						</div>
 						<div className="ms-Grid-col ms-u-sm6">	
-							<SettingsViewContainer site={site} setListName={setListName} listName={listName} />
+							<SettingsViewContainer site={site} 
+													listName={listName}
+													prefixName={prefixName}
+													groupName={groupName}
+													useContentTypePrefix={useContentTypePrefix}
+													useListPrefix={useListPrefix}
+													setListName={setListName}
+													setPrefixName={setPrefixName}
+													setGroupName={setGroupName}
+													setContentTypesPrefix={setContentTypesPrefix}
+													setListsPrefix={setListsPrefix} />
 						</div>
 					</div>
 					{
@@ -122,9 +140,17 @@ ExcelView.propTypes = {
 	site: PropTypes.objectOf(PropTypes.any),	
 	loadingMessage: PropTypes.string,
 	listName: PropTypes.string,
+	prefixName: PropTypes.string,
+	groupName: PropTypes.string,
+	useContentTypePrefix: PropTypes.bool,
+	useListPrefix: PropTypes.bool,
 	onDrop: PropTypes.func,
 	onDownloadAllClick: PropTypes.func,
-	setListName: PropTypes.func
+	setListName: PropTypes.func,
+	setPrefixName: PropTypes.func,
+	setGroupName: PropTypes.func,
+	setContentTypesPrefix: PropTypes.func,
+	setListsPrefix: PropTypes.func
 };
 
 export default ExcelView;

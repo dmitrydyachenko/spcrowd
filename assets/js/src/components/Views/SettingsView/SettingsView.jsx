@@ -3,18 +3,27 @@ import PropTypes from 'prop-types';
 import { NotificationContainer } from 'react-notifications';
 import { Panel, PanelType } from 'office-ui-fabric-react/lib/Panel';
 import { TextField } from 'office-ui-fabric-react/lib/TextField';
+import { Toggle } from 'office-ui-fabric-react/lib/Toggle';
 
 import Styles from './SettingsView.scss';
 
 const SettingsView = (props) => {
 	const {
 		listName,
+		prefixName,
+		groupName,
 		showPanel,
+		useContentTypePrefix,
+		useListPrefix,
 		onListNameChange,
+		onPrefixNameChange,
+		onGroupNameChange,
 		onSave,
 		onShowPanel,
 		onClosePanel,
-		onRenderFooterContent
+		onRenderFooterContent,
+		onUseForContentTypesChange,
+		onUseForListsChange
 	} = props;
 
 	const mainContent = (
@@ -30,6 +39,48 @@ const SettingsView = (props) => {
 				</div>
 			</div>
 			<div>
+				<div>
+					<div className={Styles.group_name}>
+						<TextField label="Group name" 
+									placeholder="Group name for fields and content types"
+									onChanged={onGroupNameChange} 
+									value={groupName} />
+					</div>
+				</div>
+			</div>
+			<div>
+				<div>
+					<div className={Styles.prefix_name}>
+						<TextField label="Project prefix" 
+									placeholder="Prefix for field, content type and list names"
+									onChanged={onPrefixNameChange} 
+									value={prefixName} />
+					</div>
+				</div>
+			</div>
+			<div>
+				<div>
+					<div className={Styles.use_prefix_content_type}>
+						<Toggle checked={useContentTypePrefix}
+								label="Use prefix for Content Types"
+								onText="Yes"
+								offText="No"
+								onChanged={onUseForContentTypesChange} />
+					</div>
+				</div>
+			</div>
+			<div>
+				<div>
+					<div className={Styles.use_prefix_list}>
+						<Toggle checked={useListPrefix}
+								label="Use prefix for Lists"
+								onText="Yes"
+								offText="No"
+								onChanged={onUseForListsChange} />
+					</div>
+				</div>
+			</div>
+			<div>
 				<div className={Styles.save}>
 					<div className="button" onClick={onSave}>
 						Save
@@ -37,7 +88,7 @@ const SettingsView = (props) => {
 				</div>
 				<div className={Styles.cancel}>
 					<div className="button cancel" onClick={onClosePanel}>
-						Cancel
+						Close
 					</div>
 				</div>
 				<div className={Styles.notification}>
@@ -66,12 +117,20 @@ const SettingsView = (props) => {
 
 SettingsView.propTypes = {
 	listName: PropTypes.string,
+	prefixName: PropTypes.string,
+	groupName: PropTypes.string,
 	showPanel: PropTypes.bool,
+	useContentTypePrefix: PropTypes.bool,
+	useListPrefix: PropTypes.bool,
 	onListNameChange: PropTypes.func,
+	onPrefixNameChange: PropTypes.func,
+	onGroupNameChange: PropTypes.func,
 	onSave: PropTypes.func,
 	onShowPanel: PropTypes.func,
 	onClosePanel: PropTypes.func,
-	onRenderFooterContent: PropTypes.func
+	onRenderFooterContent: PropTypes.func,
+	onUseForContentTypesChange: PropTypes.func,
+	onUseForListsChange: PropTypes.func
 };
 
 export default SettingsView;

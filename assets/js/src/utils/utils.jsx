@@ -200,7 +200,7 @@ export function GetRandomInt(min, max) {
 export function ToCamelCase(sentenceCase) {
 	let out = '';
 
-	sentenceCase.split(' ').forEach((e) => {
+	sentenceCase.trim().split(' ').forEach((e) => {
 		const add = e.toLowerCase();
 		out += (add[0].toUpperCase() + add.slice(1));
 	});

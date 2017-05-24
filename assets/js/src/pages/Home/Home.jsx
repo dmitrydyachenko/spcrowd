@@ -83,6 +83,16 @@ export default class Home extends Component {
 	}
 
 	render() {
+		const { 
+			contentTable,
+			setSource,
+			setListName,
+			setPrefixName,
+			setGroupName,
+			setContentTypesPrefix,
+			setListsPrefix
+		} = this.props;
+
 		const mainContent = this.state.loading ? 
 		(
 			<Spinner type={SpinnerType.large} label="Seriously, still loading..." />
@@ -149,9 +159,13 @@ export default class Home extends Component {
 						<div className={`${Styles.excel_table_view_container} ms-Grid-row`}>
 							<div className="container">
 								<div className="ms-Grid-col ms-u-sm12">
-									<ContentTable setSource={this.props.setSource} 
-													setListName={this.props.setListName}
-													contentTable={this.props.contentTable} />
+									<ContentTable contentTable={contentTable}
+													setSource={setSource} 
+													setListName={setListName}
+													setPrefixName={setPrefixName}
+													setGroupName={setGroupName}
+													setContentTypesPrefix={setContentTypesPrefix}
+													setListsPrefix={setListsPrefix} />
 								</div>
 							</div>
 						</div>
@@ -171,5 +185,9 @@ export default class Home extends Component {
 Home.propTypes = {
 	contentTable: PropTypes.objectOf(PropTypes.any),
 	setSource: PropTypes.func,
-	setListName: PropTypes.func
+	setListName: PropTypes.func,
+	setPrefixName: PropTypes.func,
+	setGroupName: PropTypes.func,
+	setContentTypesPrefix: PropTypes.func,
+	setListsPrefix: PropTypes.func
 };

@@ -25,6 +25,7 @@ export default class ContentTable extends Component {
 				lists: [],
 				contentTypes: [],
 				groups: [],
+				fieldsMapping: [],
 				path: '',
 				loading: false
 			},
@@ -48,7 +49,47 @@ export default class ContentTable extends Component {
 	}
 
 	init() {
-		const self = this;
+		const { 
+			setListName,
+			setPrefixName,
+			setGroupName,
+			setContentTypesPrefix,
+			setListsPrefix
+		} = this.props;
+
+		const promises = [];           
+
+		promises.push(this.getSettings('DocumentLibrary', setListName));
+		promises.push(this.getSettings('Prefix', setPrefixName));
+		promises.push(this.getSettings('Group', setGroupName));
+		promises.push(this.getSettings('UseContentTypePrefix', setContentTypesPrefix, this.convertToBool));
+		promises.push(this.getSettings('UseListPrefix', setListsPrefix, this.convertToBool));
+
+		$.when(...promises);
+	}
+
+	getSettings(title, updateStateFunction, convertValueFunction) {
+		const settings = {
+			select: 'ID, Title, Value',
+			filter: `Title eq '${title}'`
+		};
+
+		const dfd = $.Deferred(() => { 
+			this.site.ListItems(Settings.SETTINGSLIST).query(settings).then((results) => {
+				if (results && results.length > 0) {
+					updateStateFunction(convertValueFunction ? 
+										convertValueFunction(results[0].Value) : results[0].Value);	
+				}
+
+				dfd.resolve();
+			});	
+		});
+
+		return dfd.promise(); 	
+	}
+
+	convertToBool(value) {
+		return value === 'Yes';
 	}
 
 	handleOnDrop(files) {
@@ -78,6 +119,12 @@ export default class ContentTable extends Component {
 
 	getExcelData(excelFilePath) {
 		const self = this;
+		const { 
+			prefixName, 
+			groupName, 
+			useListPrefix, 
+			useContentTypePrefix 
+		} = self.props.contentTable;
 
 		AjaxTransport();
 
@@ -101,12 +148,14 @@ export default class ContentTable extends Component {
 				const listsSheet = workbook.Sheets[Settings.EXCELSHEETNAMES.lists];
 				const contentTypesSheet = workbook.Sheets[Settings.EXCELSHEETNAMES.contentTypes];
 				const groupsSheet = workbook.Sheets[Settings.EXCELSHEETNAMES.groups];
+				const fieldsMappingSheet = workbook.Sheets[Settings.EXCELSHEETNAMES.fieldsMapping];
 
 				const excel = {
 					fields: xlsx.utils.sheet_to_json(fieldsSheet),
 					lists: xlsx.utils.sheet_to_json(listsSheet),
 					contentTypes: xlsx.utils.sheet_to_json(contentTypesSheet),
 					groups: xlsx.utils.sheet_to_json(groupsSheet),
+					fieldsMapping: xlsx.utils.sheet_to_json(fieldsMappingSheet),
 					loading: false
 				};
 
@@ -114,7 +163,7 @@ export default class ContentTable extends Component {
 					excel,
 					xml: MergeObjects(self.state.xml, { loading: true })
 				}, () => {
-					const fields = GetFieldsXml(excel.fields, Settings.NAMESPACES);
+					const fields = GetFieldsXml(excel.fields, prefixName, groupName);
 
 					if (fields) {
 						self.setState({ 
@@ -125,7 +174,7 @@ export default class ContentTable extends Component {
 						});
 					}
 
-					const lists = GetListsXml(excel.lists);
+					const lists = GetListsXml(excel.lists, useListPrefix ? prefixName : '');
 
 					if (lists) {
 						self.setState({ 
@@ -136,7 +185,10 @@ export default class ContentTable extends Component {
 						});
 					}
 
-					const contentTypes = GetContentTypesXml(excel.contentTypes, Settings.NAMESPACES);
+					const contentTypes = GetContentTypesXml(excel.contentTypes, 
+															excel.fieldsMapping, 
+															useContentTypePrefix ? prefixName : '', 
+															groupName);
 
 					if (contentTypes) {
 						self.setState({ 
@@ -147,7 +199,7 @@ export default class ContentTable extends Component {
 						});
 					}
 
-					const groups = GetGroupsXml(excel.groups, Settings.NAMESPACES);
+					const groups = GetGroupsXml(excel.groups);
 
 					if (groups) {
 						self.setState({ 
@@ -156,7 +208,7 @@ export default class ContentTable extends Component {
 						}, () => {
 							self.uploadFileToLibrary(groups, 'groups');
 						});
-					}
+					} e
 				});                         
 			}
 		});
@@ -208,7 +260,11 @@ export default class ContentTable extends Component {
 	render() {
 		const {
 			contentTable,
-			setListName
+			setListName,
+			setPrefixName,
+			setGroupName,
+			setContentTypesPrefix,
+			setListsPrefix
 		} = this.props;
 
 		return (
@@ -218,10 +274,18 @@ export default class ContentTable extends Component {
 				source={contentTable.source}  
 				loadingMessage={this.state.loadingMessage}
 				listName={contentTable.listName}
+				prefixName={contentTable.prefixName}
+				groupName={contentTable.groupName}
+				useContentTypePrefix={contentTable.useContentTypePrefix}
+				useListPrefix={contentTable.useListPrefix}
 				onDrop={this.handleOnDrop}
 				site={this.site}
 				xmlFileNames={Settings.XMLFILENAMES}
-				setListName={setListName} />
+				setListName={setListName}
+				setPrefixName={setPrefixName}
+				setGroupName={setGroupName}
+				setContentTypesPrefix={setContentTypesPrefix}
+				setListsPrefix={setListsPrefix} />
 		);
 	}
 }
@@ -229,5 +293,9 @@ export default class ContentTable extends Component {
 ContentTable.propTypes = {
 	contentTable: PropTypes.objectOf(PropTypes.any),
 	setSource: PropTypes.func,
-	setListName: PropTypes.func
+	setListName: PropTypes.func,
+	setPrefixName: PropTypes.func,
+	setGroupName: PropTypes.func,
+	setContentTypesPrefix: PropTypes.func,
+	setListsPrefix: PropTypes.func
 };
