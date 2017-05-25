@@ -26,7 +26,7 @@ Try {
     Write-Host -ForegroundColor Green "Connected"
 
     $ArticlePageContentType = Get-PnPContentType -Identity "Article Page"
-    Add-PnPHtmlPublishingPageLayout -SourceFilePath "$RootLocation\Pagelayouts\CSAGroup.html" -Title "CSA Group PageLayout" -Description "CSA Group PageLayout" -DestinationFolderHierarchy "/" -AssociatedContentTypeID $ArticlePageContentType.Id
+    Add-PnPHtmlPublishingPageLayout -SourceFilePath "$RootLocation\Pagelayouts\SPCrowd.html" -Title "SPCrowd PageLayout" -Description "SPCrowd PageLayout" -DestinationFolderHierarchy "/" -AssociatedContentTypeID $ArticlePageContentType.Id
 
     Disconnect-PnPOnline
 }

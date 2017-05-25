@@ -1,4 +1,4 @@
-﻿Function RemoveContentType([string]$contentTypeName, [string]$RootLocation) { 
+﻿Function RemoveContentType([string]$contentTypeName, [string]$RootLocation, [bool]$debug) { 
 
     $logFilePath = "$RootLocation\RemoveContentTypeLog.txt"
     $ErrorActionPreference = "Continue"

@@ -1,4 +1,4 @@
-﻿Function RemoveLists([string]$inputFile, [string]$RootLocation) { 
+﻿Function RemoveLists([string]$inputFile, [string]$RootLocation, [bool]$debug) { 
 
     $logFilePath = "$RootLocation\RemoveListsLog.txt"
     $ErrorActionPreference = "Stop"

@@ -1,4 +1,4 @@
-﻿Function RemoveFields([string]$inputFile, [string]$RootLocation) { 
+﻿Function RemoveFields([string]$inputFile, [string]$RootLocation, [bool]$debug) { 
 
     $logFilePath = "$RootLocation\RemoveFieldsLog.txt"
     $ErrorActionPreference = "Stop"

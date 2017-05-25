@@ -1,4 +1,4 @@
-Function MapFields([string]$inputFile, [string]$RootLocation, [string]$SubSite) {
+Function MapFields([string]$inputFile, [string]$RootLocation, [string]$SubSite, [bool]$debug) {
 
     $logFilePath = "$RootLocation\MapFieldsLog.txt"
     $ErrorActionPreference = "Stop"

@@ -36,7 +36,7 @@ Try {
     $contentTypesFile = "$RootLocation\Content\ContentTypes\ContentTypes.xml"
 
     Import-Module "$RootLocation\Modules\MapContentTypes.psm1"  
-    MapContentTypes -inputFile "$RootLocation\Content\Lists\Lists$webName.xml" -contentTypesFile $contentTypesFile -RootLocation $RootLocation -SubSite $SubSite
+    MapContentTypes -inputFile "$RootLocation\Content\Lists\Lists$webName.xml" -contentTypesFile $contentTypesFile -RootLocation $RootLocation -SubSite $SubSite -debug $false
 
     Disconnect-PnPOnline
 }

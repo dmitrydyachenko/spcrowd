@@ -26,7 +26,7 @@ Try {
     Write-Host -ForegroundColor Green "Connected"
 
     Import-Module "$RootLocation\Modules\MapFields.psm1"  
-    MapFields -inputFile "$RootLocation\Content\ContentTypes\ContentTypes.xml" -RootLocation $RootLocation -SubSite $SubSite
+    MapFields -inputFile "$RootLocation\Content\ContentTypes\ContentTypes.xml" -RootLocation $RootLocation -SubSite $SubSite -debug $false
 
     Disconnect-PnPOnline
 }

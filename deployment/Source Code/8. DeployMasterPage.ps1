@@ -34,8 +34,8 @@ Try {
 
     Write-Host -ForegroundColor Green "Connected"
 
-    Add-PnPMasterPage -SourceFilePath "$RootLocation\Masterpage\seattle.master" -Title "CSA Group MasterPage" -Description "CSA Group MasterPage" -DestinationFolderHierarchy "/" -Web $Web
-    Set-PnPMasterPage -CustomMasterPageSiteRelativeUrl "_catalogs/masterpage/seattle" -Web $Web
+    Add-PnPMasterPage -SourceFilePath "$RootLocation\MasterPage\spcrowd.master" -Title "SPCrowd MasterPage" -Description "SPCrowd MasterPage" -DestinationFolderHierarchy "/" -Web $Web
+    Set-PnPMasterPage -CustomMasterPageSiteRelativeUrl "_catalogs/masterpage/spcrowd" -Web $Web
 
     Disconnect-PnPOnline
 }
