@@ -1,12 +1,11 @@
 Param (
-	[Parameter(Mandatory = $true)]
-	[string]$SiteUrl,
-	[Parameter(Mandatory = $true)]
-	[string]$Credential,
-	[Parameter(Mandatory = $true)]
-	[string]$RootLocation,
-	[Parameter(Mandatory = $true)]
-	[string]$SPWebServerRelativeUrl 
+    [Parameter(Mandatory = $true)]
+    [string]$SiteUrl,
+    [Parameter(Mandatory = $true)]
+    [string]$SPWebServerRelativeUrl 
+    [string]$SubSite,
+    [string]$Credential,
+    [string]$RootLocation = ".",
 )
 
 $LogFilePath = "$RootLocation\HomeLog.txt"
@@ -49,7 +48,7 @@ Try {
 		                  <IsIncludedFilter />
 		                  <Assembly>Microsoft.SharePoint, Version=16.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c</Assembly>
 		                  <TypeName>Microsoft.SharePoint.WebPartPages.ContentEditorWebPart</TypeName>
-		                  <ContentLink xmlns="http://schemas.microsoft.com/WebPart/v2/ContentEditor">' + $SPWebServerRelativeUrl + '/Style Library/csagroup/templates/Home.html</ContentLink>
+		                  <ContentLink xmlns="http://schemas.microsoft.com/WebPart/v2/ContentEditor">' + $SPWebServerRelativeUrl + '/Style Library/SPCrowd/templates/Home.html</ContentLink>
 		                  <Content xmlns="http://schemas.microsoft.com/WebPart/v2/ContentEditor" />
 		                  <PartStorage xmlns="http://schemas.microsoft.com/WebPart/v2/ContentEditor" />
 		                </WebPart>'

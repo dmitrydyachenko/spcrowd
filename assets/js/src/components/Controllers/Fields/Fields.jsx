@@ -1,7 +1,4 @@
-/* External libraries */
 import Data2xml from 'data2xml';
-
-/* Components */
 import { ToCamelCase } from '../../../utils/utils';
 
 export function GetFieldsXml(data, prefix, group) {

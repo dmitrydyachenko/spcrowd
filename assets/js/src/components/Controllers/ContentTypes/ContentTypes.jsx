@@ -1,7 +1,4 @@
-/* External libraries */
 import Data2xml from 'data2xml';
-
-/* Components */
 import { ToCamelCase } from '../../../utils/utils';
 
 export function GetContentTypesXml(data, fields, prefix, group) {
@@ -14,7 +11,7 @@ export function GetContentTypesXml(data, fields, prefix, group) {
 			const type = data[i]['Parent Type'];
 
 			const _attr = { 
-				Name: `${prefix || ''}${ToCamelCase(name)}`, 
+				Name: `${prefix || ''}${name}`, 
 				ParentContentType: type ? type.replace(/\s+/g, '') : 'Item'
 			};
 
@@ -27,11 +24,15 @@ export function GetContentTypesXml(data, fields, prefix, group) {
 					const value = fields[j][name];
 
 					if (value) {
-						fieldsObject.push({ 
-							_attr: { 
-								Name: fields[j]['Site Columns']
-							}
-						});
+						const fieldName = fields[j]['Site Columns'].trim();
+
+						if (fieldName.toLowerCase().replace(/\s+/g, '') !== 'title') {
+							fieldsObject.push({ 
+								_attr: { 
+									Name: `${prefix || ''}${ToCamelCase(fieldName)}`
+								}
+							});
+						}
 					}
 				}
 

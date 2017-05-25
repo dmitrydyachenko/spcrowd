@@ -1,11 +1,9 @@
-/* External libraries */
 import $ from 'jquery';
 import xlsx from 'xlsx';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import SPOC from 'SPOCExt';
 
-/* Components */
 import * as Settings from '../../utils/settings';
 import CamlBuilder from '../../../vendor/camljs';
 import { AjaxTransport, FormatXml, MergeObjects } from '../../utils/utils';

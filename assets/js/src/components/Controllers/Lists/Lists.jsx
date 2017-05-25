@@ -1,7 +1,4 @@
-/* External libraries */
 import Data2xml from 'data2xml';
-
-/* Components */
 import { ToCamelCase } from '../../../utils/utils';
 
 export function GetListsXml(data, prefix) {
@@ -16,8 +13,8 @@ export function GetListsXml(data, prefix) {
 
 			if (lowerCaseType !== 'system') {
 				const _attr = { 
-					Name: `${prefix || ''}${ToCamelCase(name)}`, 
-					Type: type ? type.replace(/\s+/g, '') : 'GenericList'
+					Name: `${prefix || ''}${name}`, 
+					Template: type ? type.replace(/\s+/g, '') : 'GenericList'
 				};
 
 				const list = { _attr };

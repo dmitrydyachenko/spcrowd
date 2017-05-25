@@ -7,8 +7,10 @@ export function GetGroupsXml(data) {
 		const formattedData = [];
 
 		for (let i = 0; i < data.length; i++) {
+			const name = data[i].Name.trim();
+			
 			const _attr = { 
-				Name: data[i].Name.trim(), 
+				Name: name, 
 				PermissionLevel: data[i]['Permission Level'] || 'Read'
 			};
 
