@@ -8,7 +8,7 @@ export function GetGroupsXml(data) {
 
 		for (let i = 0; i < data.length; i++) {
 			const _attr = { 
-				Name: data[i].Name, 
+				Name: data[i].Name.trim(), 
 				PermissionLevel: data[i]['Permission Level'] || 'Read'
 			};
 

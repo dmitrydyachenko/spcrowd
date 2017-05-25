@@ -10,7 +10,7 @@ export function GetContentTypesXml(data, fields, prefix, group) {
 		const formattedData = [];
 
 		for (let i = 0; i < data.length; i++) {
-			const name = data[i].Name;
+			const name = data[i].Name.trim();
 			const type = data[i]['Parent Type'];
 
 			const _attr = { 
@@ -20,13 +20,23 @@ export function GetContentTypesXml(data, fields, prefix, group) {
 
 			const contentType = { _attr };
 
-			if () {
-				contentType.Fields = { 
-					Field: { 
-						_attr: { 
-							Name: 'Field Name'
-						}
-					}  
+			if (fields.length > 0) {
+				const fieldsObject = [];
+
+				for (let j = 0; j < fields.length; j++) {
+					const value = fields[j][name];
+
+					if (value) {
+						fieldsObject.push({ 
+							_attr: { 
+								Name: fields[j]['Site Columns']
+							}
+						});
+					}
+				}
+
+				if (fieldsObject.length > 0) {
+					contentType.Fields = { Field: fieldsObject };
 				}
 			}
 

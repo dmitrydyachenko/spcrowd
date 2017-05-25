@@ -208,7 +208,7 @@ export default class ContentTable extends Component {
 						}, () => {
 							self.uploadFileToLibrary(groups, 'groups');
 						});
-					} e
+					}
 				});                         
 			}
 		});

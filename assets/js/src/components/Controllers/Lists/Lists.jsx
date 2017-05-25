@@ -10,7 +10,7 @@ export function GetListsXml(data, prefix) {
 		const formattedData = [];
 
 		for (let i = 0; i < data.length; i++) {
-			const name = data[i].Name;
+			const name = data[i].Name.trim();
 			const type = data[i].Type;
 			const lowerCaseType = type ? type.toLowerCase().replace(/\s+/g, '') : '';
 
@@ -21,6 +21,14 @@ export function GetListsXml(data, prefix) {
 				};
 
 				const list = { _attr };
+
+				list.ContentTypes = { 
+					ContentType: { 
+						_attr: { 
+							Name: name
+						}
+					} 
+				};
 
 				formattedData.push(list);
 			}

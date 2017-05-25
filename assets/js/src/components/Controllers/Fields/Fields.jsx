@@ -10,7 +10,7 @@ export function GetFieldsXml(data, prefix, group) {
 		const formattedData = [];
 
 		for (let i = 0; i < data.length; i++) {
-			const name = data[i].Name;
+			const name = data[i].Name.trim();
 			const type = data[i].Type;
 			const options = data[i].Options;
 
