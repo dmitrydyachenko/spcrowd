@@ -73,7 +73,7 @@
     "style-loader": "^0.13.2",
     "styled-components": "^1.4.4",
     "webpack": "^1.14.0",
-    "xlsx": "^0.9.4",
+    "xlsx": "^0.10.3",
     "yargs": "^7.0.1"
   }
 }
