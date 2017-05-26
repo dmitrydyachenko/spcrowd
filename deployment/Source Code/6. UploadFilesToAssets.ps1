@@ -3,7 +3,7 @@
     [string]$SiteUrl,
     [string]$SubSite,
     [string]$Credential,
-    [string]$RootLocation = ".",
+    [string]$RootLocation = "."
 )
 
 $logFilePath = "$RootLocation\UploadFilesToAssetsLog.txt"

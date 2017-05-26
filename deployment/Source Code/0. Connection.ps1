@@ -2,7 +2,7 @@ Param (
     [Parameter(Mandatory = $true)]
     [string]$SiteUrl,
     [string]$Credential,
-    [string]$RootLocation = ".",
+    [string]$RootLocation = "."
 )
 
 $LogFilePath = "$RootLocation\ConnectionLog.txt"

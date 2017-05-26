@@ -5,7 +5,7 @@ Param (
     [string]$SPWebServerRelativeUrl 
     [string]$SubSite,
     [string]$Credential,
-    [string]$RootLocation = ".",
+    [string]$RootLocation = "."
 )
 
 $LogFilePath = "$RootLocation\DeployPagesLog.txt"

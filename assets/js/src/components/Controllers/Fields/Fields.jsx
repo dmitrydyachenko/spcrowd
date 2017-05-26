@@ -105,7 +105,10 @@ export function GetFieldsXml(data, prefix, group) {
 					field = { _attr };
 					break;
 				case 'hyperlink':
-					_attr.Format = lowerCaseOptions && lowerCaseOptions === 'picture' ? 'Image' : 'URL';
+					if (lowerCaseOptions && lowerCaseOptions === 'picture') {
+						_attr.Format = 'Image';
+					}
+
 					_attr.Type = 'URL';
 
 					field = { _attr };

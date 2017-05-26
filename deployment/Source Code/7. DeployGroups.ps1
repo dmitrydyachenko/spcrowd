@@ -3,7 +3,7 @@ Param (
     [string]$SiteUrl,
     [string]$SubSite,
     [string]$Credential,
-    [string]$RootLocation = ".",
+    [string]$RootLocation = "."
 )
 
 $LogFilePath = "$RootLocation\DeployGroupsLog.txt"

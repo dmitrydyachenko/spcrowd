@@ -1,4 +1,4 @@
-Function MapContentTypes([string]$inputFile, [string]contentTypesFile, [string]$RootLocation, [string]$SubSite, [bool]$debug) {
+Function MapContentTypes([string]$inputFile, [string]$contentTypesFile, [string]$RootLocation, [string]$SubSite, [bool]$debug) {
 
     $logFilePath = "$RootLocation\MapContentTypesLog.txt"
     $ErrorActionPreference = "Stop"
