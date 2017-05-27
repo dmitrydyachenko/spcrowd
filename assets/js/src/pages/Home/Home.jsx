@@ -130,7 +130,7 @@ export default class Home extends Component {
 					) : null
 				}
 				{
-					1 === 1 ? (
+					0 === 1 ? (
 						<div className={`${Styles.gif_generator_container} ms-Grid-row`}>
 							<div className="container">
 								<div className="ms-Grid-col ms-u-sm12">

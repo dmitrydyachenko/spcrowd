@@ -1,7 +1,7 @@
 import Data2xml from 'data2xml';
 import { ToCamelCase } from '../../../utils/utils';
 
-export function GetContentTypesXml(data, fields, prefix, group) {
+export function GetContentTypesXml(data, fields, prefix, group, useContentTypePrefix) {
 	if (data.length > 0) {
 		const convert = Data2xml({ xmlDecl: false });
 		const formattedData = [];
@@ -9,13 +9,13 @@ export function GetContentTypesXml(data, fields, prefix, group) {
 		for (let i = 0; i < data.length; i++) {
 			const name = data[i].Name.trim();
 			const type = data[i]['Parent Type'];
-
-			const _attr = { 
-				Name: `${prefix || ''}${name}`, 
-				ParentContentType: type ? type.replace(/\s+/g, '') : 'Item'
+											
+			const contentType = { 
+				_attr: { 
+					Name: `${useContentTypePrefix ? (prefix || '') : ''}${name}`, 
+					ParentContentType: type ? type.replace(/\s+/g, '') : 'Item'
+				}
 			};
-
-			const contentType = { _attr };
 
 			if (fields.length > 0) {
 				const fieldsObject = [];
@@ -24,14 +24,29 @@ export function GetContentTypesXml(data, fields, prefix, group) {
 					const value = fields[j][name];
 
 					if (value) {
-						const fieldName = fields[j]['Site Columns'].trim();
+						let fieldName = fields[j]['Site Columns'].trim();
 
-						if (fieldName.toLowerCase().replace(/\s+/g, '') !== 'title') {
-							fieldsObject.push({ 
+						switch (fieldName.toLowerCase().replace(/\s+/g, '')) {
+							case 'title':
+								fieldName = '';
+								break;
+							default:
+								fieldName = `${prefix || ''}${ToCamelCase(fieldName, true)}`;
+								break;
+						}
+
+						if (fieldName) {
+							const attr = { 
 								_attr: { 
-									Name: `${prefix || ''}${ToCamelCase(fieldName)}`
+									Name: fieldName
 								}
-							});
+							};
+
+							if (value.toLowerCase() === 'r') {
+								attr._attr.Required = 'True';
+							}
+
+							fieldsObject.push(attr);
 						}
 					}
 				}

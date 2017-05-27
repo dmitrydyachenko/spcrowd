@@ -197,8 +197,12 @@ export function GetRandomInt(min, max) {
 	return Math.floor(Math.random() * (max - min) + min);
 }
 
-export function ToCamelCase(sentenceCase) {
+export function ToCamelCase(sentenceCase, removeSpecChars) {
 	let out = '';
+
+	if (removeSpecChars) {
+		sentenceCase = sentenceCase.replace(/[()~`!#$%^&*+=\-[\]\\';,/{}|\\":<>?]/g, '');
+	}
 
 	sentenceCase.trim().split(' ').forEach((e) => {
 		const add = e.toLowerCase();

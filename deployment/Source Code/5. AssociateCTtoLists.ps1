@@ -23,20 +23,12 @@ Try {
         Connect-PnPOnline -Url $SiteUrl -UseWebLogin
     }
 
-    $webName = ''
-
-    if($SubSite) {
-        $webName = $SubSite -replace '\s',''
-        $webName = $webName -replace '/',''
-        $webName = '_' + $webName
-    } 
-
     Write-Host -ForegroundColor Green "Connected"
 
     $contentTypesFile = "$RootLocation\Content\ContentTypes\ContentTypes.xml"
 
     Import-Module "$RootLocation\Modules\MapContentTypes.psm1"  
-    MapContentTypes -inputFile "$RootLocation\Content\Lists\Lists$webName.xml" -contentTypesFile $contentTypesFile -RootLocation $RootLocation -SubSite $SubSite -debug $false
+    MapContentTypes -inputFile "$RootLocation\Content\Lists\Lists.xml" -contentTypesFile $contentTypesFile -RootLocation $RootLocation -SubSite $SubSite -debug $false
 
     Disconnect-PnPOnline
 }

@@ -1,4 +1,3 @@
-/* External libraries */
 import Data2xml from 'data2xml';
 
 export function GetGroupsXml(data) {
@@ -8,13 +7,13 @@ export function GetGroupsXml(data) {
 
 		for (let i = 0; i < data.length; i++) {
 			const name = data[i].Name.trim();
-			
-			const _attr = { 
-				Name: name, 
-				PermissionLevel: data[i]['Permission Level'] || 'Read'
-			};
 
-			const group = { _attr };
+			const group = { 
+				_attr: { 
+					Name: name, 
+					PermissionLevel: data[i]['Permission Level'] || 'Read'
+				}
+			};
 
 			formattedData.push(group);
 		}

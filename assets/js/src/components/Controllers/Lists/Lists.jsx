@@ -1,7 +1,6 @@
 import Data2xml from 'data2xml';
-import { ToCamelCase } from '../../../utils/utils';
 
-export function GetListsXml(data, prefix) {
+export function GetListsXml(data, prefix, useListPrefix, useContentTypePrefix) {
 	if (data.length > 0) {
 		const convert = Data2xml({ xmlDecl: false });
 		const formattedData = [];
@@ -9,26 +8,22 @@ export function GetListsXml(data, prefix) {
 		for (let i = 0; i < data.length; i++) {
 			const name = data[i].Name.trim();
 			const type = data[i].Type;
-			const lowerCaseType = type ? type.toLowerCase().replace(/\s+/g, '') : '';
 
-			if (lowerCaseType !== 'system') {
-				const _attr = { 
-					Name: `${prefix || ''}${name}`, 
+			const list = {
+				_attr: { 
+					Name: `${useListPrefix ? (prefix || '') : ''}${name}`, 
 					Template: type ? type.replace(/\s+/g, '') : 'GenericList'
-				};
-
-				const list = { _attr };
-
-				list.ContentTypes = { 
+				},
+				ContentTypes: { 
 					ContentType: { 
 						_attr: { 
-							Name: name
+							Name: `${useContentTypePrefix ? (prefix || '') : ''}${name}` 
 						}
 					} 
-				};
+				}
+			};
 
-				formattedData.push(list);
-			}
+			formattedData.push(list);
 		}
 
 		let xml = convert('List', formattedData);

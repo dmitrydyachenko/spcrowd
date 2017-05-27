@@ -95,8 +95,9 @@ export default class SettingsViewContainer extends Component {
 		const { site } = this.props;
 
 		let settings = {
-			select: 'ID, Title, Value',
-			filter: `Title eq '${title}'`
+			select: 'ID, Title, Value, User/Id',
+			filter: `Title eq '${title}' and User/Id eq ${_spPageContextInfo.userId}`,
+			expand: 'User'
 		};
 
 		const dfd = $.Deferred(() => { 
@@ -118,7 +119,8 @@ export default class SettingsViewContainer extends Component {
 						} else {
 							settings = {
 								Title: title,
-								Value: value
+								Value: value,
+								UserId: _spPageContextInfo.userId
 							};
 
 							site.ListItems(Settings.SETTINGSLIST).create(settings).then(() => { 

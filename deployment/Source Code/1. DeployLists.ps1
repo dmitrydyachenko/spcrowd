@@ -23,18 +23,10 @@ Try {
         Connect-PnPOnline -Url $SiteUrl -UseWebLogin
     }
 
-    $webName = ''
-
-    if($SubSite) {
-        $webName = $SubSite -replace '\s',''
-        $webName = $webName -replace '/',''
-        $webName = '_' + $webName
-    } 
-
     Write-Host -ForegroundColor Green "Connected"
     
     Import-Module "$RootLocation\Modules\CreateLists.psm1"    
-    CreateLists -inputFile "$RootLocation\Content\Lists\Lists$webName.xml" -RootLocation $RootLocation -SubSite $SubSite -recreate $false -debug $false
+    CreateLists -inputFile "$RootLocation\Content\Lists\Lists.xml" -RootLocation $RootLocation -SubSite $SubSite -recreate $false -debug $false
 
     Disconnect-PnPOnline
 }

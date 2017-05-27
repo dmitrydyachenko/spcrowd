@@ -17,7 +17,7 @@ export function GetFieldsXml(data, prefix, group) {
 			const lowerCaseOptions = options ? options.toLowerCase().replace(/\s+/g, '') : '';
 
 			const _attr = { 
-				Name: `${prefix || ''}${ToCamelCase(name)}`, 
+				Name: `${prefix || ''}${ToCamelCase(name, true)}`, 
 				DisplayName: name, 
 				Type: type
 			};

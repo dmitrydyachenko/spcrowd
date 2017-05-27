@@ -10,6 +10,16 @@ Function CreateLists([string]$inputFile, [string]$RootLocation, [string]$SubSite
 
         if($SubSite) {
             $web = Get-PnPWeb -Identity $SubSite
+
+            $webName = $SubSite -replace '\s', ''
+            $webName = $webName -replace '/', ''
+            $webName = '_' + $webName
+
+            $xmlFilePath = $inputFile -replace '.xml', $webName + '.xml'
+
+            if(Test-Path $xmlFilePath) {
+                $inputFile = $xmlFilePath
+            }
         } 
         else {
             $web = Get-PnPWeb

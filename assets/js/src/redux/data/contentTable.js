@@ -23,7 +23,7 @@ export default {
 	listName: DOCUMENTSLIBRARY,
 	groupName: NAMESPACES.group,
 	prefixName: NAMESPACES.prefix,
-	useContentTypePrefix: true,
-	useListPrefix: true,
+	useContentTypePrefix: false,
+	useListPrefix: false,
 	loadingMessage: ''
 };

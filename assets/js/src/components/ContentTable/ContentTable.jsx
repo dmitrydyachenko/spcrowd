@@ -68,8 +68,9 @@ export default class ContentTable extends Component {
 
 	getSettings(title, updateStateFunction, convertValueFunction) {
 		const settings = {
-			select: 'ID, Title, Value',
-			filter: `Title eq '${title}'`
+			select: 'ID, Title, Value, User/Id',
+			filter: `Title eq '${title}' and User/Id eq ${_spPageContextInfo.userId}`,
+			expand: 'User'
 		};
 
 		const dfd = $.Deferred(() => { 
@@ -172,7 +173,10 @@ export default class ContentTable extends Component {
 						});
 					}
 
-					const lists = GetListsXml(excel.lists, useListPrefix ? prefixName : '');
+					const lists = GetListsXml(excel.lists, 
+												prefixName, 
+												useListPrefix, 
+												useContentTypePrefix);
 
 					if (lists) {
 						self.setState({ 
@@ -185,8 +189,9 @@ export default class ContentTable extends Component {
 
 					const contentTypes = GetContentTypesXml(excel.contentTypes, 
 															excel.fieldsMapping, 
-															useContentTypePrefix ? prefixName : '', 
-															groupName);
+															prefixName, 
+															groupName,
+															useContentTypePrefix);
 
 					if (contentTypes) {
 						self.setState({ 
