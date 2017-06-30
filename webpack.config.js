@@ -2,7 +2,7 @@ var libraryName = 'spcrowd';
 
 var siteUrl = "https://architect365.sharepoint.com/sites/spcrowd",
     username = "ddyachenko@architect365.co.uk",
-    password = "Bandit177rus";
+    password = "Holborn2017!";
 
 var path = require('path'),
     argv = require('yargs').argv,

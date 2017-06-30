@@ -13,7 +13,7 @@ export function GetContentTypesXml(data, fields, prefix, group, useContentTypePr
 			const contentType = { 
 				_attr: { 
 					Name: `${useContentTypePrefix ? (prefix || '') : ''}${name}`, 
-					ParentContentType: type ? type : 'Item'
+					ParentContentType: type || 'Item'
 				}
 			};
 
