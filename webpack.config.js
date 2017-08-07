@@ -93,7 +93,7 @@ var config = {
         noParse: [/jszip.js$/]
     },
     node: {
-        fs: false,
+        fs: "empty",
         Buffer: false
     },
     sassResources: [

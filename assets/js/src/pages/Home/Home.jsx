@@ -13,6 +13,7 @@ import CloudCarousel from '../../components/_RD/CloudCarousel/CloudCarousel';
 import GifGenerator from '../../components/_RD/GifGenerator/GifGenerator';
 import Emotions from '../../components/_RD/Emotions/Emotions';
 import FacebookPosts from '../../components/_RD/FacebookPosts/FacebookPosts';
+import PPTGeneratorContainer from '../../components/_RD/PPTGenerator/PPTGeneratorContainer';
 
 /* CSS styles */
 import Styles from './Home.scss';
@@ -107,6 +108,17 @@ export default class Home extends Component {
 						</div>
 					</div>
 				</div>
+				{
+					0 === 0 ? (
+						<div className={`${Styles.pptgenerator_container} ms-Grid-row`}>
+							<div className="container">
+								<div className="ms-Grid-col ms-u-sm12">
+									<PPTGeneratorContainer />
+								</div>
+							</div>
+						</div>
+					) : null
+				}
 				{
 					0 === 1 ? (
 						<div className={`${Styles.fbposts_container} ms-Grid-row`}>
