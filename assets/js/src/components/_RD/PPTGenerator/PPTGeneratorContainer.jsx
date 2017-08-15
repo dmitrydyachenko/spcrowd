@@ -1,7 +1,22 @@
+/* eslint no-unused-vars: 0 */
+/* eslint no-eval: 0 */
+/* eslint import/no-webpack-loader-syntax: 0 */
+/* eslint import/no-unresolved: 0 */
+
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import pnp from 'sp-pnp-js';
-import PptxGenJS from '../../../../vendor/pptxgen/dist/pptxgen';
+
+const src = require('raw!pptxgenjs');
+const temp_$ = require('jquery');
+const temp_JSZip = require('jszip');
+
+const PptxGenJS = eval([
+	'var $ = temp_$;',
+	'var JSZip = temp_JSZip;',
+	src,
+	'PptxGenJS;'
+].join('\n'));
 
 import PPTGenerator from './PPTGenerator';
 

@@ -8,7 +8,7 @@ var path = require('path'),
     argv = require('yargs').argv,
     mode = argv.mode,
     env = argv.env,
-    plugins = [], 
+    plugins = [],
     outputFile;
 
 var webpack = require('webpack'),
@@ -23,8 +23,8 @@ plugins.push(new extractTextPlugin('../css/screen.css', {
 
 if (mode === 'build') {
     plugins.push(new webpack.DefinePlugin({
-        "process.env": { 
-            NODE_ENV: JSON.stringify("production") 
+        "process.env": {
+            NODE_ENV: JSON.stringify("production")
         }
     }));
 
@@ -35,12 +35,12 @@ if (mode === 'build') {
     }));
 
     outputFile = libraryName + '.min.js';
-} 
+}
 else {
     outputFile = libraryName + '.js';
 }
 
-if(env && env.upload) {
+if (env && env.upload) {
     plugins.push(new spSaveWebpackPlugin({
         "coreOptions": {
             "checkin": true,
@@ -69,7 +69,7 @@ var config = {
         umdNamedDefine: true
     },
     stats: {
-        children: false  
+        children: false
     },
     module: {
         preLoaders: [
@@ -97,7 +97,7 @@ var config = {
         Buffer: false
     },
     sassResources: [
-        __dirname + '/assets/css/utils/_variables.scss', 
+        __dirname + '/assets/css/utils/_variables.scss',
         __dirname + '/assets/css/utils/mixins/_breakpoints.scss'
     ],
     postcss: [
