@@ -9,7 +9,9 @@ import pnp from 'sp-pnp-js';
 
 const src = require('raw!pptxgenjs');
 const temp_$ = require('jquery');
-const temp_JSZip = require('jszip');
+const temp_JSZip = require('jszip'); 
+
+module.exports = undefined;
 
 const PptxGenJS = eval([
 	'var $ = temp_$;',
@@ -17,6 +19,8 @@ const PptxGenJS = eval([
 	src,
 	'PptxGenJS;'
 ].join('\n'));
+
+module.exports = PptxGenJS;
 
 import PPTGenerator from './PPTGenerator';
 

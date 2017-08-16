@@ -109,7 +109,7 @@ export default class Home extends Component {
 					</div>
 				</div>
 				{
-					0 === 0 ? (
+					0 === 1 ? (
 						<div className={`${Styles.pptgenerator_container} ms-Grid-row`}>
 							<div className="container">
 								<div className="ms-Grid-col ms-u-sm12">
