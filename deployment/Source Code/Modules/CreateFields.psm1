@@ -79,7 +79,7 @@ Function CreateFields([string]$inputFile, [string]$RootLocation, [string]$SubSit
                         Add-PnPTaxonomyField -DisplayName $field.DisplayName -InternalName $field.Name -Group $groupName -TermSetPath $termSetPath -TermPathDelimiter "|" -Web $web
                     }
                 } else {
-                    if($field.Type -eq 'Lookup') {
+                    if($field.Type -eq 'Lookup' -or $field.Type -eq 'LookupMulti') {
                         $list = Get-PnPList -Identity $field.List -Web $web
                         $listId = $list.Id
                         $field.SetAttribute("List", "{$listId}")
@@ -89,7 +89,6 @@ Function CreateFields([string]$inputFile, [string]$RootLocation, [string]$SubSit
 
                         if($field.Choices -and $field.Choices.ExternalValues) {
 
-                            $externalValues = $field.Choices.ExternalValues
                             $path = $field.Choices.ExternalValues.Path
 
                             if($path) {
