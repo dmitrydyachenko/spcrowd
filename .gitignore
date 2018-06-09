@@ -1,6 +1,3 @@
-<<<<<<< HEAD
-/node_modules
-=======
 # OS
 .DS_Store
 Thumbs.db
@@ -18,4 +15,3 @@ scss-lint-report.xml
 # Node
 /node_modules
 /npm-debug.log
->>>>>>> f36aa7663fb5c2eae6cfc206424e92c6411fb0ce
