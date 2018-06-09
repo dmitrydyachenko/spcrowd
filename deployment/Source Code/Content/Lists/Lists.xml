@@ -1,0 +1,44 @@
+<Lists>
+    <!-- Generic Lists -->
+    <List Name="Global Navigation" Template="GenericList">
+        <ContentTypes>
+            <ContentType Name="Global Navigation"></ContentType>
+        </ContentTypes>
+    </List>
+    <List Name="Footer Links" Template="GenericList">
+        <ContentTypes>
+            <ContentType Name="Footer Links"></ContentType>
+        </ContentTypes>
+    </List>
+    <List Name="Network and Telecom Services" Template="GenericList">
+        <ContentTypes>
+            <ContentType Name="Network and Telecom Services"></ContentType>
+        </ContentTypes>
+    </List>
+    <List Name="MyApps" Template="GenericList">
+        <ContentTypes>
+            <ContentType Name="MyApps"></ContentType>
+        </ContentTypes>
+    </List>
+    <List Name="MyApps Selection" Template="GenericList">
+        <ContentTypes>
+            <ContentType Name="MyApps Selection"></ContentType>
+        </ContentTypes>
+    </List>
+    <List Name="MyFavorites" Template="GenericList">
+        <ContentTypes>
+            <ContentType Name="MyFavorites"></ContentType>
+        </ContentTypes>
+    </List>
+    <List Name="Homepage Alerts" Template="GenericList">
+        <ContentTypes>
+            <ContentType Name="Homepage Alerts"></ContentType>
+        </ContentTypes>
+    </List>
+    <List Name="Feedback" Template="GenericList">
+        <ContentTypes>
+            <ContentType Name="Feedback"></ContentType>
+        </ContentTypes>
+    </List>
+    
+</Lists>

@@ -1,1 +1,21 @@
+<<<<<<< HEAD
 /node_modules
+=======
+# OS
+.DS_Store
+Thumbs.db
+
+# Composer
+composer.phar
+composer.lock
+/vendor
+
+# Sass
+.sass-cache
+node_modules
+scss-lint-report.xml
+
+# Node
+/node_modules
+/npm-debug.log
+>>>>>>> f36aa7663fb5c2eae6cfc206424e92c6411fb0ce

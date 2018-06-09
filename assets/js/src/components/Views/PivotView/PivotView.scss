@@ -1,0 +1,18 @@
+:global .ms-Pivot {
+    padding: 20px;
+    background-color: #f4f4f4;
+
+    .ms-Pivot-link {
+        &.is-selected {
+            font-weight: 500;
+        }
+    }
+}
+
+:global .pivotItem {
+    padding-top: 10px;
+}
+
+.upload_message {
+    text-align: center;
+}

@@ -1,0 +1,41 @@
+:global {
+    @import "../vendors/notifications";
+
+    #s4-workspace {
+        -webkit-overflow-scrolling: touch;
+        overflow-y: scroll;
+        background-color: #FAFAFA;
+    }
+
+    .button {
+        height: 20px;
+        min-width: 80px;
+        padding: 5px 20px 8px 20px;
+        background-color: #0078d7 !important;
+        color: white;
+        cursor: pointer;
+        margin-left: auto;
+        margin-right: auto;
+        display: inline-block;
+        font-weight: normal;
+        -webkit-font-smoothing: antialiased;
+        line-height: 24px;
+        font-size: 13px;
+        font-family: $base-font-stack;
+        text-align: center;
+
+        &:hover {
+            background-color: #005a9e !important;
+            text-decoration: none;
+        }
+
+        &.cancel {
+            background-color: #f4f4f4 !important;
+            color: black;
+
+            &:hover {
+                background-color: #eaeaea !important;
+            }
+        }
+    }
+}

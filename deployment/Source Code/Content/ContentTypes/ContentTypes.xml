@@ -1,0 +1,129 @@
+<ContentTypes Group="CSA Group">
+    <!-- Item Content Types -->
+    <ContentType Name="Global Navigation" ParentContentType="Item">
+        <Fields>
+            <Field Name="Title"></Field>
+            <Field Name="NavigationParent"></Field>
+            <Field Name="ItemURL"></Field>
+            <Field Name="ItemOrder"></Field>
+        </Fields>
+    </ContentType>
+    <ContentType Name="Footer Links" ParentContentType="Item">
+        <Fields>
+            <Field Name="Title"></Field>
+            <Field Name="LinkType"></Field>
+            <Field Name="ItemURL" Required="True"></Field>
+            <Field Name="PublishingRollupImage"></Field>
+            <Field Name="ItemOrder"></Field>
+        </Fields>
+    </ContentType>
+  <ContentType Name="Network and Telecom Services" ParentContentType="Item">
+        <Fields>
+            <Field Name="Title"></Field>
+            <Field Name="ItemEmail"></Field>
+            <Field Name="Phone1"></Field>
+            <Field Name="Phone2"></Field>
+            <Field Name="ServiceLink"></Field>
+            <Field Name="TicketLink"></Field>
+            <Field Name="DepartmentLink"></Field>
+        </Fields>
+    </ContentType>
+     <ContentType Name="MyFavorites" ParentContentType="Item">
+        <Fields>
+            <Field Name="Title"></Field>
+            <Field Name="ItemURL"></Field>
+        </Fields>
+    </ContentType>
+    <ContentType Name="MyApps" ParentContentType="Item">
+        <Fields>
+            <Field Name="Title"></Field>
+            <Field Name="PublishingRollupImage"></Field>
+            <Field Name="IsRequired"></Field>
+            <Field Name="ItemOrder"></Field>
+        </Fields>
+    </ContentType>
+    <ContentType Name="MyApps Selection" ParentContentType="Item">
+        <Fields>
+            <Field Name="Title"></Field>
+            <Field Name="AppReference"></Field>
+        </Fields>
+    </ContentType>
+    <ContentType Name="Homepage Alerts" ParentContentType="Item">
+        <Fields>
+            <Field Name="Title"></Field>
+            <Field Name="ItemContent"></Field>
+            <Field Name="Region"></Field>
+            <Field Name="IsActive"></Field>
+        </Fields>
+    </ContentType>
+    <ContentType Name="Feedback" ParentContentType="Item">
+        <Fields>
+            <Field Name="Title"></Field>
+            <Field Name="ItemContent"></Field>
+        </Fields>
+    </ContentType>
+    <ContentType Name="News Comments" ParentContentType="Item">
+        <Fields>
+            <Field Name="Title"></Field>
+            <Field Name="ItemContent"></Field>
+            <Field Name="NewsId"></Field>
+        </Fields>
+    </ContentType>
+    <ContentType Name="Department Quick Links" ParentContentType="Item">
+        <Fields>
+            <Field Name="Title"></Field>
+            <Field Name="ItemURL"></Field>
+            <Field Name="Region"></Field>
+            <Field Name="ItemOrder"></Field>
+        </Fields>
+    </ContentType>
+    <ContentType Name="Department Questions" ParentContentType="Item">
+        <Fields>
+            <Field Name="Title"></Field>
+            <Field Name="ItemContent"></Field>
+            <Field Name="ItemOrder"></Field>
+        </Fields>
+    </ContentType>
+    <ContentType Name="Department Configuration" ParentContentType="Item">
+        <Fields>
+            <Field Name="Title"></Field>
+            <Field Name="ItemContent"></Field>
+            <Field Name="Location"></Field>
+            <Field Name="KeyContacts"></Field>
+            <Field Name="IsDefault"></Field>
+        </Fields>
+    </ContentType>
+    <ContentType Name="CSA Group Glossary" ParentContentType="Item">
+        <Fields>
+            <Field Name="Title"></Field>
+            <Field Name="ItemContent"></Field>
+            <Field Name="ItemOrder"></Field>
+        </Fields>
+    </ContentType>
+    <ContentType Name="Job Postings" ParentContentType="Item">
+        <Fields>
+            <Field Name="Title"></Field>
+            <Field Name="ItemContent"></Field>
+            <Field Name="ItemURL"></Field>
+            <Field Name="Department"></Field>
+            <Field Name="Location"></Field>
+            <Field Name="JobPublishingDate"></Field>
+            <Field Name="JobExpiryDate"></Field>
+        </Fields>
+    </ContentType>
+    <ContentType Name="Department Document" ParentContentType="Document">
+        <Fields>
+            <Field Name="Title"></Field>
+            <Field Name="Region"></Field>
+            <Field Name="Tags"></Field>
+        </Fields>
+    </ContentType>
+    <ContentType Name="CSA Document" ParentContentType="Document">
+        <Fields>
+            <Field Name="Title"></Field>
+            <Field Name="Region"></Field>
+            <Field Name="Department"></Field>
+            <Field Name="Tags"></Field>
+        </Fields>
+    </ContentType>
+</ContentTypes>

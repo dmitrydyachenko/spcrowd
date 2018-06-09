@@ -1,0 +1,42 @@
+/**
+ * Font family
+ */
+
+$base-font-stack: "RobotoRegular","Segoe UI WestEuropean","Segoe UI","Helvetica Neue",HelveticaNeue,Helvetica,Arial,sans-serif;
+
+/**
+ * Breakpoints
+ */
+
+$breakpoints: (
+	x-small: 479px, 
+    small: 639px,
+    medium: 780px,
+	large: 1023px,
+    x-large: 1365px,
+    xx-large: 1919px
+);
+
+/**
+ * Tweakpoints
+ */
+
+$tweakpoints: ();
+
+/**
+ * Other variables
+ */
+$baseline: 24px;
+
+/**
+ * Colours
+ */
+$white: #FFF;
+$black: #000;
+$grey: #666;
+
+/**
+ * Paths to Sharepoint assets 
+ */
+ $fontspath: "../fonts";
+ $imgpath: "../img";

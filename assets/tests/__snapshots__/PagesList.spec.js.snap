@@ -1,0 +1,34 @@
+exports[`test PagesList 1`] = `
+<div
+  className="container">
+  <p
+    className="header">
+    89d855b6-d1d7-6e35-51bb-1b61656af352
+  </p>
+  <p
+    className="header">
+    Site pages:
+  </p>
+  <div
+    className="content">
+    <div
+      className="item"
+      style={
+        Object {
+          "fontSize": "64",
+        }
+      }>
+      1. Page 1
+    </div>
+    <div
+      className="item"
+      style={
+        Object {
+          "fontSize": "64",
+        }
+      }>
+      2. Page 2
+    </div>
+  </div>
+</div>
+`;

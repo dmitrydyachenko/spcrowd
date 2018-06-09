@@ -1,0 +1,15 @@
+.container {
+    .header {
+        display: block;
+        font-size: 20px;
+        font-weight: 400;
+        -webkit-font-smoothing: antialiased;
+        color: #333333;
+    }
+
+    .content {
+        .row {
+            .column {}
+        }
+    }
+}

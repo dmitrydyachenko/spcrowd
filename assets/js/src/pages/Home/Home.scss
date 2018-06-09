@@ -1,0 +1,44 @@
+.container {
+    .top_container {
+        display: block;
+        padding-bottom: 30px;
+
+        .header {
+            display: block;
+
+            .header_title,
+            .header_description {
+                display: block;
+                font-weight: 400;
+                -webkit-font-smoothing: antialiased;
+                color: #333333;
+            }
+
+            .header_title {
+                font-size: 20px;
+            }
+
+            .header_description {
+                font-size: 16px;
+                padding-top: 10px;
+            }
+        }
+    }
+
+    .gif_generator_container {
+        padding-bottom: 30px;
+    }
+
+    .bottom_container {
+        padding-top: 20px;
+
+        :global .ms-Label {
+            font-size: 16px;
+            color: #0078d7;
+        }
+    }
+
+    .cloud_carousel_container {
+        padding-bottom: 30px;
+    }
+}

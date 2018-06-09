@@ -1,0 +1,89 @@
+// -----------------------------------------------------------------------------
+// This file contains all @font-face declarations, if any.
+// -----------------------------------------------------------------------------
+
+@font-face {
+    font-family: 'Segoe UI WestEuropean';
+    src: local("Segoe UI Light"), 
+         url("https://static2.sharepointonline.com/files/fabric/assets/fonts//segoeui-westeuropean/segoeui-light.woff2") format("woff2"), 
+         url("https://static2.sharepointonline.com/files/fabric/assets/fonts//segoeui-westeuropean/segoeui-light.woff") format("woff"), 
+         url("https://static2.sharepointonline.com/files/fabric/assets/fonts//segoeui-westeuropean/segoeui-light.ttf") format("truetype");
+    font-weight: 100;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Segoe UI WestEuropean';
+    src: local("Segoe UI Semilight"), 
+         url("https://static2.sharepointonline.com/files/fabric/assets/fonts//segoeui-westeuropean/segoeui-semilight.woff2") format("woff2"), 
+         url("https://static2.sharepointonline.com/files/fabric/assets/fonts//segoeui-westeuropean/segoeui-semilight.woff") format("woff"), 
+         url("https://static2.sharepointonline.com/files/fabric/assets/fonts//segoeui-westeuropean/segoeui-semilight.ttf") format("truetype");
+    font-weight: 200;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Segoe UI WestEuropean';
+    src: local("Segoe UI"), 
+         url("https://static2.sharepointonline.com/files/fabric/assets/fonts//segoeui-westeuropean/segoeui-regular.woff2") format("woff2"), 
+         url("https://static2.sharepointonline.com/files/fabric/assets/fonts//segoeui-westeuropean/segoeui-regular.woff") format("woff"), 
+         url("https://static2.sharepointonline.com/files/fabric/assets/fonts//segoeui-westeuropean/segoeui-regular.ttf") format("truetype");
+    font-weight: 400;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Segoe UI WestEuropean';
+    src: local("Segoe UI Semibold"), 
+         url("https://static2.sharepointonline.com/files/fabric/assets/fonts//segoeui-westeuropean/segoeui-semibold.woff2") format("woff2"), 
+         url("https://static2.sharepointonline.com/files/fabric/assets/fonts//segoeui-westeuropean/segoeui-semibold.woff") format("woff"), 
+         url("https://static2.sharepointonline.com/files/fabric/assets/fonts//segoeui-westeuropean/segoeui-semibold.ttf") format("truetype");
+    font-weight: 600;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'FabricMDL2Icons';
+    src: url("https://static2.sharepointonline.com/files/fabric/assets/icons/fabricmdl2icons.woff2") format("woff2"), 
+         url("https://static2.sharepointonline.com/files/fabric/assets/icons/fabricmdl2icons.woff") format("woff"), 
+         url("https://static2.sharepointonline.com/files/fabric/assets/icons/fabricmdl2icons.ttf") format("truetype");
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'FontAwesome';
+    src: url("#{$fontspath}/fontawesome-webfont.eot?v=4.7.0");
+    src: url("#{$fontspath}/fontawesome-webfont.eot?#iefix&v=4.7.0") format("embedded-opentype"), 
+         url("#{$fontspath}/fontawesome-webfont.woff2?v=4.7.0") format("woff2"), 
+         url("#{$fontspath}/fontawesome-webfont.woff?v=4.7.0") format("woff"), 
+         url("#{$fontspath}/fontawesome-webfont.ttf?v=4.7.0") format("truetype"), 
+         url("#{$fontspath}/fontawesome-webfont.svg?v=4.7.0#fontawesomeregular") format("svg");
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'RobotoRegular';  
+    src: url('#{$fontspath}/Roboto-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'RobotoRegular';  
+    src: url('#{$fontspath}/Roboto-Medium.ttf') format('truetype');
+    font-weight: 500;
+    font-style: normal;
+}
+
+@font-face {
+  font-family: 'Notification';
+  src: url('#{$fontspath}/notification.eot?s3g3t9');
+  src: url('#{$fontspath}/notification.eot?#iefixs3g3t9') format('embedded-opentype'), 
+       url('#{$fontspath}/notification.woff?s3g3t9') format('woff'), 
+       url('#{$fontspath}/notification.ttf?s3g3t9') format('truetype'), 
+       url('#{$fontspath}/notification.svg?s3g3t9#notification') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}

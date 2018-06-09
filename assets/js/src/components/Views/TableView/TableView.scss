@@ -1,0 +1,47 @@
+.container {
+    .content {
+        :global .ms-Grid {
+            padding: 0 8px 0 8px;
+            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+        }
+
+        .header_row {
+            background-color: #FAFAFA;
+
+            .header_column {
+                color: #757575;
+                font-weight: 500;
+
+                .title_container {
+                    display: inline-block;
+                    font-size: 20px;
+                    font-weight: 400;
+                    -webkit-font-smoothing: antialiased;
+                    color: #333333;
+                    vertical-align: -webkit-baseline-middle;
+                }
+
+                .buttons_container {
+                    display: inline-block;
+                    float: right;
+                }
+            }
+        }
+
+        .item_row {
+            background-color: white;
+            display: flex;
+
+            .item_column {
+                color: #212121;
+                font-weight: normal;
+            }
+
+            &:last-child {
+                .item_column {
+                    border-bottom: 1px solid #E5E5E5;
+                }
+            }
+        }
+    }
+}

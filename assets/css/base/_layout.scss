@@ -1,0 +1,63 @@
+.container {
+    margin: 0 auto;
+    padding-left: 0;
+    padding-right: 0;
+    min-width: 305px;
+
+    @include breakpoint(x-small) {
+        padding-left: $baseline / 2;
+        padding-right: $baseline / 2;
+    }
+
+
+    @include breakpoint(small) {
+        width: 600px;
+        padding-left: $baseline / 2;
+        padding-right: $baseline / 2;
+    }
+
+
+    @include breakpoint(medium) {
+        width: 740px;
+        padding-left: $baseline / 2;
+        padding-right: $baseline / 2;
+    }
+
+
+    @include breakpoint(large) {
+        width: 970px;
+        padding-left: $baseline / 2;
+        padding-right: $baseline / 2;
+    }
+
+
+    @include breakpoint(x-large) {
+        width: 1170px;
+        padding-left: $baseline / 2;
+        padding-right: $baseline / 2;
+    }
+}
+
+.row {
+    width: 100%;
+    position: relative;
+    margin: 0;
+}
+
+.content {
+    width: 100%;
+    float: left;
+    clear: both;
+    padding-right: 0px;
+
+    @include breakpoint(medium) {
+        width: 100%;
+        padding-right: $baseline / 2;
+        padding-left: $baseline / 2;
+    }
+}
+
+.fullwidth {
+    overflow: hidden;
+    width: 100%;
+}
